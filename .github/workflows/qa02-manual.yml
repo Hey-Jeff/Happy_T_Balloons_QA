@@ -1,0 +1,168 @@
+name: QA02 Happy Times Balloons - ejecución manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: '¿Qué deseas ejecutar?'
+        required: true
+        type: choice
+        default: conexion
+        options:
+          - validar
+          - conexion
+          - publicos
+          - borradores
+          - modulo
+          - caso
+      modulo:
+        description: 'Solo si modo=modulo (AUT, CAT, PRO, CATE, INV, PED, CLI, PAG, ENV o REP)'
+        required: false
+        type: choice
+        default: CAT
+        options:
+          - AUT
+          - CAT
+          - PRO
+          - CATE
+          - INV
+          - PED
+          - CLI
+          - PAG
+          - ENV
+          - REP
+      case_id:
+        description: 'Solo si modo=caso. Ejemplo: CAT-001'
+        required: false
+        type: string
+        default: CAT-001
+
+permissions:
+  contents: read
+
+# Para evitar que pruebas concurrentes modifiquen la misma BD de QA.
+concurrency:
+  group: qa02-happy-times-staging
+  cancel-in-progress: false
+
+jobs:
+  qa02:
+    name: QA02 / ${{ inputs.modo }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      QA_MODO: ${{ inputs.modo }}
+      QA_MODULO: ${{ inputs.modulo }}
+      QA_CASE_ID: ${{ inputs.case_id }}
+      # La IP es pública: puede sobrescribirse con una variable de repositorio.
+      QA_BASE_URL: ${{ vars.QA_BASE_URL || 'http://13.184.33.122' }}
+      # Aceptar HTTP solo para conexión y flujos públicos SIN credenciales.
+      QA_ALLOW_HTTP: 'true'
+      QA_ALLOW_MUTATIONS: 'false'
+      # Nunca habilitar mutaciones de datos reales desde este workflow.
+      CI: 'true'
+    steps:
+      - name: Descargar proyecto
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # El ZIP inicial no incluye package-lock.json; por eso se usa npm install,
+      # no npm ci. Al generar y versionar un lockfile, cambiar a npm ci.
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+
+      - name: Validar Excel importado y casos de prueba
+        run: |
+          npm run qa:validate
+          npm run unit
+          npm run qa:coverage
+
+      - name: Validar selección y ambiente
+        if: ${{ inputs.modo != 'validar' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${QA_BASE_URL:-}" ]]; then
+            echo 'ERROR: Configura el secreto QA_BASE_URL (URL de STAGING/QA).'
+            exit 1
+          fi
+          if [[ ! "$QA_BASE_URL" =~ ^https?:// ]]; then
+            echo 'ERROR: QA_BASE_URL debe comenzar con http:// o https://.'
+            exit 1
+          fi
+          if [[ "$QA_BASE_URL" =~ ^https?://(localhost|127\.0\.0\.1|\[::1\])([:/]|$) ]]; then
+            echo 'ERROR: localhost de tu PC no es accesible desde un runner hospedado por GitHub.'
+            exit 1
+          fi
+          case "$QA_MODO" in
+            conexion) ;;
+            publicos) ;;
+            borradores) ;;
+            modulo)
+              [[ "$QA_MODULO" =~ ^(AUT|CAT|PRO|CATE|INV|PED|CLI|PAG|ENV|REP)$ ]] || { echo 'Módulo inválido'; exit 1; }
+              ;;
+            caso)
+              [[ "$QA_CASE_ID" =~ ^(AUT|CAT|PRO|CATE|INV|PED|CLI|PAG|ENV|REP)-[0-9]{3}$ ]] || { echo 'ID de caso inválido'; exit 1; }
+              node scripts/qa.mjs list "$QA_CASE_ID" > /dev/null || exit 1
+              ;;
+            *) echo 'Modo desconocido'; exit 1 ;;
+          esac
+
+      - name: Verificar conectividad con la web pública de QA
+        if: ${{ inputs.modo != 'validar' }}
+        run: node scripts/check-env.mjs
+
+      - name: Instalar navegador Chromium
+        if: ${{ inputs.modo != 'validar' && inputs.modo != 'conexion' }}
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar pruebas QA02
+        if: ${{ inputs.modo != 'validar' && inputs.modo != 'conexion' }}
+        # Secretos solo durante la ejecución; jamás en npm install, preflight ni validación.
+        env:
+          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
+          QA_CLIENT_EMAIL: ${{ secrets.QA_CLIENT_EMAIL }}
+          QA_CLIENT_PASSWORD: ${{ secrets.QA_CLIENT_PASSWORD }}
+          QA_INVALID_PASSWORD: ${{ secrets.QA_INVALID_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$QA_MODO" in
+            conexion)
+              echo "Modo conexion: comprobación de conectividad completada."
+              ;;
+            publicos)
+              npm run test:public
+              ;;
+            borradores)
+              npm run test:all -- --try-drafts --allow-pending
+              ;;
+            modulo)
+              npm run test:module -- "$QA_MODULO" --try-drafts --allow-pending
+              ;;
+            caso)
+              npm run test:case -- "$QA_CASE_ID" --try-drafts
+              ;;
+          esac
+
+      - name: Resumen de la ejecución
+        if: ${{ always() && steps.checkout.outcome == 'success' }}
+        run: node scripts/github-summary.mjs
+
+      - name: Guardar reportes y evidencias
+        if: ${{ always() && steps.checkout.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa02-evidencias-${{ github.run_number }}
+          path: |
+            playwright-report/
+            test-results/
+            qa/results/
+          if-no-files-found: ignore
+          retention-days: 7
