@@ -1,0 +1,38 @@
+{
+  "total": 105,
+  "legacy_baseline_results": {
+    "Passed": 41,
+    "Untested": 53,
+    "Failed": 3,
+    "Blocked": 8
+  },
+  "automation": {
+    "draft_requires_ui_verification": 10,
+    "pending_implementation": 87,
+    "excluded_not_applicable": 8
+  },
+  "modules": {
+    "AUT": 13,
+    "CAT": 12,
+    "PRO": 12,
+    "CATE": 12,
+    "INV": 9,
+    "PED": 12,
+    "CLI": 7,
+    "PAG": 8,
+    "ENV": 12,
+    "REP": 8
+  },
+  "draft_ids": [
+    "AUT-001",
+    "AUT-002",
+    "CAT-001",
+    "CAT-002",
+    "CAT-004",
+    "CAT-006",
+    "PRO-004",
+    "CLI-006",
+    "REP-001",
+    "REP-005"
+  ]
+}
