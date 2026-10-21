@@ -14,16 +14,20 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   reporter: [['list'], ['html', { open: 'never' }], ['json', { outputFile: 'qa/results/playwright.json' }]],
   outputDir: 'test-results',
-  use: {
-    baseURL: process.env.QA_BASE_URL,
-    process.env.QA_ALLOW_HTTP_AUTH === 'true'
-  ? 'off' : 'retain-on-failure',
-screenshot: process.env.QA_ALLOW_HTTP_AUTH === 'true'
-  ? 'off' : 'only-on-failure',
-video: process.env.QA_ALLOW_HTTP_AUTH === 'true'
-  ? 'off' : 'retain-on-failure',
-    actionTimeout: 10_000,
-    ...devices['Desktop Chrome']
-  },
+use: {
+  baseURL: process.env.QA_BASE_URL,
+
+  trace: process.env.QA_ALLOW_HTTP_AUTH === 'true'
+    ? 'off' : 'retain-on-failure',
+
+  screenshot: process.env.QA_ALLOW_HTTP_AUTH === 'true'
+    ? 'off' : 'only-on-failure',
+
+  video: process.env.QA_ALLOW_HTTP_AUTH === 'true'
+    ? 'off' : 'retain-on-failure',
+
+  actionTimeout: 10_000,
+  ...devices['Desktop Chrome']
+},
   projects: [{ name: 'chromium', use: { browserName: 'chromium' } }]
 });
