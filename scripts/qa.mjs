@@ -92,8 +92,6 @@ if (parsed.protocol === 'http:') {
   }
 }
 
-}
-
 const env={...process.env, QA_RUN_DRAFTS:tryDrafts?'1':'0', QA_FILTER_IDS:allowed.map(t=>t.id).join(',')};
 const child=spawnSync('npx',['playwright','test',... (flags.has('--headed')?['--headed']:[])],{cwd:root,env,stdio:'inherit',shell:process.platform==='win32'});
 if(child.error)fail(`No se pudo ejecutar Playwright: ${child.error.message}. Usa npm install.`);
