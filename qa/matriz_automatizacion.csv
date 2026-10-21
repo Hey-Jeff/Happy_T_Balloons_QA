@@ -1,4 +1,4 @@
-﻿ID,Módulo,Historia/escenario,Prioridad,Responsable,Estado automatización,Resultado QA02 anterior,Fila origen Excel,Condición de aceptación
+ID,Módulo,Historia/escenario,Prioridad,Responsable,Estado automatización,Resultado QA02 anterior,Fila origen Excel,Condición de aceptación
 AUT-001,AUT,Inicio de sesión con credenciales correctas,Alta,Melissa Solís,draft_requires_ui_verification,Passed,8,El sistema autentica al usuario y muestra las opciones correspondientes a su rol.
 AUT-002,AUT,Inicio de sesión con credenciales incorrectas,Alta,Melissa Solís,draft_requires_ui_verification,Untested,9,El sistema rechaza el acceso y muestra un mensaje de error sin revelar información sensible.
 AUT-003,AUT,Bloqueo temporal por intentos fallidos,Alta,Melissa Solís,pending_implementation,Untested,10,El sistema bloquea temporalmente el acceso del usuario y registra el evento correspondiente.
@@ -16,19 +16,19 @@ CAT-001,CAT,Visualización del catálogo con productos activos,Alta,Karla Llosen
 CAT-002,CAT,Visualización del detalle de un producto,Alta,Karla Llosent,draft_requires_ui_verification,Failed,22,"El sistema muestra el detalle disponible del producto seleccionado, incluyendo su descripción, imágenes y precio."
 CAT-003,CAT,Catálogo sin productos disponibles,Baja,Karla Llosent,pending_implementation,Untested,23,El sistema muestra un mensaje indicando que no hay productos disponibles.
 CAT-004,CAT,Búsqueda de producto por nombre,Media,Karla Llosent,draft_requires_ui_verification,Passed,24,El sistema muestra los productos que coinciden con la búsqueda.
-CAT-005,CAT,Filtrado de productos por categoría,Media,Karla Llosent,pending_implementation,Passed,25,El sistema muestra únicamente los productos correspondientes a la categoría seleccionada.
+CAT-005,CAT,Filtrado de productos por categoría,Media,Karla Llosent,draft_requires_ui_verification,Passed,25,El sistema muestra únicamente los productos correspondientes a la categoría seleccionada.
 CAT-006,CAT,Búsqueda sin resultados,Baja,Karla Llosent,draft_requires_ui_verification,Passed,26,El sistema muestra un mensaje indicando que no se encontraron resultados.
 CAT-007,CAT,Ordenamiento del catálogo,Media,Karla Llosent,excluded_not_applicable,Blocked,27,El sistema reorganiza los productos de acuerdo con el criterio seleccionado.
-CAT-008,CAT,Producto publicado visible para el cliente,Media,Karla Llosent,pending_implementation,Passed,28,El producto aparece disponible dentro del catálogo.
+CAT-008,CAT,Producto publicado visible para el cliente,Media,Karla Llosent,draft_requires_ui_verification,Passed,28,El producto aparece disponible dentro del catálogo.
 CAT-009,CAT,Producto inactivo o no publicado oculto al cliente,Alta,Karla Llosent,pending_implementation,Passed,29,El producto no aparece como disponible para el cliente.
 CAT-010,CAT,Intento de publicar un producto con información incompleta,Alta,Karla Llosent,excluded_not_applicable,Blocked,30,"El sistema valida la información, no publica el producto y muestra los datos que deben corregirse."
-CAT-011,CAT,Acceso no autorizado a la administración del catálogo,Alta,Karla Llosent,pending_implementation,Untested,31,El sistema impide el acceso a la función restringida.
-CAT-012,CAT,Búsqueda combinada con filtro de categoría,Media,Karla Llosent,pending_implementation,Passed,32,El sistema muestra únicamente los productos que cumplen con la categoría y el texto ingresado.
+CAT-011,CAT,Acceso no autorizado a la administración del catálogo,Alta,Karla Llosent,draft_requires_ui_verification,Untested,31,El sistema impide el acceso a la función restringida.
+CAT-012,CAT,Búsqueda combinada con filtro de categoría,Media,Karla Llosent,draft_requires_ui_verification,Passed,32,El sistema muestra únicamente los productos que cumplen con la categoría y el texto ingresado.
 PRO-001,PRO,Creación de producto con datos válidos,Alta,Ignacio Vargas,pending_implementation,Passed,33,El sistema registra el producto correctamente.
 PRO-002,PRO,Creación de producto con campos obligatorios vacíos,Media,Ignacio Vargas,pending_implementation,Passed,34,El sistema no registra el producto y muestra las validaciones correspondientes.
 PRO-003,PRO,Creación de producto con precio negativo,Alta,Ignacio Vargas,pending_implementation,Passed,35,El sistema rechaza el valor y no guarda el producto con un precio negativo.
 PRO-004,PRO,Consulta del listado de productos,Media,Ignacio Vargas,draft_requires_ui_verification,Passed,36,El sistema muestra el listado de productos registrados con la información disponible para su administración.
-PRO-005,PRO,Consulta de un producto existente,Media,Ignacio Vargas,pending_implementation,Passed,37,El sistema muestra la información almacenada del producto seleccionado.
+PRO-005,PRO,Consulta de un producto existente,Media,Ignacio Vargas,draft_requires_ui_verification,Passed,37,El sistema muestra la información almacenada del producto seleccionado.
 PRO-006,PRO,Consulta de un producto inexistente,Baja,Ignacio Vargas,pending_implementation,Failed,38,El sistema no muestra información de otro registro y comunica que el producto no está disponible.
 PRO-007,PRO,Actualización de un producto existente,Alta,Ignacio Vargas,pending_implementation,Passed,39,El sistema actualiza la información del producto.
 PRO-008,PRO,Actualización de producto con precio negativo,Alta,Ignacio Vargas,pending_implementation,Passed,40,El sistema rechaza el valor y conserva un precio válido para el producto.
@@ -39,7 +39,7 @@ PRO-012,PRO,Acceso de cliente a funciones de mantenimiento de productos,Alta,Ign
 CATE-001,CATE,Creación de una categoría nueva,Alta,Karla Llosent,pending_implementation,Passed,45,El sistema crea la categoría y la deja disponible para su uso.
 CATE-002,CATE,Intento de crear una categoría duplicada,Media,Karla Llosent,pending_implementation,Passed,46,El sistema no crea un registro duplicado y muestra el mensaje correspondiente.
 CATE-003,CATE,Creación de categoría con datos obligatorios vacíos,Media,Karla Llosent,pending_implementation,Passed,47,El sistema no guarda la categoría y solicita completar la información requerida.
-CATE-004,CATE,Visualización de categorías activas,Media,Karla Llosent,pending_implementation,Passed,48,El sistema muestra las categorías activas disponibles.
+CATE-004,CATE,Visualización de categorías activas,Media,Karla Llosent,draft_requires_ui_verification,Passed,48,El sistema muestra las categorías activas disponibles.
 CATE-005,CATE,Visualización cuando no existen categorías activas,Baja,Karla Llosent,pending_implementation,Untested,49,El sistema muestra un mensaje indicando que no hay categorías disponibles.
 CATE-006,CATE,Categoría inactiva oculta para el cliente,Media,Karla Llosent,pending_implementation,Passed,50,La categoría inactiva no se muestra como opción disponible para el cliente.
 CATE-007,CATE,Actualización de una categoría existente,Alta,Karla Llosent,pending_implementation,Passed,51,El sistema actualiza la información de la categoría.
@@ -48,7 +48,7 @@ CATE-009,CATE,Actualización de una categoría inexistente,Media,Karla Llosent,p
 CATE-010,CATE,Inactivación de una categoría existente,Alta,Karla Llosent,pending_implementation,Passed,54,El sistema cambia el estado de la categoría y deja de mostrarla como activa.
 CATE-011,CATE,Reactivación de una categoría inactiva,Media,Karla Llosent,pending_implementation,Passed,55,El sistema cambia el estado de la categoría y vuelve a dejarla disponible.
 CATE-012,CATE,Inactivación de una categoría con productos asociados,Alta,Karla Llosent,pending_implementation,Failed,56,El sistema evita dejar información inconsistente y muestra al administrador la acción requerida para continuar.
-INV-001,INV,Consulta del stock actual de un producto,Alta,Ignacio Vargas,pending_implementation,Passed,57,El sistema muestra la cantidad de stock registrada para el producto.
+INV-001,INV,Consulta del stock actual de un producto,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,57,El sistema muestra la cantidad de stock registrada para el producto.
 INV-002,INV,Registro de una entrada de inventario,Alta,Ignacio Vargas,pending_implementation,Passed,58,El sistema aumenta la cantidad disponible del producto según la entrada registrada.
 INV-003,INV,Registro de una salida de inventario válida,Alta,Ignacio Vargas,pending_implementation,Passed,59,El sistema disminuye el stock de acuerdo con la cantidad registrada.
 INV-004,INV,Salida de inventario mayor al stock disponible,Alta,Ignacio Vargas,pending_implementation,Passed,60,El sistema rechaza la operación y no permite que el stock quede en un valor negativo.
@@ -63,15 +63,15 @@ PED-003,PED,Agregar nuevamente un producto que ya está en el carrito,Media,Jeff
 PED-004,PED,Checkout con carrito y datos válidos,Alta,Jeffry Soto,pending_implementation,Passed,69,El sistema registra el pedido y muestra la confirmación correspondiente.
 PED-005,PED,Intento de checkout con carrito vacío,Alta,Jeffry Soto,pending_implementation,Passed,70,El sistema bloquea la finalización de la compra e informa que el carrito está vacío.
 PED-006,PED,Checkout con datos obligatorios incompletos,Alta,Jeffry Soto,pending_implementation,Passed,71,El sistema no finaliza el pedido y solicita completar la información requerida.
-PED-007,PED,Consulta del listado de pedidos,Media,Jeffry Soto,pending_implementation,Untested,72,El sistema muestra los pedidos registrados y su estado actual.
+PED-007,PED,Consulta del listado de pedidos,Media,Jeffry Soto,draft_requires_ui_verification,Untested,72,El sistema muestra los pedidos registrados y su estado actual.
 PED-008,PED,Consulta de pedidos cuando no existen registros,Baja,Jeffry Soto,pending_implementation,Untested,73,El sistema muestra un mensaje indicando que no hay pedidos disponibles.
-PED-009,PED,Filtrado del listado de pedidos,Media,Jeffry Soto,pending_implementation,Untested,74,El sistema muestra únicamente los pedidos que cumplen con el filtro seleccionado.
+PED-009,PED,Filtrado del listado de pedidos,Media,Jeffry Soto,draft_requires_ui_verification,Untested,74,El sistema muestra únicamente los pedidos que cumplen con el filtro seleccionado.
 PED-010,PED,Cambio válido de estado de un pedido,Alta,Jeffry Soto,pending_implementation,Untested,75,El sistema actualiza el estado del pedido y conserva el cambio realizado.
 PED-011,PED,Intento de cambio a un estado no permitido,Alta,Jeffry Soto,pending_implementation,Untested,76,El sistema bloquea el cambio y mantiene un estado válido para el pedido.
 PED-012,PED,Cancelación de pedido y actualización del inventario,Alta,Jeffry Soto,pending_implementation,Untested,77,El sistema actualiza el pedido como cancelado y refleja en inventario la consecuencia definida para esa cancelación.
 CLI-001,CLI,Registro de cliente con datos válidos,Alta,Melissa Solís,pending_implementation,Untested,78,El sistema crea la cuenta del cliente y confirma el registro.
 CLI-002,CLI,Registro de cliente con correo duplicado,Media,Melissa Solís,pending_implementation,Untested,79,El sistema no crea una cuenta duplicada y muestra el mensaje correspondiente.
-CLI-003,CLI,Registro de cliente con datos obligatorios incompletos,Media,Melissa Solís,pending_implementation,Untested,80,El sistema no crea la cuenta y solicita completar o corregir la información requerida.
+CLI-003,CLI,Registro de cliente con datos obligatorios incompletos,Media,Melissa Solís,draft_requires_ui_verification,Untested,80,El sistema no crea la cuenta y solicita completar o corregir la información requerida.
 CLI-004,CLI,Consulta del historial de compras con pedidos registrados,Media,Melissa Solís,pending_implementation,Passed,81,El sistema muestra los pedidos o compras anteriores asociados al cliente autenticado.
 CLI-005,CLI,Consulta del historial cuando no existen compras,Baja,Melissa Solís,pending_implementation,Untested,82,El sistema informa que no existen compras registradas para el cliente.
 CLI-006,CLI,Acceso al historial sin iniciar sesión,Alta,Melissa Solís,draft_requires_ui_verification,Untested,83,El sistema bloquea el acceso y solicita autenticación.
@@ -97,10 +97,10 @@ ENV-010,ENV,Edición de una zona de entrega,Media,Jeffry Soto,pending_implementa
 ENV-011,ENV,Eliminación de una zona sin pedidos asociados,Media,Jeffry Soto,pending_implementation,Untested,103,El sistema elimina la zona y deja de mostrarla como disponible.
 ENV-012,ENV,Creación de zona con datos obligatorios incompletos,Media,Jeffry Soto,pending_implementation,Untested,104,El sistema no crea la zona y muestra la validación correspondiente.
 REP-001,REP,Generación del reporte general de ventas,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,105,El sistema muestra el resumen de ventas con la información disponible definida para el reporte.
-REP-002,REP,Filtrado del reporte de ventas por fecha,Media,Ignacio Vargas,pending_implementation,Untested,106,El sistema muestra únicamente la información correspondiente al período seleccionado.
-REP-003,REP,Consulta del detalle de ventas por producto,Media,Ignacio Vargas,pending_implementation,Untested,107,El sistema muestra los productos vendidos con las cantidades y totales disponibles en el reporte.
-REP-004,REP,Reporte de ventas sin datos en el período seleccionado,Baja,Ignacio Vargas,pending_implementation,Untested,108,El sistema informa que no existen datos para el período seleccionado.
+REP-002,REP,Filtrado del reporte de ventas por fecha,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,106,El sistema muestra únicamente la información correspondiente al período seleccionado.
+REP-003,REP,Consulta del detalle de ventas por producto,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,107,El sistema muestra los productos vendidos con las cantidades y totales disponibles en el reporte.
+REP-004,REP,Reporte de ventas sin datos en el período seleccionado,Baja,Ignacio Vargas,draft_requires_ui_verification,Untested,108,El sistema informa que no existen datos para el período seleccionado.
 REP-005,REP,Consulta del reporte de inventario actual,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,109,El sistema muestra los productos con la información disponible de su inventario actual.
-REP-006,REP,Identificación de productos con stock bajo en el reporte,Alta,Ignacio Vargas,pending_implementation,Untested,110,El sistema permite identificar los productos que se encuentran en nivel bajo de inventario.
-REP-007,REP,Filtrado del reporte de inventario por categoría,Media,Ignacio Vargas,pending_implementation,Untested,111,El sistema muestra únicamente los productos de la categoría seleccionada.
-REP-008,REP,Exportación de un reporte disponible,Baja,Ignacio Vargas,pending_implementation,Untested,112,El sistema genera un archivo con la información del reporte seleccionado.
+REP-006,REP,Identificación de productos con stock bajo en el reporte,Alta,Ignacio Vargas,draft_requires_ui_verification,Untested,110,El sistema permite identificar los productos que se encuentran en nivel bajo de inventario.
+REP-007,REP,Filtrado del reporte de inventario por categoría,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,111,El sistema muestra únicamente los productos de la categoría seleccionada.
+REP-008,REP,Exportación de un reporte disponible,Baja,Ignacio Vargas,draft_requires_ui_verification,Untested,112,El sistema genera un archivo con la información del reporte seleccionado.
