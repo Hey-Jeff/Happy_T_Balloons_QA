@@ -1,6 +1,8 @@
 import { test } from '@playwright/test';
 import { cases, statuses } from '../scripts/qa-core.mjs';
 import { flows } from './flows/index.js';
+import { sprintFlows } from './flows/sprint-72h.js';
+const allFlows={...flows,...sprintFlows};
 
 const idFilter=new Set((process.env.QA_FILTER_IDS||'').split(',').filter(Boolean));
 for (const tc of cases){
@@ -8,7 +10,7 @@ for (const tc of cases){
  const title=`[${tc.id}] [${tc.module}] ${tc.title}`;
  const isDraft=tc.automation_status===statuses.draft;
  const isReady=tc.automation_status===statuses.ready;
- const active=(isReady||(isDraft&&process.env.QA_RUN_DRAFTS==='1'))&&Boolean(flows[tc.id]);
+ const active=(isReady||(isDraft&&process.env.QA_RUN_DRAFTS==='1'))&&Boolean(allFlows[tc.id]);
  test(title,async({page},testInfo)=>{
    testInfo.annotations.push({type:'Source',description:`QA02 Sheet1 fila ${tc.source.row}`});
    testInfo.annotations.push({type:'Prioridad',description:tc.priority});
@@ -19,6 +21,6 @@ for (const tc of cases){
    }
    // No repetir intentos de autenticación inválida. Evitar bloqueo de cuentas QA.
    if(tc.id==='AUT-002' && testInfo.retry>0) test.skip(true,'No reintentar login inválido automáticamente.');
-   await flows[tc.id]({page,tc,testInfo});
+   await allFlows[tc.id]({page,tc,testInfo});
  });
 }
