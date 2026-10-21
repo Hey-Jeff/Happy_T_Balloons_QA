@@ -4,5 +4,5 @@
 export const publicDraftIds = new Set([
   'CAT-001', 'CAT-002', 'CAT-004', 'CAT-005',
   'CAT-006', 'CAT-008', 'CAT-011', 'CAT-012',
-  'CLI-003', 'CLI-006', 'PED-001', 'PED-002', 'PED-003'
+  'CLI-003', 'CLI-006', 'PRO-006', 'PED-001', 'PED-002', 'PED-003'
 ]);

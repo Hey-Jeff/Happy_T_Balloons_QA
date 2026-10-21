@@ -55,7 +55,7 @@ const allowed=selected.filter(c=>c.automation_status===statuses.ready || (tryDra
 const missing=selected.filter(c=>!allowed.includes(c));
 console.log(`Seleccionados ${selected.length}, ejecutables ${allowed.length}, pendientes/N-A ${missing.length}`);
 if(missing.length) console.log('Sin ejecución:', missing.map(t=>t.id).join(', '));
-if(!allowed.length)fail('No hay pruebas listas. Las 10 implementaciones son BORRADORES; usa --try-drafts para probarlas en una instancia QA.');
+if(!allowed.length)fail('No hay pruebas listas. Las implementaciones seleccionadas son BORRADORES; usa --try-drafts para probarlas en una instancia QA.');
 if(!process.env.QA_BASE_URL)fail('Configura QA_BASE_URL en .env (ver .env.example).');
 let parsed;
 try { parsed = new URL(process.env.QA_BASE_URL); } catch { fail('QA_BASE_URL debe ser URL válida.'); }

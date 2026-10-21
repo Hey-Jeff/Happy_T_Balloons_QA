@@ -88,7 +88,7 @@
         "CLI-001"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-004",
@@ -116,7 +116,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-005",
@@ -144,7 +144,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-006",
@@ -174,7 +174,7 @@
         "AUT-004"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-007",
@@ -227,7 +227,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-009",
@@ -258,7 +258,7 @@
         "AUT-008"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-010",
@@ -289,7 +289,7 @@
         "AUT-008"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-011",
@@ -318,7 +318,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-012",
@@ -344,7 +344,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-013",
@@ -370,7 +370,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CAT-001",
@@ -846,7 +846,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Failed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PRO-007",
@@ -926,7 +926,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PRO-010",
@@ -1253,7 +1253,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CATE-010",
@@ -1336,7 +1336,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Failed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "INV-001",
@@ -1473,7 +1473,7 @@
         "INV-003"
       ],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "INV-006",
@@ -1577,7 +1577,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-001",
@@ -1679,7 +1679,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-005",
@@ -1731,7 +1731,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-007",
@@ -1834,7 +1834,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-011",
@@ -1859,7 +1859,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-012",
@@ -1888,7 +1888,7 @@
         "PED-004"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CLI-001",
@@ -1916,7 +1916,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CLI-002",
@@ -1944,7 +1944,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CLI-003",
@@ -2110,7 +2110,7 @@
         "PED-004"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PAG-002",
@@ -2138,7 +2138,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PAG-003",
@@ -2165,7 +2165,7 @@
         "PAG-001"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PAG-004",
@@ -2192,7 +2192,7 @@
         "PAG-001"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PAG-005",
@@ -2347,7 +2347,7 @@
         "ENV-009"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "ENV-003",
@@ -2426,7 +2426,7 @@
         "PED-010"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "ENV-006",
@@ -2452,7 +2452,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "ENV-007",
@@ -2480,7 +2480,7 @@
         "ENV-005"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "ENV-008",
@@ -2508,7 +2508,7 @@
         "ENV-005"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "ENV-009",

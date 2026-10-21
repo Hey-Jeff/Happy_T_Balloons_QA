@@ -5,9 +5,10 @@ import { sprintFlows } from './flows/sprint-72h.js';
 import { catalogFixFlows } from './flows/catalog-fixes.js';
 import { wave2Flows } from './flows/wave2-72h.js';
 import { wave3Flows } from './flows/wave3-72h.js';
+import { wave4Flows } from './flows/wave4-72h.js';
 
 // Las correcciones reemplazan exclusivamente cuatro borradores de catalogo.
-const allFlows = { ...flows, ...sprintFlows, ...wave2Flows, ...wave3Flows, ...catalogFixFlows };
+const allFlows = { ...flows, ...sprintFlows, ...wave2Flows, ...wave3Flows, ...wave4Flows, ...catalogFixFlows };
 
 const idFilter = new Set((process.env.QA_FILTER_IDS || '').split(',').filter(Boolean));
 for (const tc of cases) {
