@@ -1,12 +1,3 @@
-import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
-import { test } from 'node:test';
-import { publicDraftIds } from './public-safe.mjs';
-import { cases } from './qa-core.mjs';
-
-const run = (...args) => spawnSync(process.execPath, [new URL('./qa.mjs', import.meta.url).pathname, ...args], {
-  encoding: 'utf8', env: {...process.env, QA_BASE_URL:'http://13.184.33.122', QA_ALLOW_HTTP:'true'}
-});
 
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -68,4 +59,3 @@ test('La cobertura no depende de la URL', () => {
   assert.equal(r.status, 0);
   assert.match(r.stdout, /total\s+105/);
 });
-
