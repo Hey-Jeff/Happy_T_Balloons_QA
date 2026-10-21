@@ -16,9 +16,12 @@ export default defineConfig({
   outputDir: 'test-results',
   use: {
     baseURL: process.env.QA_BASE_URL,
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    process.env.QA_ALLOW_HTTP_AUTH === 'true'
+  ? 'off' : 'retain-on-failure',
+screenshot: process.env.QA_ALLOW_HTTP_AUTH === 'true'
+  ? 'off' : 'only-on-failure',
+video: process.env.QA_ALLOW_HTTP_AUTH === 'true'
+  ? 'off' : 'retain-on-failure',
     actionTimeout: 10_000,
     ...devices['Desktop Chrome']
   },
