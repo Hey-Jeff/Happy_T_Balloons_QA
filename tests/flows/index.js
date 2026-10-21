@@ -42,11 +42,38 @@ export const flows={
    await searchCatalog(page,'xyzqa123');
    await expect(page.getByText(/no se encontr|sin resultados|no hay productos|ning[uú]n producto/i).first()).toBeVisible();
  },
- 'PRO-004':async({page})=>{
-   await loginAsAdmin(page);
-   await page.goto('/Producto');
-   await expect(page.locator('table,[role="table"]').first()).toBeVisible();
-   await expect(page.getByText('Cremas Dove',{exact:false}).first()).toBeVisible();
+ 
+'PRO-004': async ({ page }) => {
+  await loginAsAdmin(page);
+
+  console.log(
+    'Ruta después del login:',
+    new URL(page.url()).pathname
+  );
+
+  const response = await page.goto('/Producto');
+
+  console.log(
+    'Ruta después de abrir productos:',
+    new URL(page.url()).pathname
+  );
+
+  console.log(
+    'Código HTTP:',
+    response?.status()
+  );
+
+  await expect(page).toHaveURL(
+    /\/Producto(?:\/Index)?(?:\?.*)?$/i
+  );
+
+  await expect(page.locator('table').first()).toBeVisible();
+
+  await expect(
+    page.getByText('Cremas Dove', { exact: false }).first()
+  ).toBeVisible();
+},
+
  },
  'CLI-006':async({page})=>{
    await page.goto('/Pedido/MisPedidos');
