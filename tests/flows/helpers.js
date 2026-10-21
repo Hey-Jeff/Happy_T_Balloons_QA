@@ -15,8 +15,18 @@ export function clientCredentials(){
 export async function login(page, email, password){
  await page.goto('/Cuenta/Login');
  const current=new URL(page.url());
- if(current.protocol!=='https:') throw new Error('SEGURIDAD: no introducir credenciales en una página HTTP. Configura HTTPS en el sitio QA.');
- const emailInput=page.locator('input[type="email"],input[name="Correo"],input[name="Email"],input[id="Correo"],input[id="Email"]').first();
+
+const httpAuthAllowed =
+  current.origin === 'http://13.184.33.122' &&
+  process.env.QA_BASE_URL === 'http://13.184.33.122' &&
+  process.env.QA_ALLOW_HTTP === 'true' &&
+  process.env.QA_ALLOW_HTTP_AUTH === 'true';
+
+if (current.protocol !== 'https:' && !httpAuthAllowed) {
+  throw new Error('Inicio de sesión HTTP no autorizado.');
+}
+
+const emailInput=page.locator('input[type="email"],input[name="Correo"],input[name="Email"],input[id="Correo"],input[id="Email"]').first();
  const passInput=page.locator('input[type="password"]').first();
  await expect(emailInput).toBeVisible();
  await expect(passInput).toBeVisible();
