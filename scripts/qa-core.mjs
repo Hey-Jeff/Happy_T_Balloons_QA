@@ -7,7 +7,8 @@ export const cases = manifest.cases;
 export const idRE = /^[A-Z]{3,4}-\d{3}$/;
 export const implemented = new Set([
   'AUT-001','AUT-002','CAT-001','CAT-002','CAT-004','CAT-006',
-  'PRO-004','CLI-006','REP-001','REP-005'
+  'PRO-004','CLI-006','REP-001','REP-005',
+  'CAT-005','CAT-008','CAT-011','CAT-012','CLI-003','PRO-005','CATE-004','INV-001','PED-007','PED-009','REP-002','REP-003','REP-004','REP-006','REP-007','REP-008'
 ]);
 export const statuses = {
   ready: 'ready_verified_against_app',
