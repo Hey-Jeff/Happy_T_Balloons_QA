@@ -4,7 +4,12 @@ import { test } from 'node:test';
 
 const script = new URL('./check-env.mjs', import.meta.url).pathname;
 const run = (url) => spawnSync(process.execPath, [script], {
-  encoding: 'utf8', env: {...process.env, QA_BASE_URL: url}
+ encoding: 'utf8',
+env: {
+  ...process.env,
+  QA_BASE_URL: url,
+  QA_ALLOW_HTTP: 'false'
+}
 });
 
 test('QA_BASE_URL no configurada produce error útil', () => {
