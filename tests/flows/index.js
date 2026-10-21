@@ -73,8 +73,6 @@ export const flows={
     page.getByText('Cremas Dove', { exact: false }).first()
   ).toBeVisible();
 },
-
- },
  'CLI-006':async({page})=>{
    await page.goto('/Pedido/MisPedidos');
    const isLogin=/\/Cuenta\/Login/i.test(page.url());
