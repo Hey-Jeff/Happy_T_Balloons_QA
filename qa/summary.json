@@ -7,8 +7,8 @@
     "Blocked": 8
   },
   "automation": {
-    "draft_requires_ui_verification": 10,
-    "pending_implementation": 87,
+    "draft_requires_ui_verification": 26,
+    "pending_implementation": 71,
     "excluded_not_applicable": 8
   },
   "modules": {
@@ -29,10 +29,26 @@
     "CAT-001",
     "CAT-002",
     "CAT-004",
+    "CAT-005",
     "CAT-006",
+    "CAT-008",
+    "CAT-011",
+    "CAT-012",
     "PRO-004",
+    "PRO-005",
+    "CATE-004",
+    "INV-001",
+    "PED-007",
+    "PED-009",
+    "CLI-003",
     "CLI-006",
     "REP-001",
-    "REP-005"
+    "REP-002",
+    "REP-003",
+    "REP-004",
+    "REP-005",
+    "REP-006",
+    "REP-007",
+    "REP-008"
   ]
 }
