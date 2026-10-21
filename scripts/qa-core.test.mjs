@@ -9,8 +9,8 @@ test('105 casos extraídos del QA02 sin duplicados ni pasos vacíos',()=>{
 test('histórico QA02 no equivale a pruebas automatizadas',()=>{
  const cov=coverage();
  assert.equal(cov.ready,0);
- assert.equal(cov.draft,42);
- assert.equal(cov.pending,55);
+ assert.equal(cov.draft,64);
+ assert.equal(cov.pending,33);
  assert.equal(cov.not_applicable,8);
 });
 test('no se preservan contraseñas del Excel en el JSON',()=>{
