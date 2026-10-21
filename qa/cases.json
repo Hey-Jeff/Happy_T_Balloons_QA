@@ -199,7 +199,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "AUT-008",
@@ -737,7 +737,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PRO-003",
@@ -765,7 +765,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PRO-004",
@@ -1014,7 +1014,7 @@
         "CLI-001"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CATE-001",
@@ -1094,7 +1094,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CATE-004",
@@ -1497,7 +1497,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "INV-007",
@@ -1603,7 +1603,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-002",
@@ -1628,7 +1628,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-003",
@@ -1652,7 +1652,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-004",
@@ -1705,7 +1705,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-006",
@@ -1781,7 +1781,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "PED-009",
@@ -1998,7 +1998,7 @@
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CLI-005",
@@ -2025,7 +2025,7 @@
         "CLI-001"
       ],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "CLI-006",
@@ -2321,7 +2321,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "ENV-002",
@@ -2371,7 +2371,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "ENV-004",
@@ -2620,7 +2620,7 @@
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
-      "automation_status": "pending_implementation"
+      "automation_status": "draft_requires_ui_verification"
     },
     {
       "id": "REP-001",

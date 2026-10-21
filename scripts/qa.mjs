@@ -18,7 +18,7 @@ function help(){
   npm run qa:validate
   npm run qa:coverage
   npm run qa:list -- [AUT|CAT|PRO|CATE|INV|PED|CLI|PAG|ENV|REP]
-  npm run test:public    # los 5 borradores públicos sin credenciales
+  npm run test:public    # 13 borradores anónimos, incluidos carrito de sesión, sin credenciales
   npm run test:case -- AUT-001 --try-drafts
   npm run test:module -- CAT --try-drafts --allow-pending
   npm run test:all -- --try-drafts --allow-pending
@@ -60,36 +60,11 @@ if(!process.env.QA_BASE_URL)fail('Configura QA_BASE_URL en .env (ver .env.exampl
 let parsed;
 try { parsed = new URL(process.env.QA_BASE_URL); } catch { fail('QA_BASE_URL debe ser URL válida.'); }
 if(!['http:','https:'].includes(parsed.protocol)) fail('QA_BASE_URL debe usar HTTP(S).');
-
-if (parsed.protocol === 'http:') {
-  if (process.env.QA_ALLOW_HTTP !== 'true') {
-    fail('HTTP no habilitado para este entorno QA.', 3);
-  }
-
-  const authenticated = allowed.filter(
-    c => !publicDraftIds.has(c.id)
-  );
-
-  const temporaryHttpAuth =
-    parsed.origin === 'http://13.184.33.122' &&
-    process.env.QA_ALLOW_HTTP_AUTH === 'true';
-
-  if (authenticated.length > 0 && !temporaryHttpAuth) {
-    fail(
-      'Autenticación HTTP bloqueada. Habilita QA_ALLOW_HTTP_AUTH únicamente para el entorno QA autorizado.',
-      3
-    );
-  }
-
-  if (temporaryHttpAuth && authenticated.length > 0) {
-    console.warn(
-      'ADVERTENCIA: las credenciales y cookies de sesión viajarán sin cifrar por HTTP.'
-    );
-  } else {
-    console.warn(
-      'ADVERTENCIA: conexión HTTP sin cifrado. No se enviarán credenciales.'
-    );
-  }
+if(parsed.protocol==='http:'){
+  if(process.env.QA_ALLOW_HTTP!=='true') fail('HTTP deshabilitado: configura una URL HTTPS o habilita QA_ALLOW_HTTP para pruebas públicas sin credenciales.');
+  const insecure=allowed.filter(c=>!publicDraftIds.has(c.id));
+  if(insecure.length) fail(`SEGURIDAD: en HTTP solo se permiten los casos públicos ${[...publicDraftIds].join(', ')}. Bloqueados: ${insecure.map(c=>c.id).join(', ')}. Activa HTTPS para casos autenticados.`,3);
+  console.warn('ADVERTENCIA: destino HTTP sin cifrado. No se enviarán credenciales.');
 }
 
 const env={...process.env, QA_RUN_DRAFTS:tryDrafts?'1':'0', QA_FILTER_IDS:allowed.map(t=>t.id).join(',')};

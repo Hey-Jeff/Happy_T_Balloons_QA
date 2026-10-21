@@ -15,10 +15,10 @@ const run = (...args) => spawnSync(process.execPath,
     }
   });
 
-test('Solo nueve casos públicos explícitamente seguros', () => {
+test('Trece casos anonimos y carrito de sesion explicitamente seguros', () => {
   assert.deepEqual([...publicDraftIds], [
     'CAT-001','CAT-002','CAT-004','CAT-005','CAT-006',
-    'CAT-008','CAT-011','CAT-012','CLI-006'
+    'CAT-008','CAT-011','CAT-012','CLI-003','CLI-006','PED-001','PED-002','PED-003'
   ]);
   for (const id of publicDraftIds) {
     assert.equal(cases.find(c => c.id === id)?.automation_status,
