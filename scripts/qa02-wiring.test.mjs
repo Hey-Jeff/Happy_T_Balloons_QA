@@ -7,7 +7,7 @@ const root = path.resolve(import.meta.dirname, '..');
 const spec = fs.readFileSync(path.join(root, 'tests/qa02.spec.js'), 'utf8');
 const flow = fs.readFileSync(path.join(root, 'tests/flows/index.js'), 'utf8');
 
-test('QA02: no perder las cuatro olas ni los overrides de catalogo', () => {
+test('QA02: conserva todas las olas, catalogo y nuevas extensiones HTTP', () => {
   for (const [name, file] of [
     ['flows', 'index.js'],
     ['sprintFlows', 'sprint-72h.js'],
@@ -15,10 +15,11 @@ test('QA02: no perder las cuatro olas ni los overrides de catalogo', () => {
     ['wave3Flows', 'wave3-72h.js'],
     ['wave4Flows', 'wave4-72h.js'],
     ['catalogFixFlows', 'catalog-fixes.js'],
+    ['safeHttpFlows', 'qa02-safe-extensions.js'],
   ]) {
     assert.ok(spec.includes(`import { ${name} } from './flows/${file}';`), `Falta importar ${name}`);
   }
-  assert.match(spec, /const allFlows\s*=\s*\{\s*\.\.\.flows,\s*\.\.\.sprintFlows,\s*\.\.\.wave2Flows,\s*\.\.\.wave3Flows,\s*\.\.\.wave4Flows,\s*\.\.\.catalogFixFlows\s*\}/);
+  assert.match(spec, /const allFlows\s*=\s*\{\s*\.\.\.flows,\s*\.\.\.sprintFlows,\s*\.\.\.wave2Flows,\s*\.\.\.wave3Flows,\s*\.\.\.wave4Flows,\s*\.\.\.catalogFixFlows,\s*\.\.\.safeHttpFlows\s*\}/);
 });
 
 test('QA02: AUT-001 comprueba dashboard real y no enlaces ocultos', () => {
