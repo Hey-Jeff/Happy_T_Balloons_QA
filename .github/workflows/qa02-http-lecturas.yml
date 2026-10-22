@@ -1,0 +1,92 @@
+name: QA02 HTTP - 18 lecturas autenticadas
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qa02-happy-times-staging
+  cancel-in-progress: false
+
+jobs:
+  qa02-http-lecturas:
+    name: QA02 HTTP / 18 lecturas
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      QA_BASE_URL: ${{ vars.QA_BASE_URL || 'http://13.184.33.122' }}
+      QA_ALLOW_HTTP: 'true'
+      QA_ALLOW_HTTP_AUTH: 'true'
+      QA_ALLOW_MUTATIONS: 'false'
+      QA_ISOLATED_QA: 'false'
+      CI: 'true'
+    steps:
+      - name: Descargar pruebas
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      - name: Validar cobertura, reglas y conexion QA
+        run: |
+          npm run qa:validate
+          npm run unit
+          node scripts/check-env.mjs
+      - name: Instalar Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Ejecutar 18 casos HTTP de solo lectura
+        env:
+          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
+          QA_CLIENT_EMAIL: ${{ secrets.QA_CLIENT_EMAIL }}
+          QA_CLIENT_PASSWORD: ${{ secrets.QA_CLIENT_PASSWORD }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          ids=(
+            AUT-001
+            PRO-012
+            PED-005
+            INV-006
+            PRO-004
+            PRO-005
+            CATE-004
+            INV-001
+            PED-007
+            PED-009
+            REP-001
+            REP-002
+            REP-003
+            REP-004
+            REP-005
+            REP-006
+            REP-007
+            REP-008
+          )
+          pass=0
+          fail=0
+          echo '## QA02 / lote HTTP de lecturas autenticadas' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '| Caso | Resultado |' >> "$GITHUB_STEP_SUMMARY"
+          echo '|---|---|' >> "$GITHUB_STEP_SUMMARY"
+          for id in "${ids[@]}"; do
+            echo "::group::Caso $id"
+            if npm run test:case -- "$id" --try-drafts; then
+              pass=$((pass+1))
+              echo "| $id | PASS exploratorio |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              fail=$((fail+1))
+              echo "| $id | FAIL / revisar logs |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo '::endgroup::'
+          done
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo "**Total: ${pass} PASS, ${fail} FAIL, ${#ids[@]} ejecutados.**" >> "$GITHUB_STEP_SUMMARY"
+          echo 'Resultados exploratorios; no actualizar estados formales automaticamente.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'No se suben capturas, trazas, reportes HTML ni archivos descargados.' >> "$GITHUB_STEP_SUMMARY"
+          echo "QA02 HTTP: ${pass} PASS, ${fail} FAIL de ${#ids[@]} casos."
+          test "$fail" -eq 0

@@ -1,13 +1,27 @@
-// Excepción temporal y acotada: SOLO CUENTAS DESECHABLES QA SOBRE UNA IP CONTROLADA.
-// HTTP NO cifra credenciales ni cookies; estas condiciones reducen alcance, NO eliminan riesgo.
+// Acceso autenticado HTTP limitado a flujos sin operaciones persistentes de negocio.
+// Cuentas exclusivas para QA: HTTP no cifra credenciales ni cookies.
+// Cada caso se ejecuta por separado; los mutadores permanecen bloqueados.
 export const temporaryHttpAuthCaseIds = Object.freeze([
-  'AUT-001', // login válido de administrador QA
-  'PRO-012', // cliente QA no puede administrar productos
-  'PED-005', // checkout con carrito vacío (sin crear pedido)
-  'INV-006', // lectura de stock normal (sin movimiento)
+  'AUT-001',
+  'PRO-012',
+  'PED-005',
+  'INV-006',
+  'PRO-004',
+  'PRO-005',
+  'CATE-004',
+  'INV-001',
+  'PED-007',
+  'PED-009',
+  'REP-001',
+  'REP-002',
+  'REP-003',
+  'REP-004',
+  'REP-005',
+  'REP-006',
+  'REP-007',
+  'REP-008',
 ]);
 
-/** Verdadero únicamente para un caso individual de lectura, en el host QA conocido. */
 export function temporaryHttpAuthAllowed({baseUrl, allowHttp, allowHttpAuth, mode, caseIds}) {
   let url;
   try { url = new URL(baseUrl); } catch { return false; }
