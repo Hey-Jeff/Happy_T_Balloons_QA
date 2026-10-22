@@ -27,6 +27,6 @@ test('QA02: AUT-001 comprueba dashboard real y no enlaces ocultos', () => {
   assert.ok(start >= 0 && end > start, 'Flujo AUT-001 ausente');
   const section = flow.slice(start, end);
   assert.match(section, /page\.goto\('\/Admin'\)/);
-  assert.match(section, /getByRole\('heading',\s*\{\s*name:\s*'Dashboard'/);
+  assert.match(section, /getByRole\('heading',\s*\{\s*name:\s*\/Dashboard\/i/);
   assert.doesNotMatch(section, /href\*=.*Producto/);
 });
