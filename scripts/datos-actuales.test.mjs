@@ -9,6 +9,7 @@ const flow = readFileSync(new URL('../tests/flows/index.js', import.meta.url), '
 const workflow = readFileSync(new URL('../.github/workflows/qa02-http-32.yml', import.meta.url), 'utf8');
 const workflow38 = readFileSync(new URL('../.github/workflows/qa02-http-38.yml', import.meta.url), 'utf8');
 const nuevos38 = ['PRO-002','CATE-003','ENV-012','ENV-001','ENV-003','ENV-006'];
+const nuevos5 = ['CAT-009','CATE-006','ENV-002','CLI-004','CLI-005'];
 
 function block(start, end) {
   const a = flow.indexOf(start), b = flow.indexOf(end, a+start.length);
@@ -48,11 +49,11 @@ test('Lote historico 32 se conserva y es subconjunto del lote 38', () => {
   const auth32=authIds(workflow);
   const public38=idsBetween(workflow38, 'public_ids=(', '\n          )');
   const auth38=authIds(workflow38);
-  const anteriores=temporaryHttpAuthCaseIds.filter(id=>!nuevos38.includes(id));
+  const anteriores=temporaryHttpAuthCaseIds.filter(id=>!nuevos38.includes(id) && !nuevos5.includes(id));
   assert.deepEqual(new Set(publicIds), new Set(publicDraftIds));
   assert.deepEqual(new Set(auth32), new Set(anteriores));
   assert.deepEqual(new Set(public38), new Set(publicDraftIds));
-  assert.deepEqual(new Set(auth38), new Set(temporaryHttpAuthCaseIds));
+  assert.deepEqual(new Set(auth38), new Set(temporaryHttpAuthCaseIds.filter(id=>!nuevos5.includes(id))));
   assert.equal(new Set(auth38).size,24);
   assert.equal(new Set([...public38, ...auth38]).size,38);
   assert.equal(publicIds.length,14);

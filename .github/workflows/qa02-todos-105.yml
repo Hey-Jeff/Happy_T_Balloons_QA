@@ -1,0 +1,51 @@
+name: QA02 TODOS - 105 casos en una ejecución
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qa02-happy-times-staging
+  cancel-in-progress: false
+
+jobs:
+  qa02-todos-105:
+    name: QA02 / 105 casos / resumen integral
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      QA_BASE_URL: http://13.184.33.122
+      QA_ALLOW_HTTP: 'true'
+      QA_ALLOW_HTTP_AUTH: 'false'
+      QA_ALLOW_MUTATIONS: 'false'
+      QA_ISOLATED_QA: 'false'
+      QA_RESETTABLE_DB: 'NO'
+      CI: 'true'
+    steps:
+      - name: Descargar repositorio QA
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar paquetes
+        run: npm install --no-audit --no-fund
+      - name: Validar matriz, controles y 105 casos
+        run: |
+          npm run qa:validate
+          npm run unit
+          node scripts/check-env.mjs
+          node scripts/qa02-all-105.mjs --plan
+      - name: Preparar Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Evaluar los 105 casos y publicar tabla completa
+        env:
+          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
+          QA_CLIENT_EMAIL: ${{ secrets.QA_CLIENT_EMAIL }}
+          QA_CLIENT_PASSWORD: ${{ secrets.QA_CLIENT_PASSWORD }}
+          QA_EMPTY_CLIENT_EMAIL: ${{ secrets.QA_EMPTY_CLIENT_EMAIL }}
+          QA_EMPTY_CLIENT_PASSWORD: ${{ secrets.QA_EMPTY_CLIENT_PASSWORD }}
+        run: node scripts/qa02-all-105.mjs

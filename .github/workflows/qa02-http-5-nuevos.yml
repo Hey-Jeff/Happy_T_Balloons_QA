@@ -1,0 +1,82 @@
+name: QA02 HTTP - 5 nuevos casos con precondiciones
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qa02-happy-times-staging
+  cancel-in-progress: false
+
+jobs:
+  qa02-5-nuevos:
+    name: QA02 HTTP / 5 casos pendientes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      QA_BASE_URL: ${{ vars.QA_BASE_URL || 'http://13.184.33.122' }}
+      QA_ALLOW_HTTP: 'true'
+      QA_ALLOW_HTTP_AUTH: 'true'
+      QA_ALLOW_MUTATIONS: 'false'
+      QA_ISOLATED_QA: 'false'
+      CI: 'true'
+    steps:
+      - name: Descargar pruebas
+        uses: actions/checkout@v4
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      - name: Validar codigo y politica HTTP
+        run: |
+          npm run qa:validate
+          npm run unit
+          node scripts/check-env.mjs
+          node scripts/qa02-backlog-43.mjs >> "$GITHUB_STEP_SUMMARY"
+      - name: Instalar Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Ejecutar cinco casos nuevos sin modificar datos
+        env:
+          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
+          QA_CLIENT_EMAIL: ${{ secrets.QA_CLIENT_EMAIL }}
+          QA_CLIENT_PASSWORD: ${{ secrets.QA_CLIENT_PASSWORD }}
+          QA_EMPTY_CLIENT_EMAIL: ${{ secrets.QA_EMPTY_CLIENT_EMAIL }}
+          QA_EMPTY_CLIENT_PASSWORD: ${{ secrets.QA_EMPTY_CLIENT_PASSWORD }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          ids=(CAT-009 CATE-006 ENV-002 CLI-004 CLI-005)
+          passed=0
+          blocked=0
+          failed=0
+          echo '### QA02 / cinco casos adicionales en HTTP' >> "$GITHUB_STEP_SUMMARY"
+          echo '| Caso | Resultado |' >> "$GITHUB_STEP_SUMMARY"
+          echo '|---|---|' >> "$GITHUB_STEP_SUMMARY"
+          for id in "${ids[@]}"; do
+            echo "::group::Caso $id"
+            logfile="$(mktemp)"
+            npm run test:case -- "$id" --try-drafts > "$logfile" 2>&1
+            status=$?
+            cat "$logfile"
+            if grep -Eq '(^|[[:space:]])1 skipped([[:space:]]|$|\()' "$logfile"; then
+              blocked=$((blocked+1))
+              echo "| $id | BLOCKED / falta precondicion |" >> "$GITHUB_STEP_SUMMARY"
+            elif [ "$status" -eq 0 ] && grep -Eq '(^|[[:space:]])1 passed[[:space:]]*\(' "$logfile"; then
+              passed=$((passed+1))
+              echo "| $id | PASS exploratorio |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              failed=$((failed+1))
+              echo "| $id | FAIL / revisar error |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            rm -f "$logfile"
+            echo '::endgroup::'
+          done
+          echo "**${passed} PASS, ${blocked} BLOCKED, ${failed} FAIL (5 seleccionados).**" >> "$GITHUB_STEP_SUMMARY"
+          echo 'BLOCKED no significa PASS ni N/A: es una precondicion necesaria ausente.' >> "$GITHUB_STEP_SUMMARY"
+          echo "QA02 nuevos: ${passed} PASS; ${blocked} BLOCKED; ${failed} FAIL."
+          test "$failed" -eq 0
