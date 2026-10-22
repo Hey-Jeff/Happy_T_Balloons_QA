@@ -6,9 +6,10 @@ import { catalogFixFlows } from './flows/catalog-fixes.js';
 import { wave2Flows } from './flows/wave2-72h.js';
 import { wave3Flows } from './flows/wave3-72h.js';
 import { wave4Flows } from './flows/wave4-72h.js';
+import { safeHttpFlows } from './flows/qa02-safe-extensions.js';
 
 // Las correcciones reemplazan exclusivamente cuatro borradores de catalogo.
-const allFlows = { ...flows, ...sprintFlows, ...wave2Flows, ...wave3Flows, ...wave4Flows, ...catalogFixFlows };
+const allFlows = { ...flows, ...sprintFlows, ...wave2Flows, ...wave3Flows, ...wave4Flows, ...catalogFixFlows, ...safeHttpFlows };
 
 const idFilter = new Set((process.env.QA_FILTER_IDS || '').split(',').filter(Boolean));
 for (const tc of cases) {

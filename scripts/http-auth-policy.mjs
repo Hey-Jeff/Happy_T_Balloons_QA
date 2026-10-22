@@ -20,6 +20,12 @@ export const temporaryHttpAuthCaseIds = Object.freeze([
   'REP-006',
   'REP-007',
   'REP-008',
+  'PRO-002',
+  'CATE-003',
+  'ENV-012',
+  'ENV-001',
+  'ENV-003',
+  'ENV-006',
 ]);
 
 export function temporaryHttpAuthAllowed({baseUrl, allowHttp, allowHttpAuth, mode, caseIds}) {

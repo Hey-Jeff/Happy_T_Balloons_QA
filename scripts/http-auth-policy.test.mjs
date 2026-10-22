@@ -23,9 +23,15 @@ const approved = [
   'REP-006',
   'REP-007',
   'REP-008',
+  'PRO-002',
+  'CATE-003',
+  'ENV-012',
+  'ENV-001',
+  'ENV-003',
+  'ENV-006',
 ];
 
-test('solo los dieciocho escenarios HTTP de lectura/control estan habilitados', () => {
+test('solo los veinticuatro escenarios HTTP de lectura/control estan habilitados', () => {
   assert.deepEqual(temporaryHttpAuthCaseIds, approved);
   assert.equal(new Set(approved).size, approved.length);
   for (const id of approved) assert.equal(temporaryHttpAuthAllowed({...config,caseIds:[id]}),true,id);

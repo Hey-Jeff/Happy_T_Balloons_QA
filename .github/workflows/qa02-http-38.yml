@@ -1,0 +1,91 @@
+name: QA02 HTTP - 38 escenarios y validaciones
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qa02-happy-times-staging
+  cancel-in-progress: false
+
+jobs:
+  qa02-http-38:
+    name: QA02 HTTP / 38 escenarios
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      QA_BASE_URL: ${{ vars.QA_BASE_URL || 'http://13.184.33.122' }}
+      QA_ALLOW_HTTP: 'true'
+      QA_ALLOW_MUTATIONS: 'false'
+      QA_ISOLATED_QA: 'false'
+      QA_ALLOW_HTTP_AUTH: 'false'
+      CI: 'true'
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      - name: Validar integridad y conexion
+        run: |
+          npm run qa:validate
+          npm run unit
+          node scripts/check-env.mjs
+      - name: Instalar Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Inventario de casos pendientes de verificar
+        run: node scripts/qa02-backlog.mjs >> "$GITHUB_STEP_SUMMARY"
+      - name: Ejecutar 38 escenarios independientes
+        env:
+          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
+          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
+          QA_CLIENT_EMAIL: ${{ secrets.QA_CLIENT_EMAIL }}
+          QA_CLIENT_PASSWORD: ${{ secrets.QA_CLIENT_PASSWORD }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          public_ids=(
+            CAT-001 CAT-002 CAT-004 CAT-005 CAT-006 CAT-008 CAT-011 CAT-012
+            CLI-003 CLI-006 PRO-006 PED-001 PED-002 PED-003
+          )
+          auth_ids=(
+            AUT-001 PRO-012 PED-005 INV-006 PRO-004 PRO-005 CATE-004 INV-001
+            PED-007 PED-009 REP-001 REP-002 REP-003 REP-004 REP-005 REP-006 REP-007 REP-008
+            PRO-002 CATE-003 ENV-012 ENV-001 ENV-003 ENV-006
+          )
+          pass=0
+          fail=0
+          echo '## QA02 / 38 escenarios HTTP (datos vigentes)' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '| Caso | Resultado |' >> "$GITHUB_STEP_SUMMARY"
+          echo '|---|---|' >> "$GITHUB_STEP_SUMMARY"
+          for id in "${public_ids[@]}"; do
+            echo "::group::PUBLICO $id"
+            if QA_ALLOW_HTTP_AUTH=false npm run test:case -- "$id" --try-drafts; then
+              pass=$((pass+1)); echo "| $id | PASS exploratorio |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              fail=$((fail+1)); echo "| $id | FAIL / defecto o test |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo '::endgroup::'
+          done
+          for id in "${auth_ids[@]}"; do
+            echo "::group::AUTH $id"
+            if QA_ALLOW_HTTP_AUTH=true npm run test:case -- "$id" --try-drafts; then
+              pass=$((pass+1)); echo "| $id | PASS exploratorio |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              fail=$((fail+1)); echo "| $id | FAIL / defecto o test |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo '::endgroup::'
+          done
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo "**$pass PASS, $fail FAIL, $((pass+fail)) de 38 casos ejecutados.**" >> "$GITHUB_STEP_SUMMARY"
+          echo 'Un PASS exploratorio no se convierte automaticamente en cobertura formal verificada.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Los 8 N/A siguen excluidos; los defectos HTTP 500 siguen siendo FAIL.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'El lote incluye validaciones negativas de formularios: no usar datos reales; no realiza compras ni ajustes de stock.' >> "$GITHUB_STEP_SUMMARY"
+          echo "QA02 HTTP38: $pass PASS, $fail FAIL."
+          test "$fail" -eq 0
