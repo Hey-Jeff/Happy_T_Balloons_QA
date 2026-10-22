@@ -164,7 +164,7 @@ jobs:
         run: node scripts/github-summary.mjs
 
       - name: Guardar reportes y evidencias
-        if: ${{ always() && steps.checkout.outcome == 'success' }}
+        if: ${{ always() && steps.checkout.outcome == 'success' && !inputs.http_auth }}
         uses: actions/upload-artifact@v4
         with:
           name: qa02-evidencias-${{ github.run_number }}

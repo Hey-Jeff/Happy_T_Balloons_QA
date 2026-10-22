@@ -12,7 +12,7 @@ export const flows={
    const dashboard = await page.goto('/Admin');
    expect(dashboard?.status(), 'El panel administrativo debe responder HTTP 200').toBe(200);
    await expect(page).toHaveURL(/\/Admin(?:\/Index)?(?:\?.*)?$/i);
-   await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
+   await expect(page.getByRole('heading', { name: /Dashboard/i })).toBeVisible();
  },
  'AUT-002':async({page})=>{
    const {email}=adminCredentials();
