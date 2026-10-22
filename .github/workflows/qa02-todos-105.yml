@@ -2,6 +2,20 @@ name: QA02 TODOS - 105 casos en una ejecución
 
 on:
   workflow_dispatch:
+    inputs:
+      run_mode:
+        description: 'shared-http: sin escrituras; isolated-qa: todos los casos en QA HTTPS aislado'
+        type: choice
+        required: true
+        default: shared-http
+        options:
+          - shared-http
+          - isolated-qa
+      confirm_isolated:
+        description: 'Solo modo aislado: escribir ISOLATED_QA_RESETTABLE_CONFIRMED'
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -12,17 +26,73 @@ concurrency:
 
 jobs:
   qa02-todos-105:
-    name: QA02 / 105 casos / resumen integral
+    name: QA02 / 105 casos / informe integral
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 100
     env:
-      QA_BASE_URL: http://13.184.33.122
-      QA_ALLOW_HTTP: 'true'
-      QA_ALLOW_HTTP_AUTH: 'false'
-      QA_ALLOW_MUTATIONS: 'false'
-      QA_ISOLATED_QA: 'false'
-      QA_RESETTABLE_DB: 'NO'
       CI: 'true'
+      QA_BASE_URL: ${{ inputs.run_mode == 'isolated-qa' && secrets.QA_ISOLATED_BASE_URL || 'http://13.184.33.122' }}
+      QA_ISOLATED_BASE_URL: ${{ secrets.QA_ISOLATED_BASE_URL }}
+      QA_ALLOW_HTTP: ${{ inputs.run_mode == 'isolated-qa' && 'false' || 'true' }}
+      QA_ALLOW_HTTP_AUTH: 'false'
+      QA_ALLOW_MUTATIONS: ${{ inputs.run_mode == 'isolated-qa' && 'true' || 'false' }}
+      QA_ISOLATED_QA: ${{ inputs.run_mode == 'isolated-qa' && 'true' || 'false' }}
+      QA_RESETTABLE_DB: ${{ inputs.run_mode == 'isolated-qa' && secrets.QA_RESETTABLE_DB_CONFIRMATION || 'NO' }}
+      QA_NO_REAL_TRANSACTIONS: ${{ secrets.QA_NO_REAL_TRANSACTIONS }}
+      QA_SINPE_SANDBOX: ${{ secrets.QA_SINPE_SANDBOX }}
+      QA_ISOLATED_CONFIRMATION: ${{ inputs.confirm_isolated }}
+      QA_ADMIN_EMAIL: ${{ inputs.run_mode == 'isolated-qa' && secrets.QA_ISO_ADMIN_EMAIL || (inputs.run_mode != 'isolated-qa' && secrets.QA_ADMIN_EMAIL) }}
+      QA_ADMIN_PASSWORD: ${{ inputs.run_mode == 'isolated-qa' && secrets.QA_ISO_ADMIN_PASSWORD || (inputs.run_mode != 'isolated-qa' && secrets.QA_ADMIN_PASSWORD) }}
+      QA_CLIENT_EMAIL: ${{ inputs.run_mode == 'isolated-qa' && secrets.QA_ISO_CLIENT_EMAIL || (inputs.run_mode != 'isolated-qa' && secrets.QA_CLIENT_EMAIL) }}
+      QA_CLIENT_PASSWORD: ${{ inputs.run_mode == 'isolated-qa' && secrets.QA_ISO_CLIENT_PASSWORD || (inputs.run_mode != 'isolated-qa' && secrets.QA_CLIENT_PASSWORD) }}
+      QA_INVALID_PASSWORD: ${{ secrets.QA_INVALID_PASSWORD }}
+      QA_EXPIRED_RESET_TOKEN: ${{ secrets.QA_EXPIRED_RESET_TOKEN }}
+      QA_LOCKOUT_EMAIL: ${{ secrets.QA_LOCKOUT_EMAIL }}
+      QA_LOCKOUT_ATTEMPTS: ${{ secrets.QA_LOCKOUT_ATTEMPTS }}
+      QA_RECOVERY_EMAIL: ${{ secrets.QA_RECOVERY_EMAIL }}
+      QA_UNREGISTERED_EMAIL: ${{ secrets.QA_UNREGISTERED_EMAIL }}
+      QA_VALID_RESET_TOKEN: ${{ secrets.QA_VALID_RESET_TOKEN }}
+      QA_RESET_NEW_PASSWORD: ${{ secrets.QA_RESET_NEW_PASSWORD }}
+      QA_TEST_ROLE_NAME: ${{ secrets.QA_TEST_ROLE_NAME }}
+      QA_ROLE_USER_EMAIL: ${{ secrets.QA_ROLE_USER_EMAIL }}
+      QA_DELETE_ROLE_NAME: ${{ secrets.QA_DELETE_ROLE_NAME }}
+      QA_2FA_EMAIL: ${{ secrets.QA_2FA_EMAIL }}
+      QA_2FA_PASSWORD: ${{ secrets.QA_2FA_PASSWORD }}
+      QA_2FA_VALID_CODE: ${{ secrets.QA_2FA_VALID_CODE }}
+      QA_2FA_INVALID_CODE: ${{ secrets.QA_2FA_INVALID_CODE }}
+      QA_2FA_EXPIRED_CODE: ${{ secrets.QA_2FA_EXPIRED_CODE }}
+      QA_EMPTY_CLIENT_EMAIL: ${{ secrets.QA_EMPTY_CLIENT_EMAIL }}
+      QA_EMPTY_CLIENT_PASSWORD: ${{ secrets.QA_EMPTY_CLIENT_PASSWORD }}
+      QA_FOREIGN_ORDER_ID: ${{ secrets.QA_FOREIGN_ORDER_ID }}
+      QA_INVENTORY_PRODUCT_NAME: ${{ secrets.QA_INVENTORY_PRODUCT_NAME }}
+      QA_LOW_STOCK_PRODUCT_ID: ${{ secrets.QA_LOW_STOCK_PRODUCT_ID }}
+      QA_LOW_STOCK_TARGET: ${{ secrets.QA_LOW_STOCK_TARGET }}
+      QA_ORDER_PRODUCT_ID: ${{ secrets.QA_ORDER_PRODUCT_ID }}
+      QA_ORDER_CHANGE_ID: ${{ secrets.QA_ORDER_CHANGE_ID }}
+      QA_ORDER_INVALID_CHANGE_ID: ${{ secrets.QA_ORDER_INVALID_CHANGE_ID }}
+      QA_CANCEL_ORDER_ID: ${{ secrets.QA_CANCEL_ORDER_ID }}
+      QA_CANCEL_PRODUCT_ID: ${{ secrets.QA_CANCEL_PRODUCT_ID }}
+      QA_CANCEL_STOCK_RESTOCK_QTY: ${{ secrets.QA_CANCEL_STOCK_RESTOCK_QTY }}
+      QA_SINPE_TEST_RECEIPT: ${{ secrets.QA_SINPE_TEST_RECEIPT }}
+      QA_SINPE_TEST_AMOUNT: ${{ secrets.QA_SINPE_TEST_AMOUNT }}
+      QA_SINPE_SANDBOX_TOKEN: ${{ secrets.QA_SINPE_SANDBOX_TOKEN }}
+      QA_SINPE_TEST_PHONE: ${{ secrets.QA_SINPE_TEST_PHONE }}
+      QA_SINPE_PAID_RECEIPT: ${{ secrets.QA_SINPE_PAID_RECEIPT }}
+      QA_PAID_ORDER_ID: ${{ secrets.QA_PAID_ORDER_ID }}
+      QA_CATEGORY_WITH_PRODUCTS: ${{ secrets.QA_CATEGORY_WITH_PRODUCTS }}
+      QA_DELIVERY_ORDER_ID: ${{ secrets.QA_DELIVERY_ORDER_ID }}
+      QA_FULL_DELIVERY_DATE: ${{ secrets.QA_FULL_DELIVERY_DATE }}
+      QA_RESCHEDULE_DATE: ${{ secrets.QA_RESCHEDULE_DATE }}
+      QA_NEW_CLIENT_EMAIL: ${{ secrets.QA_NEW_CLIENT_EMAIL }}
+      QA_NEW_CLIENT_PASSWORD: ${{ secrets.QA_NEW_CLIENT_PASSWORD }}
+      QA_DUPLICATE_CLIENT_EMAIL: ${{ secrets.QA_DUPLICATE_CLIENT_EMAIL }}
+      QA_DUPLICATE_CLIENT_PASSWORD: ${{ secrets.QA_DUPLICATE_CLIENT_PASSWORD }}
+      QA_DISABLED_ZONE_NAME: ${{ secrets.QA_DISABLED_ZONE_NAME }}
+      QA_INACTIVE_CATEGORY_NAME: ${{ secrets.QA_INACTIVE_CATEGORY_NAME }}
+      QA_INACTIVE_PRODUCT_NAME: ${{ secrets.QA_INACTIVE_PRODUCT_NAME }}
+      QA_EXPECT_EMPTY_CATALOG: ${{ vars.QA_EXPECT_EMPTY_CATALOG }}
+      QA_EXPECT_EMPTY_CATEGORIES: ${{ vars.QA_EXPECT_EMPTY_CATEGORIES }}
+      QA_EXPECT_EMPTY_ADMIN_ORDERS: ${{ vars.QA_EXPECT_EMPTY_ADMIN_ORDERS }}
     steps:
       - name: Descargar repositorio QA
         uses: actions/checkout@v4
@@ -32,20 +102,24 @@ jobs:
           node-version: '22'
       - name: Instalar paquetes
         run: npm install --no-audit --no-fund
-      - name: Validar matriz, controles y 105 casos
+      - name: Validar matriz, políticas y confirmación aislada
+        shell: bash
         run: |
           npm run qa:validate
           npm run unit
+          if [[ '${{ inputs.run_mode }}' == 'isolated-qa' ]]; then
+            node scripts/qa02-isolated-105.mjs --plan
+          else
+            node scripts/qa02-all-105.mjs --plan
+          fi
           node scripts/check-env.mjs
-          node scripts/qa02-all-105.mjs --plan
       - name: Preparar Chromium
         run: npx playwright install --with-deps chromium
-      - name: Evaluar los 105 casos y publicar tabla completa
-        env:
-          QA_ADMIN_EMAIL: ${{ secrets.QA_ADMIN_EMAIL }}
-          QA_ADMIN_PASSWORD: ${{ secrets.QA_ADMIN_PASSWORD }}
-          QA_CLIENT_EMAIL: ${{ secrets.QA_CLIENT_EMAIL }}
-          QA_CLIENT_PASSWORD: ${{ secrets.QA_CLIENT_PASSWORD }}
-          QA_EMPTY_CLIENT_EMAIL: ${{ secrets.QA_EMPTY_CLIENT_EMAIL }}
-          QA_EMPTY_CLIENT_PASSWORD: ${{ secrets.QA_EMPTY_CLIENT_PASSWORD }}
-        run: node scripts/qa02-all-105.mjs
+      - name: Evaluar y publicar tabla de los 105 casos
+        shell: bash
+        run: |
+          if [[ '${{ inputs.run_mode }}' == 'isolated-qa' ]]; then
+            node scripts/qa02-isolated-105.mjs
+          else
+            node scripts/qa02-all-105.mjs
+          fi
