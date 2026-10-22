@@ -23,10 +23,10 @@ test('Bloquea cualquier escritura sin confirmación y URL aislada HTTPS exacta',
     ['QA_BASE_URL','https://example.com'],['QA_BASE_URL','https://qa.example.test/pedido']
   ]) assert.notDeepEqual(verifyIsolatedEnvironment({...safeEnv,[k]:v}),[],`${k}=${v}`);
 });
-test('105 casos clasificados sin inventar PASS ni ejecutar acciones de escritura por defecto',()=>{
+test('99 casos clasificados sin inventar PASS ni ejecutar acciones de escritura por defecto',()=>{
   const entries=makeIsolatedPlan(cases,{});
-  assert.equal(entries.length,105);
-  assert.equal(new Set(entries.map(c=>c.id)).size,105);
+  assert.equal(entries.length,99);
+  assert.equal(new Set(entries.map(c=>c.id)).size,99);
   const count=countIsolated(entries);
   assert.equal(count['N/A'],8);
   assert.equal(count.PENDING,1);

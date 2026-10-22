@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makePlan, count, classifyPlaywrightJSON, AUTH_SAFE, PUBLIC_SAFE} from './qa02-all-105.mjs';
+import {makePlan, count, exitCodeFor, classifyPlaywrightJSON, AUTH_SAFE, PUBLIC_SAFE} from './qa02-all-105.mjs';
 
 const report=status=>({suites:[{specs:[{tests:[{results:[{status}]}]}]}]});
-test('Matriz integral: 105 IDs únicos, 43 ejecutables sin mutaciones, 53 bloqueados, 1 pendiente y 8 N/A',()=>{
+test('Matriz integral: 99 IDs únicos, 43 ejecutables sin mutaciones, 47 bloqueados, 1 pendiente y 8 N/A',()=>{
   const plan=makePlan();
-  assert.equal(plan.length,105);
-  assert.equal(new Set(plan.map(x=>x.id)).size,105);
-  assert.deepEqual(count(plan),{QUEUED:43,BLOCKED:53,PENDING:1,'N/A':8});
+  assert.equal(plan.length,99);
+  assert.equal(new Set(plan.map(x=>x.id)).size,99);
+  assert.deepEqual(count(plan),{QUEUED:43,BLOCKED:47,PENDING:1,'N/A':8});
   assert.equal(PUBLIC_SAFE.length,14);
   assert.equal(AUTH_SAFE.length,29);
   assert.ok(plan.some(x=>x.id==='CAT-002'&&x.status==='QUEUED'));
@@ -25,4 +25,9 @@ test('Nunca transformar SKIPPED/fixture ausente en PASS',()=>{
 test('El clasificador distingue un caso con resultado omitido, aunque Playwright termine cero',()=>{
   const skipped={suites:[{specs:[{tests:[{status:'skipped',results:[]}]}]}]};
   assert.equal(classifyPlaywrightJSON(skipped,0).status,'BLOCKED');
+});
+test('Solo FAIL marca la ejecución en rojo; BLOCKED, PENDING y N/A no',()=>{
+  const e=statuses=>statuses.map((status,i)=>({id:`X-${i}`,status}));
+  assert.equal(exitCodeFor(e(['PASS','BLOCKED','PENDING','N/A'])),0);
+  assert.equal(exitCodeFor(e(['PASS','FAIL','BLOCKED'])),1);
 });

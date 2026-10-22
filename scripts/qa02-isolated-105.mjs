@@ -47,16 +47,10 @@ export function verifyIsolatedEnvironment(env) {
 export const REQUIRED_FIXTURES = Object.freeze({
   'AUT-002':['QA_INVALID_PASSWORD'],
   'AUT-003':['QA_LOCKOUT_EMAIL','QA_LOCKOUT_ATTEMPTS','QA_INVALID_PASSWORD'],
-  'AUT-004':['QA_RECOVERY_EMAIL'],
   'AUT-005':['QA_UNREGISTERED_EMAIL'],
-  'AUT-006':['QA_VALID_RESET_TOKEN','QA_RESET_NEW_PASSWORD'],
-  'AUT-007':['QA_EXPIRED_RESET_TOKEN'],
   'AUT-008':['QA_TEST_ROLE_NAME'],
   'AUT-009':['QA_ROLE_USER_EMAIL','QA_TEST_ROLE_NAME'],
   'AUT-010':['QA_DELETE_ROLE_NAME'],
-  'AUT-011':['QA_2FA_EMAIL','QA_2FA_PASSWORD','QA_2FA_VALID_CODE'],
-  'AUT-012':['QA_2FA_EMAIL','QA_2FA_PASSWORD','QA_2FA_INVALID_CODE'],
-  'AUT-013':['QA_2FA_EMAIL','QA_2FA_PASSWORD','QA_2FA_EXPIRED_CODE'],
   'CAT-003':['QA_EXPECT_EMPTY_CATALOG'],
   'CATE-005':['QA_EXPECT_EMPTY_CATEGORIES'],
   'CLI-005':['QA_EMPTY_CLIENT_EMAIL','QA_EMPTY_CLIENT_PASSWORD'],
@@ -110,7 +104,7 @@ function summary(plan){
     'Ejecución autorizada por confirmación expresa de BD aislada y restaurable. NO implica que la restauración se haya realizado.','',
     '| Caso | Módulo | Estado | Motivo |','|---|---|---|---|'];
   for(const e of plan)out.push(`| ${e.id} | ${e.module} | ${e.status} | ${textCell(e.reason)} |`);
-  out.push('',`**Total: ${plan.length}/105**`);
+  out.push('',`**Total: ${plan.length}/99**`);
   return out.join('\n')+'\n';
 }
 export async function main(args=process.argv.slice(2),env=process.env) {
@@ -118,7 +112,7 @@ export async function main(args=process.argv.slice(2),env=process.env) {
   if(errs.length)throw new Error('SEGURIDAD: '+errs.join(' '));
   const plan=makeIsolatedPlan(cases,env);
   const counts=countIsolated(plan);
-  if(plan.length!==105 || (counts.PENDING||0)!==1 || (counts['N/A']||0)!==8) throw new Error('Matriz no coincide con los 105 casos base');
+  if(plan.length!==99 || (counts.PENDING||0)!==1 || (counts['N/A']||0)!==8) throw new Error('Matriz no coincide con los 99 casos base');
   if(args.includes('--plan')) {
     console.log('QA02 aislado: '+JSON.stringify(counts));
     console.log('Solo correrá lo que tenga fixtures. Nunca rellenar secretos ficticios ni probar contra la BD compartida.');
@@ -143,7 +137,7 @@ export async function main(args=process.argv.slice(2),env=process.env) {
     // Nunca imprimir stdout, stderr ni artefactos del navegador de sesiones autenticadas.
   }
   const finalCount=countIsolated(plan);
-  console.log('QA02 AISLADO 105: '+JSON.stringify(finalCount));
+  console.log('QA02 AISLADO 99: '+JSON.stringify(finalCount));
   if(env.GITHUB_STEP_SUMMARY)fs.appendFileSync(env.GITHUB_STEP_SUMMARY,summary(plan),'utf8');
   else console.log(summary(plan));
   return (finalCount.FAIL||0)>0 || (finalCount.BLOCKED||0)>0 || (finalCount.PENDING||0)>0 ? 1 : 0;

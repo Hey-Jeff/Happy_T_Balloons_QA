@@ -5,9 +5,9 @@ import {cases, implemented, statuses, validate} from './qa-core.mjs';
 import {publicDraftIds} from './public-safe.mjs';
 const src=fs.readFileSync(new URL('../tests/flows/wave4-72h.js', import.meta.url),'utf8');
 const ids=[...src.matchAll(/'([A-Z]{3,4}-\d{3})':async/g)].map(m=>m[1]);
-test('Ola 4: 32 nuevos flujos reales registrados en matriz y manifiesto',()=>{
- assert.equal(ids.length,32);
- assert.equal(new Set(ids).size,32);
+test('Ola 4: 27 nuevos flujos reales registrados en matriz y manifiesto',()=>{
+ assert.equal(ids.length,27);
+ assert.equal(new Set(ids).size,27);
  for(const id of ids){
    assert.ok(implemented.has(id),`No registrado: ${id}`);
    assert.equal(cases.find(x=>x.id===id)?.automation_status,statuses.draft);

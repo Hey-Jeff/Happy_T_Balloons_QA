@@ -236,13 +236,4 @@ export const wave2Flows = {
     const shown=Number((await page.locator('#lblCostoEnvio').innerText()).replace(/[^\d]/g,''));
     expect(shown,'El costo visual debe corresponder a la segunda zona').toBe(Math.round(b));
   },
-  // AUT-007: token QA realmente expirado, facilitado por desarrollo (no sustituir por uno inventado).
-  'AUT-007': async ({page}) => {
-    const token=fixture('QA_EXPIRED_RESET_TOKEN');
-    const url=`/Cuenta/RestablecerContrasena?token=${encodeURIComponent(token)}`;
-    const res=await page.goto(url);
-    expect(res?.status()).toBeLessThan(400);
-    await expect(page).toHaveURL(/\/Cuenta\/OlvideContrasena/i);
-    await expect(page.getByText(/no es v[aá]lido o ha expirado|expirad/i)).toBeVisible();
-  },
 };

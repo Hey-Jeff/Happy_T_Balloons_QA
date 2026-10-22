@@ -97,13 +97,6 @@ async function deliveryForm(page,info){
   await expect(page.locator('input[name="FechaEntrega"]')).toBeVisible();
   await expect(page.locator('input[name="PedidoId"]')).toHaveValue(QA_DELIVERY_ORDER_ID);
 }
-async function twoFactorSession(page,info){
-  isolated(info);
-  const {QA_2FA_EMAIL,QA_2FA_PASSWORD}=needed(info,'QA_2FA_EMAIL','QA_2FA_PASSWORD');
-  await login(page,QA_2FA_EMAIL,QA_2FA_PASSWORD);
-  await expect(page).toHaveURL(/\/Autenticacion2FA\/Verificar/i);
-  await expect(page.locator('input[name="Codigo"]')).toBeVisible();
-}
 async function webhook(page,info,receipt,amount){
   isolated(info,{payment:true});
   const {QA_SINPE_SANDBOX_TOKEN,QA_SINPE_TEST_PHONE}=needed(info,'QA_SINPE_SANDBOX_TOKEN','QA_SINPE_TEST_PHONE');
@@ -145,18 +138,6 @@ export const wave4Flows={
     await expect(page).toHaveURL(/\/Cuenta\/Login/i);
     await expect(page.locator('.validation-summary-errors,.alert-danger,.field-validation-error')).toContainText(/bloquead|intent|espera|demasiad/i);
   },
-  'AUT-004':async({page,testInfo})=>{
-    isolated(testInfo);
-    const {QA_RECOVERY_EMAIL}=needed(testInfo,'QA_RECOVERY_EMAIL');
-    await page.goto('/Cuenta/OlvideContrasena');
-    await page.locator('input[name="Email"]').fill(QA_RECOVERY_EMAIL);
-    await page.locator('form button[type="submit"]').click();
-    await expect(page).toHaveURL(/\/Cuenta\/ConfirmacionEnvio/i);
-    await expect(page.getByText(/revisa tu correo/i)).toBeVisible();
-    const devLink=page.locator('a[href*="RestablecerContrasena"]');
-    if(await devLink.count()===0)testInfo.skip(true,'PENDIENTE DE EVIDENCIA: confirmar enlace recibido en buzón QA; no se infiere envío desde una pantalla de confirmación.');
-    await expect(devLink).toHaveAttribute('href',/token=/i);
-  },
   'AUT-005':async({page,testInfo})=>{
     isolated(testInfo);
     const {QA_UNREGISTERED_EMAIL}=needed(testInfo,'QA_UNREGISTERED_EMAIL');
@@ -167,17 +148,6 @@ export const wave4Flows={
     await expect(page.getByText(/revisa tu correo/i)).toBeVisible();
     await expect(page.locator('a[href*="RestablecerContrasena"]')).toHaveCount(0);
     // La confirmación genérica evita enumerar cuentas. Verificar ausencia de correo en buzón QA es tarea adicional.
-  },
-  'AUT-006':async({page,testInfo})=>{
-    isolated(testInfo);
-    const {QA_VALID_RESET_TOKEN,QA_RESET_NEW_PASSWORD}=needed(testInfo,'QA_VALID_RESET_TOKEN','QA_RESET_NEW_PASSWORD');
-    await page.goto('/Cuenta/RestablecerContrasena?token='+encodeURIComponent(QA_VALID_RESET_TOKEN));
-    await expect(page.getByText(/nueva contrase[nñ]a/i).first()).toBeVisible();
-    await page.locator('input[name="NuevaContrasena"]').fill(QA_RESET_NEW_PASSWORD);
-    await page.locator('input[name="ConfirmarContrasena"]').fill(QA_RESET_NEW_PASSWORD);
-    await page.locator('form button[type="submit"]').click();
-    await expect(page).toHaveURL(/\/Cuenta\/ConfirmacionReset/i);
-    await expect(page.getByText(/contrase[nñ]a actualizada/i).first()).toBeVisible();
   },
   'AUT-008':async({page,testInfo})=>{
     isolated(testInfo);const {QA_TEST_ROLE_NAME}=needed(testInfo,'QA_TEST_ROLE_NAME');
@@ -207,29 +177,6 @@ export const wave4Flows={
     await expect(page.locator('#modalEliminar')).toBeVisible();
     await page.locator('#formEliminar button[type="submit"]').click();
     await expect(page.locator('table tbody tr').filter({hasText:QA_DELETE_ROLE_NAME})).toHaveCount(0);
-  },
-  'AUT-011':async({page,testInfo})=>{
-    await twoFactorSession(page,testInfo);const {QA_2FA_VALID_CODE}=needed(testInfo,'QA_2FA_VALID_CODE');
-    expect(QA_2FA_VALID_CODE).toMatch(/^\d{6}$/);
-    await page.locator('input[name="Codigo"]').fill(QA_2FA_VALID_CODE);
-    await page.locator('form[action*="Verificar"] button[type="submit"]').first().click();
-    await expect(page).not.toHaveURL(/\/Autenticacion2FA\/Verificar|\/Cuenta\/Login/i);
-  },
-  'AUT-012':async({page,testInfo})=>{
-    await twoFactorSession(page,testInfo);const {QA_2FA_INVALID_CODE}=needed(testInfo,'QA_2FA_INVALID_CODE');
-    expect(QA_2FA_INVALID_CODE).toMatch(/^\d{6}$/);
-    await page.locator('input[name="Codigo"]').fill(QA_2FA_INVALID_CODE);
-    await page.locator('form[action*="Verificar"] button[type="submit"]').first().click();
-    await expect(page).toHaveURL(/\/Autenticacion2FA\/Verificar/i);
-    await expect(page.locator('.validation-summary-errors,.field-validation-error,.alert-danger').first()).toContainText(/incorrecto/i);
-  },
-  'AUT-013':async({page,testInfo})=>{
-    await twoFactorSession(page,testInfo);const {QA_2FA_EXPIRED_CODE}=needed(testInfo,'QA_2FA_EXPIRED_CODE');
-    expect(QA_2FA_EXPIRED_CODE).toMatch(/^\d{6}$/);
-    await page.locator('input[name="Codigo"]').fill(QA_2FA_EXPIRED_CODE);
-    await page.locator('form[action*="Verificar"] button[type="submit"]').first().click();
-    await expect(page).toHaveURL(/\/Autenticacion2FA\/Verificar/i);
-    await expect(page.getByText(/ha expirado|expirad/i).first()).toBeVisible();
   },
   'PRO-006':async({page})=>{
     // Un producto inexistente debe responder 404 (no 200 ni error de servidor 500).

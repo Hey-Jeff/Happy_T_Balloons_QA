@@ -17,10 +17,11 @@ test('QA02: conserva todas las olas, catalogo y nuevas extensiones HTTP', () => 
     ['catalogFixFlows', 'catalog-fixes.js'],
     ['safeHttpFlows', 'qa02-safe-extensions.js'],
     ['qa02ReadOnlyWave5', 'qa02-readonly-wave5.js'],
+    ['qa02DatosUi', 'qa02-datos-ui.js'],
   ]) {
     assert.ok(spec.includes(`import { ${name} } from './flows/${file}';`), `Falta importar ${name}`);
   }
-  assert.match(spec, /const allFlows\s*=\s*\{\s*\.\.\.flows,\s*\.\.\.sprintFlows,\s*\.\.\.wave2Flows,\s*\.\.\.wave3Flows,\s*\.\.\.wave4Flows,\s*\.\.\.catalogFixFlows,\s*\.\.\.safeHttpFlows,\s*\.\.\.qa02ReadOnlyWave5\s*\}/);
+  assert.match(spec, /const allFlows\s*=\s*\{\s*\.\.\.flows,\s*\.\.\.sprintFlows,\s*\.\.\.wave2Flows,\s*\.\.\.wave3Flows,\s*\.\.\.wave4Flows,\s*\.\.\.catalogFixFlows,\s*\.\.\.safeHttpFlows,\s*\.\.\.qa02ReadOnlyWave5,\s*\.\.\.qa02DatosUi\s*\}/);
 });
 
 test('QA02: AUT-001 comprueba dashboard real y no enlaces ocultos', () => {

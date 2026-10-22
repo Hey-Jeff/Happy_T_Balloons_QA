@@ -1,8 +1,8 @@
 {
   "project": "Happy Times Balloons",
-  "source_file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+  "source_file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
   "baseline_date": "2026-10-05",
-  "environment_note": "Histórico del Excel: http://localhost:56233/ (puerto local original; no necesariamente está activo ahora), commit 03d2331",
+  "environment_note": "Ejecución original: 05/10/2026 en http://localhost:56233/ (commit 03d2331). Datos de prueba actualizados el 22/10/2026 con la información real de http://13.184.33.122/.",
   "security_note": "Se sustituyeron contraseñas visibles en el Excel por variables de entorno; no guardar credenciales en el repositorio.",
   "cases": [
     {
@@ -13,11 +13,11 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 8
       },
-      "preconditions": "Existe el usuario activo admin@happytimes.com (rol Administrador). No hay sesión iniciada.",
+      "preconditions": "Existe el usuario activo admin@happytimes.com (Administrador Principal, rol Administrador). No hay sesión iniciada.",
       "test_data": "URL: /Cuenta/Login\nCorreo: admin@happytimes.com\nContraseña: ${QA_ADMIN_PASSWORD}",
       "steps": [
         "Abrir la pantalla de inicio de sesión.",
@@ -41,12 +41,12 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 9
       },
-      "preconditions": "Existe al menos un producto con estado Activo. El catálogo es accesible sin sesión.",
-      "test_data": "URL: /Cuenta/Login\nCorreo: admin@happytimes.com\nContraseña: ${QA_INVALID_PASSWORD} (1 solo intento)",
+      "preconditions": "Existe el usuario QA_tester (jeffrysmorales@gmail.com, rol Cliente) activo, con 0 intentos fallidos. No hay sesión iniciada. (La pantalla indica: la cuenta se bloquea tras 3 intentos fallidos.)",
+      "test_data": "URL: /Cuenta/Login\nCorreo: jeffrysmorales@gmail.com (QA_tester)\nContraseña: ${QA_INVALID_PASSWORD} (1 solo intento)",
       "steps": [
         "Abrir la pantalla de inicio de sesión.",
         "Ingresar una combinación incorrecta de correo o contraseña.",
@@ -69,12 +69,12 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 10
       },
-      "preconditions": "Existe un producto Activo visible en el catálogo (p. ej. Cremas Dove, ID 4).",
-      "test_data": "URL: /Cuenta/Login\nCorreo: cliente.qa@happytimes.test\nContraseña incorrecta x3: ${QA_INVALID_PASSWORD}\nLuego contraseña correcta (debe seguir bloqueada)",
+      "preconditions": "Existe el usuario QA_tester (jeffrysmorales@gmail.com, rol Cliente) activo, con 0 intentos fallidos. No hay sesión iniciada.",
+      "test_data": "URL: /Cuenta/Login\nCorreo: jeffrysmorales@gmail.com (QA_tester)\nContraseña incorrecta x3: ${QA_INVALID_PASSWORD}\nLuego contraseña correcta (debe seguir bloqueada)",
       "steps": [
         "Ingresar credenciales incorrectas varias veces.",
         "Repetir el intento hasta alcanzar el límite configurado."
@@ -91,34 +91,6 @@
       "automation_status": "draft_requires_ui_verification"
     },
     {
-      "id": "AUT-004",
-      "module": "AUT",
-      "module_name": "AUT – Seguridad",
-      "title": "Recuperación de contraseña con correo registrado",
-      "priority": "Alta",
-      "owner": "Melissa Solís",
-      "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
-        "sheet": "Sheet1",
-        "row": 11
-      },
-      "preconditions": "Existen productos Activos cuyo nombre contiene 'Crema' (Cremas Dove, Cremas Faciales).",
-      "test_data": "URL: /Cuenta/OlvideContrasena\nCorreo: <correo registrado con buzón accesible para el tester> (por definir)",
-      "steps": [
-        "Seleccionar la opción de recuperar contraseña.",
-        "Ingresar el correo registrado.",
-        "Enviar la solicitud."
-      ],
-      "expected": "El sistema genera la solicitud de recuperación y envía el enlace al correo registrado.",
-      "validation_notes": "Bloqueado por ambiente hasta definir el buzón y confirmar el SMTP.",
-      "known_routes": [
-        "/Cuenta/OlvideContrasena"
-      ],
-      "dependencies": [],
-      "baseline_result_2026_10_05": "Untested",
-      "automation_status": "draft_requires_ui_verification"
-    },
-    {
       "id": "AUT-005",
       "module": "AUT",
       "module_name": "AUT – Seguridad",
@@ -126,12 +98,12 @@
       "priority": "Media",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 12
       },
-      "preconditions": "Existe la categoría activa Productos de Belleza con 2 productos Activos (Cremas Dove, Cremas Faciales).",
-      "test_data": "URL: /Cuenta/OlvideContrasena\nCorreo: noexiste.qa@happytimes.test",
+      "preconditions": "No existe ningún usuario con el correo noexiste.qa@happytimes.test (usuarios actuales: admin@happytimes.com, ignacii31@gmail.com, ejemplo@correo, kar.llosent000@gmail.com, jeffrysmorales@gmail.com).",
+      "test_data": "URL: /Cuenta/OlvideContrasena\nCorreo: noexiste.qa@happytimes.test (no registrado)",
       "steps": [
         "Seleccionar la opción de recuperar contraseña.",
         "Ingresar un correo no registrado.",
@@ -147,61 +119,6 @@
       "automation_status": "draft_requires_ui_verification"
     },
     {
-      "id": "AUT-006",
-      "module": "AUT",
-      "module_name": "AUT – Seguridad",
-      "title": "Cambio de contraseña mediante enlace válido",
-      "priority": "Alta",
-      "owner": "Melissa Solís",
-      "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
-        "sheet": "Sheet1",
-        "row": 13
-      },
-      "preconditions": "No existe ningún producto cuyo nombre o descripción contenga 'xyzqa123'.",
-      "test_data": "Enlace /Cuenta/RestablecerContrasena?token=… recibido en AUT-004\nNueva contraseña: ${QA_NEW_PASSWORD}\nConfirmación: ${QA_NEW_PASSWORD}",
-      "steps": [
-        "Abrir el enlace de recuperación.",
-        "Ingresar una nueva contraseña que cumpla las reglas definidas.",
-        "Confirmar el cambio."
-      ],
-      "expected": "El sistema actualiza la contraseña y muestra un mensaje de confirmación.",
-      "validation_notes": "Depende de: AUT-004. Bloqueado por ambiente (correo). Restituir la contraseña original después de la prueba.",
-      "known_routes": [
-        "/Cuenta/RestablecerContrasena?token="
-      ],
-      "dependencies": [
-        "AUT-004"
-      ],
-      "baseline_result_2026_10_05": "Untested",
-      "automation_status": "draft_requires_ui_verification"
-    },
-    {
-      "id": "AUT-007",
-      "module": "AUT",
-      "module_name": "AUT – Seguridad",
-      "title": "Uso de enlace de recuperación expirado",
-      "priority": "Media",
-      "owner": "Melissa Solís",
-      "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
-        "sheet": "Sheet1",
-        "row": 14
-      },
-      "preconditions": "Existe un producto con estado Activo y categoría activa (Globo Metálico Estrella QA..",
-      "test_data": "Enlace de recuperación vencido o con token alterado",
-      "steps": [
-        "Abrir el enlace expirado.",
-        "Intentar continuar con el cambio de contraseña."
-      ],
-      "expected": "El sistema rechaza el enlace e indica que debe solicitar una nueva recuperación.",
-      "validation_notes": "No se encontró TokenLifespan configurado en App_Start; el vencimiento sería el valor por defecto de Identity (confirmar). Definir el tiempo de vigencia para poder probar el caso.",
-      "known_routes": [],
-      "dependencies": [],
-      "baseline_result_2026_10_05": "Untested",
-      "automation_status": "draft_requires_ui_verification"
-    },
-    {
       "id": "AUT-008",
       "module": "AUT",
       "module_name": "AUT – Seguridad",
@@ -209,12 +126,12 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 15
       },
-      "preconditions": "Existe un producto con estado Inactivo",
-      "test_data": "URL: /Rol\nNombre del rol: Supervisor QA",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). En /Rol existen los roles Administrador (1 usuario), Cliente (3 usuarios) y Operador (0 usuarios). No existe el rol 'Supervisor QA'.",
+      "test_data": "URL: /Rol\nNombre del rol: Supervisor QA (nuevo)",
       "steps": [
         "Ingresar a la gestión de roles.",
         "Registrar los datos del nuevo rol.",
@@ -237,12 +154,12 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 16
       },
-      "preconditions": "Existen productos de varias categorías y 'Cremas' coincide con el texto' dentro de Productos de Belleza.",
-      "test_data": "URL: /Rol/Usuarios\nUsuario: cliente.qa@happytimes.test\nRol: Supervisor QA (o Operador)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). En /Rol/Usuarios existe el usuario Juan Perz (ejemplo@correo) con rol actual 'Sin rol'. Existe el rol Operador (0 usuarios).",
+      "test_data": "URL: /Rol/Usuarios\nUsuario: Juan Perz (ejemplo@correo)\nRol: Operador",
       "steps": [
         "Ingresar a la gestión de usuarios o roles.",
         "Seleccionar el usuario.",
@@ -250,13 +167,11 @@
         "Guardar."
       ],
       "expected": "El sistema guarda la asignación y el usuario queda asociado al rol seleccionado.",
-      "validation_notes": "Depende de: AUT-008 y CLI-001.",
+      "validation_notes": "Aplica. Al terminar, revertir la asignación de Juan Perz a 'Sin rol' si el sistema lo permite.",
       "known_routes": [
         "/Rol/Usuarios"
       ],
-      "dependencies": [
-        "AUT-008"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -268,11 +183,11 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 17
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe la categoría activa 'Globos Metalicos'. No existe un producto llamado 'Globo Metálico Estrella QA'.",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el rol 'Supervisor QA' (creado en AUT-008) con 0 usuarios asignados.",
       "test_data": "URL: /Rol\nRol: Supervisor QA (sin usuarios asignados)",
       "steps": [
         "Ingresar a la gestión de roles.",
@@ -292,87 +207,6 @@
       "automation_status": "draft_requires_ui_verification"
     },
     {
-      "id": "AUT-011",
-      "module": "AUT",
-      "module_name": "AUT – Seguridad",
-      "title": "Autenticación de dos factores con código correcto",
-      "priority": "Alta",
-      "owner": "Melissa Solís",
-      "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
-        "sheet": "Sheet1",
-        "row": 18
-      },
-      "preconditions": "Administrador u Operador con sesión iniciada, en /Producto/Crear.",
-      "test_data": "URL: /Cuenta/Login\nUsuario con 2FA activado desde /Configuracion\nCódigo de 6 dígitos recibido por correo (vigencia 5 min)",
-      "steps": [
-        "Iniciar sesión con credenciales válidas.",
-        "Ingresar el código de verificación correcto.",
-        "Confirmar."
-      ],
-      "expected": "El sistema valida el código y permite el acceso.",
-      "validation_notes": "Aplica (el 2FA es opcional por usuario). Bloqueado por ambiente (correo).",
-      "known_routes": [
-        "/Cuenta/Login",
-        "/Configuracion"
-      ],
-      "dependencies": [],
-      "baseline_result_2026_10_05": "Untested",
-      "automation_status": "draft_requires_ui_verification"
-    },
-    {
-      "id": "AUT-012",
-      "module": "AUT",
-      "module_name": "AUT – Seguridad",
-      "title": "Autenticación de dos factores con código incorrecto",
-      "priority": "Alta",
-      "owner": "Melissa Solís",
-      "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
-        "sheet": "Sheet1",
-        "row": 19
-      },
-      "preconditions": "Administrador u Operador con sesión iniciada, en /Producto/Crear.",
-      "test_data": "Usuario con 2FA activo\nCódigo incorrecto: 000000",
-      "steps": [
-        "Iniciar sesión con credenciales válidas.",
-        "Ingresar un código de verificación incorrecto.",
-        "Confirmar."
-      ],
-      "expected": "El sistema rechaza el código y mantiene bloqueado el acceso hasta completar correctamente la verificación.",
-      "validation_notes": "Máximo 3 intentos de verificación por código; no agotarlos si se necesita la cuenta.",
-      "known_routes": [],
-      "dependencies": [],
-      "baseline_result_2026_10_05": "Untested",
-      "automation_status": "draft_requires_ui_verification"
-    },
-    {
-      "id": "AUT-013",
-      "module": "AUT",
-      "module_name": "AUT – Seguridad",
-      "title": "Autenticación de dos factores con código expirado",
-      "priority": "Alta",
-      "owner": "Melissa Solís",
-      "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
-        "sheet": "Sheet1",
-        "row": 20
-      },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe al menos un producto registrado.",
-      "test_data": "Usuario con 2FA activo\nCódigo recibido hace más de 5 minutos",
-      "steps": [
-        "Iniciar sesión con credenciales válidas.",
-        "Ingresar el código expirado.",
-        "Confirmar."
-      ],
-      "expected": "El sistema rechaza el código expirado e indica que se debe utilizar uno vigente.",
-      "validation_notes": "Requiere esperar el vencimiento. Bloqueado por ambiente (correo).",
-      "known_routes": [],
-      "dependencies": [],
-      "baseline_result_2026_10_05": "Untested",
-      "automation_status": "draft_requires_ui_verification"
-    },
-    {
       "id": "CAT-001",
       "module": "CAT",
       "module_name": "CAT – Catálogo",
@@ -380,12 +214,12 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 21
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto 'Globo Metálico Estrella QA' (ID 5).",
-      "test_data": "URL: / (Catálogo, sin sesión)\nProductos Activos: Sad Boyz Tour, Cremas Dove, Cremas Faciales, Galletas Oreo",
+      "preconditions": "No hay sesión iniciada. El catálogo (/) es accesible. Existen 16 productos con estado Activo en 6 categorías activas.",
+      "test_data": "URL: / (Catálogo, sin sesión)\nProductos Activos (16): 14 Cuentos De La Granja, 5 Lenguajes Del Amor, A Pintar Animales, Agenda Planeador, Bolsa De Regalo, Caja Lapices De Color, Caja Regalo, Colonia Hombre Versace, Globos Celestes, Lego Golden Pothos, Lego Granja Minecraft, Papel De Regalo, Set Pinturas Acrilicas, Sopa De Letras, Sticker Dino, Tarjetas Feliz Cumpleaños",
       "steps": [
         "Acceder al catálogo desde la aplicación."
       ],
@@ -404,20 +238,20 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 22
       },
-      "preconditions": "No existe un producto con ID 9999.",
-      "test_data": "URL: /Home/Detalle/4\nProducto: Cremas Dove",
+      "preconditions": "Existe el producto Activo 'Caja Lapices De Color' (ID 1, Librería, ₡14,000). El catálogo es accesible.",
+      "test_data": "URL: /Home/Detalle/1\nProducto: Caja Lapices De Color (Librería, ₡14,000)",
       "steps": [
         "Abrir el catálogo.",
         "Seleccionar un producto."
       ],
       "expected": "El sistema muestra el detalle disponible del producto seleccionado, incluyendo su descripción, imágenes y precio.",
-      "validation_notes": "Ejecutado: FAIL. /Home/Detalle/{id} responde con Parser Error en Views/Home/Detalle.cshtml, línea 92 (@if). Falla con todos los productos.",
+      "validation_notes": "Ejecutado: FAIL. /Home/Detalle/{id} responde error de servidor (HTTP 500 en el ambiente actual; Parser Error en Views/Home/Detalle.cshtml línea 92 en la ejecución local). Falla con todos los productos.",
       "known_routes": [
-        "/Home/Detalle/4"
+        "/Home/Detalle/1"
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Failed",
@@ -431,17 +265,17 @@
       "priority": "Baja",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 23
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto ID 5 (PRO-001).",
-      "test_data": "Todos los productos con estado Inactivo (ejecutar al final)",
+      "preconditions": "La categoría 'Juguetes' está Activa y no tiene productos asociados (los 16 productos son de Belleza, Empaque, Legos, Librería y Libros).",
+      "test_data": "URL: /?categoriaId=4 (filtro de categoría: Juguetes)\nAlternativa global: dejar los 16 productos en estado Inactivo (ejecutar al final)",
       "steps": [
         "Acceder al catálogo."
       ],
       "expected": "El sistema muestra un mensaje indicando que no hay productos disponibles.",
-      "validation_notes": "Altera datos globales; alternativa: usar una búsqueda sin coincidencias (CAT-006).",
+      "validation_notes": "Para no alterar datos globales se usa la categoría Juguetes (0 productos): el catálogo muestra 'No hay productos disponibles en este momento.' Alternativa: inactivar todos los productos (ejecutar al final).",
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
@@ -455,12 +289,12 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 24
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto ID 5.",
-      "test_data": "Texto de búsqueda: Crema\nResultado esperado: Cremas Dove y Cremas Faciales",
+      "preconditions": "El catálogo (/) es accesible. Existen los productos Activos 'Lego Golden Pothos' y 'Lego Granja Minecraft' (categoría Legos).",
+      "test_data": "Texto de búsqueda: Lego\nResultado esperado: Lego Golden Pothos y Lego Granja Minecraft",
       "steps": [
         "Abrir el catálogo.",
         "Escribir el nombre o parte del nombre de un producto en el buscador."
@@ -480,12 +314,12 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 25
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. No existe un producto con ID 9999.",
-      "test_data": "Categoría: Productos de Belleza",
+      "preconditions": "El catálogo (/) es accesible. La categoría 'Libros' está Activa y tiene 4 productos Activos.",
+      "test_data": "Categoría: Libros\nResultado esperado: 14 Cuentos De La Granja, 5 Lenguajes Del Amor, A Pintar Animales y Sopa De Letras",
       "steps": [
         "Abrir el catálogo.",
         "Seleccionar una categoría disponible."
@@ -505,11 +339,11 @@
       "priority": "Baja",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 26
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto ID 5 con estado Activo.",
+      "preconditions": "El catálogo (/) es accesible. Ningún producto contiene el texto 'xyzqa123' en su nombre o descripción.",
       "test_data": "Texto de búsqueda: xyzqa123",
       "steps": [
         "Abrir el catálogo.",
@@ -530,11 +364,11 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 27
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto ID 5 con estado Inactivo (PRO-010).",
+      "preconditions": "El catálogo (/) es accesible y tiene productos Activos. (El catálogo actual solo ofrece búsqueda y filtro por categoría.)",
       "test_data": "N/A – no hay control de ordenamiento",
       "steps": [
         "Abrir el catálogo.",
@@ -555,22 +389,20 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 28
       },
-      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). No existe una categoría llamada 'Decoración Infantil QA'.",
-      "test_data": "Producto: Globo Metálico Estrella QA (Activo)",
+      "preconditions": "Existe el producto 'Colonia Hombre Versace' (ID 12, Belleza, ₡48,000) con estado Activo.",
+      "test_data": "Producto: Colonia Hombre Versace (Activo)",
       "steps": [
         "Acceder al catálogo como cliente.",
         "Buscar el producto publicado."
       ],
       "expected": "El producto aparece disponible dentro del catálogo.",
-      "validation_notes": "Ejecutado: PASS (con sesión admin). 'Publicación' equivale a estado Activo. Depende de: PRO-001.",
+      "validation_notes": "Ejecutado: PASS. 'Publicación' equivale a estado Activo.",
       "known_routes": [],
-      "dependencies": [
-        "PRO-001"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -582,18 +414,18 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 29
       },
-      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Ya existe la categoría 'Globos Metalicos'.",
-      "test_data": "Producto: Globo Metálico Estrella QA (Inactivo tras PRO-010)",
+      "preconditions": "Existe el producto 'Papel De Regalo' (ID 16, Empaque, ₡350, stock 10) con estado Inactivo (inactivado con PRO-010).",
+      "test_data": "Producto: Papel De Regalo (Inactivo tras PRO-010)",
       "steps": [
         "Acceder al catálogo como cliente.",
         "Buscar el producto inactivo o no publicado."
       ],
       "expected": "El producto no aparece como disponible para el cliente.",
-      "validation_notes": "Ejecutado: PASS (con sesión admin; /Home/Detalle/5 del producto inactivo responde 404). Repetir como Cliente. Depende de: PRO-010.",
+      "validation_notes": "Ejecutado: PASS (con sesión admin; /Home/Detalle/16 del producto inactivo responde 404). Repetir como Cliente. Depende de: PRO-010.",
       "known_routes": [],
       "dependencies": [
         "PRO-010"
@@ -609,11 +441,11 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 30
       },
-      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com), con el modal 'Nueva categoría' abierto.",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). El formulario /Producto/Crear exige Nombre, Precio y Categoría.",
       "test_data": "N/A – el formulario exige los datos obligatorios",
       "steps": [
         "Ingresar a la gestión del catálogo.",
@@ -635,25 +467,23 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 31
       },
-      "preconditions": "Existen categorías activas",
-      "test_data": "Usuario Cliente: cliente.qa@happytimes.test\nURLs: /Producto, /Producto/Crear, /Categoria",
+      "preconditions": "Existe el usuario QA_tester (jeffrysmorales@gmail.com, rol Cliente) con sesión iniciada. Existen las pantallas de administración /Producto, /Producto/Crear y /Categoria.",
+      "test_data": "Usuario Cliente: QA_tester (jeffrysmorales@gmail.com)\nURLs: /Producto, /Producto/Crear, /Categoria",
       "steps": [
         "Intentar acceder a una opción de administración del catálogo."
       ],
       "expected": "El sistema impide el acceso a la función restringida.",
-      "validation_notes": "Depende de: CLI-001. ProductoController exige Administrador u Operador; CategoriaController exige Administrador.",
+      "validation_notes": "Aplica. ProductoController exige Administrador u Operador; CategoriaController exige Administrador. Ejecutar antes de asignar roles (AUT-009).",
       "known_routes": [
         "/Producto",
         "/Producto/Crear",
         "/Categoria"
       ],
-      "dependencies": [
-        "CLI-001"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -665,12 +495,12 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 32
       },
-      "preconditions": "Existe una categoría Inactiva",
-      "test_data": "Categoría: Productos de Belleza\nTexto de búsqueda: Dove\nResultado esperado: Cremas Dove",
+      "preconditions": "El catálogo (/) es accesible. La categoría 'Empaque' está Activa con 4 productos; 3 de ellos contienen 'Regalo' en el nombre.",
+      "test_data": "Categoría: Empaque\nTexto de búsqueda: Regalo\nResultado esperado: Bolsa De Regalo, Caja Regalo y Papel De Regalo",
       "steps": [
         "Abrir el catálogo.",
         "Seleccionar una categoría.",
@@ -691,19 +521,19 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 33
       },
-      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe la categoría 'Decoración Infantil QA'",
-      "test_data": "URL: /Producto/Crear\nNombre: Globo Metálico Estrella QA\nDescripción: Globo metálico estrella dorada 45 cm\nPrecio: 3500\nStock: 20\nCategoría: Globos Metalicos",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). La categoría 'Juguetes' (ID 4) está Activa. No existe un producto llamado 'Globo Metálico Estrella QA'.",
+      "test_data": "URL: /Producto/Crear\nNombre: Globo Metálico Estrella QA (nuevo)\nDescripción: Globo metálico estrella dorada 45 cm\nPrecio: 3500\nStock: 20\nCategoría: Juguetes",
       "steps": [
         "Ingresar a la gestión de productos.",
         "Completar los datos requeridos con valores válidos.",
         "Guardar."
       ],
       "expected": "El sistema registra el producto correctamente.",
-      "validation_notes": "Ejecutado: PASS (producto ID 5).",
+      "validation_notes": "Ejecutado: PASS. Después del caso, el producto puede inactivarse; no se reutiliza en otros casos.",
       "known_routes": [
         "/Producto/Crear"
       ],
@@ -719,11 +549,11 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 34
       },
-      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). No existe una categoría con ID 9999.",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). La pantalla /Producto/Crear está disponible.",
       "test_data": "URL: /Producto/Crear\nNombre: (vacío)\nCategoría: (sin seleccionar)\nPrecio: 1500\nStock: 0",
       "steps": [
         "Ingresar a la opción de crear producto.",
@@ -747,12 +577,12 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 35
       },
-      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe una categoría activa sin productos asociados.",
-      "test_data": "URL: /Producto/Crear\nNombre: Globo QA Precio Negativo\nPrecio: -500\nStock: 10\nCategoría: Globos Metalicos",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). La categoría 'Juguetes' (ID 4) está Activa y no tiene productos asociados.",
+      "test_data": "URL: /Producto/Crear\nNombre: Globo QA Precio Negativo\nPrecio: -500\nStock: 10\nCategoría: Juguetes",
       "steps": [
         "Ingresar a la opción de crear producto.",
         "Completar los datos y colocar un precio negativo.",
@@ -775,12 +605,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 36
       },
-      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe una categoría Inactiva",
-      "test_data": "URL: /Producto",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen 16 productos registrados, todos con estado Activo.",
+      "test_data": "URL: /Producto\nResultado esperado: 16 productos (14 Cuentos De La Granja … Tarjetas Feliz Cumpleaños) con nombre, categoría, precio, stock y estado",
       "steps": [
         "Ingresar a la gestión de productos."
       ],
@@ -801,24 +631,22 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 37
       },
-      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe una categoría activa con productos asociados (Productos de Belleza, 2 productos).",
-      "test_data": "URL: /Producto > Editar\nProducto ID 5: Globo Metálico Estrella QA",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el producto 'Colonia Hombre Versace' (ID 12, categoría Belleza, ₡48,000, stock 15).",
+      "test_data": "URL: /Producto > Editar\nProducto ID 12: Colonia Hombre Versace\nDescripción: Colonia Dylan Blue para Hombre, marca Versace.\nPrecio: ₡48,000 / Categoría: Belleza",
       "steps": [
         "Ir a /Producto.",
         "Presionar Editar en el producto: se abre el modal con los datos almacenados."
       ],
       "expected": "El sistema muestra la información almacenada del producto seleccionado.",
-      "validation_notes": "Ejecutado: PASS. No existe pantalla de detalle administrativo; la consulta es el modal de edición. Depende de: PRO-001.",
+      "validation_notes": "Ejecutado: PASS. No existe pantalla de detalle administrativo; la consulta es el modal de edición.",
       "known_routes": [
         "/Producto"
       ],
-      "dependencies": [
-        "PRO-001"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -830,17 +658,17 @@
       "priority": "Baja",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 38
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto Cremas con inventario registrado",
+      "preconditions": "No existe un producto con ID 9999 (los IDs registrados van del 1 al 16).",
       "test_data": "URL: /Home/Detalle/9999 (ID inexistente)",
       "steps": [
         "Intentar consultar el producto inexistente."
       ],
       "expected": "El sistema no muestra información de otro registro y comunica que el producto no está disponible.",
-      "validation_notes": "Ejecutado: FAIL. Responde el 404 técnico de IIS con la ruta física del servidor y sin mensaje amigable de producto no disponible (revisar customErrors y ErrorController).",
+      "validation_notes": "Ejecutado: FAIL. Responde el 404 técnico de IIS ('File or directory not found') y sin mensaje amigable de producto no disponible (revisar customErrors y ErrorController).",
       "known_routes": [
         "/Home/Detalle/9999"
       ],
@@ -856,23 +684,21 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 39
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto 'Globo Metálico Estrella QA' con stock 20",
-      "test_data": "Producto ID 5\nPrecio: 3500 > 3800\nDescripción: actualizada",
+      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto 'Papel De Regalo' (ID 16, Empaque, ₡350, stock 10) con estado Activo.",
+      "test_data": "Producto ID 16: Papel De Regalo\nPrecio: 350 > 400\nDescripción: actualizada",
       "steps": [
         "Seleccionar el producto.",
         "Modificar un dato permitido.",
         "Guardar los cambios."
       ],
       "expected": "El sistema actualiza la información del producto.",
-      "validation_notes": "Ejecutado: PASS. Depende de: PRO-001.",
+      "validation_notes": "Ejecutado: PASS. Restaurar el precio original (₡350) al terminar.",
       "known_routes": [],
-      "dependencies": [
-        "PRO-001"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -884,12 +710,12 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 40
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe un producto con stock ≥ 5 unidades (Globo Metálico Estrella QA, stock 25).",
-      "test_data": "Producto ID 5\nPrecio: -100",
+      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto 'Papel De Regalo' (ID 16, ₡350, stock 10) con estado Activo.",
+      "test_data": "Producto ID 16: Papel De Regalo\nPrecio: -100",
       "steps": [
         "Seleccionar el producto.",
         "Cambiar el precio por un valor negativo.",
@@ -910,11 +736,11 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 41
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe un producto con stock 2 (Galletas Oreo).",
+      "preconditions": "Administrador u Operador con sesión iniciada. No existe un producto con ID 9999 (IDs registrados: 1 a 16).",
       "test_data": "POST /Producto/Editar con Id=9999",
       "steps": [
         "La UI no permite abrir un producto inexistente. Enviar POST /Producto/Editar con Id=9999 (prueba técnica)."
@@ -936,12 +762,12 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 42
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe un producto con stock mínimo 5 y stock actual 22 (Globo Metálico Estrella QA).",
-      "test_data": "URL: /Producto > Desactivar\nProducto ID 5",
+      "preconditions": "Administrador u Operador con sesión iniciada. Existe el producto 'Papel De Regalo' (ID 16) con estado Activo, stock 10 y stock mínimo 5.",
+      "test_data": "URL: /Producto > Desactivar\nProducto ID 16: Papel De Regalo",
       "steps": [
         "Ingresar a la gestión de productos.",
         "Seleccionar el producto.",
@@ -965,12 +791,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 43
       },
-      "preconditions": "Administrador u Operador con sesión iniciada. Existe un producto con stock 10 y mínimo 5",
-      "test_data": "URL: /Producto > Activar\nProducto ID 5 (Inactivo)",
+      "preconditions": "Administrador u Operador con sesión iniciada. El producto 'Papel De Regalo' (ID 16, stock 10, mínimo 5) está Inactivo (resultado de PRO-010).",
+      "test_data": "URL: /Producto > Activar\nProducto ID 16: Papel De Regalo (Inactivo)",
       "steps": [
         "Ingresar a la gestión de productos.",
         "Seleccionar el producto inactivo.",
@@ -995,24 +821,22 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 44
       },
-      "preconditions": "Sesión iniciada. Existe el producto Cremas Dove con stock ≥ 2 y un carrito con 2 unidades.",
-      "test_data": "Usuario Cliente: cliente.qa@happytimes.test\nURLs: /Producto, /Producto/Crear",
+      "preconditions": "Existe el usuario QA_tester (jeffrysmorales@gmail.com, rol Cliente) con sesión iniciada.",
+      "test_data": "Usuario Cliente: QA_tester (jeffrysmorales@gmail.com)\nURLs: /Producto, /Producto/Crear",
       "steps": [
         "Intentar ingresar a una opción para crear, editar o cambiar el estado de productos."
       ],
       "expected": "El sistema impide el acceso a las funciones de mantenimiento de productos.",
-      "validation_notes": "Depende de: CLI-001.",
+      "validation_notes": "Aplica. Ejecutar antes de asignar roles (AUT-009).",
       "known_routes": [
         "/Producto",
         "/Producto/Crear"
       ],
-      "dependencies": [
-        "CLI-001"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -1024,12 +848,12 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 45
       },
-      "preconditions": "Existe un producto Activo con stock ≥ 1 (Cremas). El carrito está vacío.",
-      "test_data": "URL: /Categoria > Nueva categoría\nNombre: Decoración Infantil QA\nDescripción: Categoría de prueba QA",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen 6 categorías (Belleza, Empaque, Juguetes, Legos, Librería, Libros). No existe una categoría llamada 'Decoración Infantil QA'.",
+      "test_data": "URL: /Categoria > Nueva categoría\nNombre: Decoración Infantil QA (nueva)\nDescripción: Categoría de prueba QA",
       "steps": [
         "Ingresar a la gestión de categorías.",
         "Registrar los datos requeridos.",
@@ -1052,12 +876,12 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 46
       },
-      "preconditions": "Existe un producto Activo con stock 0 (Galletas).",
-      "test_data": "Nombre: Globos Metalicos (ya existe)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Ya existe la categoría 'Belleza' (Productos de belleza para hombre y mujer.).",
+      "test_data": "Nombre: Belleza (ya existe)",
       "steps": [
         "Ingresar a la gestión de categorías.",
         "Registrar nuevamente la categoría existente.",
@@ -1078,11 +902,11 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 47
       },
-      "preconditions": "El carrito ya contiene 1 unidad de Cremas (stock ≥ 2).",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). El modal 'Nueva categoría' está abierto.",
       "test_data": "Nombre: (vacío)",
       "steps": [
         "Ingresar a la opción de crear categoría.",
@@ -1104,12 +928,12 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 48
       },
-      "preconditions": "Sesión iniciada. El carrito contiene Cremas x2 y existen zonas de entrega activas.",
-      "test_data": "URL: /Categoria\nActivas: Entretenimiento, Galletas y Postres, Globos Metalicos, Productos de Belleza",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen 6 categorías, todas con estado Activa.",
+      "test_data": "URL: /Categoria\nActivas (6): Belleza, Empaque, Juguetes, Legos, Librería, Libros",
       "steps": [
         "Acceder al catálogo o listado de categorías."
       ],
@@ -1130,12 +954,12 @@
       "priority": "Baja",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 49
       },
-      "preconditions": "Sesión iniciada. El carrito está vacío.",
-      "test_data": "Todas las categorías Inactivas (ejecutar al final)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Las 6 categorías están Inactivas (estado a preparar al final de la ejecución).",
+      "test_data": "Todas las categorías Inactivas (Belleza, Empaque, Juguetes, Legos, Librería, Libros) (ejecutar al final)",
       "steps": [
         "Acceder al catálogo o listado de categorías disponibles."
       ],
@@ -1154,12 +978,12 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 50
       },
-      "preconditions": "Sesión iniciada. El carrito contiene al menos un producto.",
-      "test_data": "Categoría inactiva: Decoración Infantil QA Editada (CATE-010)",
+      "preconditions": "La categoría 'Juguetes' (ID 4, sin productos) está Inactiva (resultado de CATE-010). El catálogo es accesible.",
+      "test_data": "Categoría inactiva: Juguetes (CATE-010)",
       "steps": [
         "Acceder al catálogo como cliente.",
         "Revisar las categorías disponibles."
@@ -1181,12 +1005,12 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 51
       },
-      "preconditions": "Sesión iniciada con un usuario que tiene pedidos registrados.",
-      "test_data": "Categoría: Decoración Infantil QA\nNuevo nombre: Decoración Infantil QA Editada",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe la categoría 'Juguetes' (ID 4, descripción 'Juguetes de todo tipo.') con estado Activa.",
+      "test_data": "Categoría: Juguetes\nNueva descripción: Juguetes de todo tipo. (editada QA)",
       "steps": [
         "Ingresar a la gestión de categorías.",
         "Seleccionar la categoría.",
@@ -1194,11 +1018,9 @@
         "Guardar."
       ],
       "expected": "El sistema actualiza la información de la categoría.",
-      "validation_notes": "Ejecutado: PASS. Depende de: CATE-001.",
+      "validation_notes": "Ejecutado: PASS. Restaurar la descripción original al terminar.",
       "known_routes": [],
-      "dependencies": [
-        "CATE-001"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -1210,11 +1032,11 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 52
       },
-      "preconditions": "Existe una estructura de categorías y subcategorías configurada.",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). La categoría solo tiene Nombre y Descripción (no existe campo de categoría padre).",
       "test_data": "N/A – no hay jerarquía de categorías",
       "steps": [
         "Ingresar a la gestión de categorías.",
@@ -1237,11 +1059,11 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 53
       },
-      "preconditions": "La categoría que se intenta modificar no existe o ya no está disponible.",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). No existe una categoría con ID 9999 (hay 6 categorías registradas).",
       "test_data": "POST /Categoria/Editar con Id=9999",
       "steps": [
         "La UI no permite editar una categoría inexistente. Enviar POST /Categoria/Editar con Id=9999 (prueba técnica)."
@@ -1263,12 +1085,12 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 54
       },
-      "preconditions": "El administrador ha iniciado sesión y existe una categoría activa.",
-      "test_data": "Categoría: Decoración Infantil QA Editada (sin productos)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). La categoría 'Juguetes' (ID 4) está Activa y no tiene productos asociados.",
+      "test_data": "Categoría: Juguetes (sin productos)",
       "steps": [
         "Ingresar a la gestión de categorías.",
         "Seleccionar la categoría.",
@@ -1292,12 +1114,12 @@
       "priority": "Media",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 55
       },
-      "preconditions": "Existe una categoría inactiva.",
-      "test_data": "Categoría inactiva: Decoración Infantil QA Editada",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). La categoría 'Juguetes' está Inactiva (resultado de CATE-010).",
+      "test_data": "Categoría inactiva: Juguetes",
       "steps": [
         "Ingresar a la gestión de categorías.",
         "Seleccionar la categoría inactiva.",
@@ -1320,19 +1142,19 @@
       "priority": "Alta",
       "owner": "Karla Llosent",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 56
       },
-      "preconditions": "Existe una categoría activa con productos asociados.",
-      "test_data": "Categoría: Productos de Belleza (2 productos asociados)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). La categoría 'Belleza' (ID 3) está Activa y tiene 1 producto asociado: Colonia Hombre Versace (ID 12).",
+      "test_data": "Categoría: Belleza (1 producto asociado: Colonia Hombre Versace)",
       "steps": [
         "Ingresar a la gestión de categorías.",
         "Seleccionar la categoría con productos.",
         "Intentar inactivarla."
       ],
       "expected": "El sistema evita dejar información inconsistente y muestra al administrador la acción requerida para continuar.",
-      "validation_notes": "Ejecutado: FAIL. Se inactiva sin advertencia y sus productos siguen visibles en el catálogo. La categoría se revirtió a Activa tras la prueba.",
+      "validation_notes": "Ejecutado: FAIL. Se inactiva sin advertencia y su producto sigue visible en el catálogo. La categoría se revirtió a Activa tras la prueba.",
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Failed",
@@ -1346,12 +1168,12 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 57
       },
-      "preconditions": "Existe un producto con inventario registrado.",
-      "test_data": "URL: /Inventario\nProducto: Cremas Dove (stock 10)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el producto '14 Cuentos De La Granja' (ID 8, Libros) con stock 75 y mínimo 5.",
+      "test_data": "URL: /Inventario\nProducto: 14 Cuentos De La Granja (stock 75, mínimo 5, Normal)",
       "steps": [
         "Ingresar al módulo de inventario.",
         "Seleccionar o buscar el producto."
@@ -1373,12 +1195,12 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 58
       },
-      "preconditions": "Existe un producto registrado con inventario disponible para actualizar.",
-      "test_data": "Producto: Globo Metálico Estrella QA\nTipo: Entrada\nCantidad: 5\nMotivo: Reposición QA",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el producto 'Papel De Regalo' (ID 16, Empaque) con estado Activo y stock 10.",
+      "test_data": "Producto: Papel De Regalo\nTipo: Entrada\nCantidad: 5\nMotivo: Reposición QA",
       "steps": [
         "Ir a /Inventario.",
         "Presionar 'Registrar movimiento' en la fila del producto.",
@@ -1386,11 +1208,9 @@
         "Registrar."
       ],
       "expected": "El sistema aumenta la cantidad disponible del producto según la entrada registrada.",
-      "validation_notes": "Ejecutado: PASS (stock 20 > 25). Tipos disponibles: Entrada, Salida y Ajuste. Depende de: PRO-001.",
+      "validation_notes": "Ejecutado: PASS (stock 10 > 15). Tipos disponibles: Entrada, Salida y Ajuste.",
       "known_routes": [],
-      "dependencies": [
-        "PRO-001"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -1402,12 +1222,12 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 59
       },
-      "preconditions": "Existe un producto con stock suficiente.",
-      "test_data": "Producto: Globo Metálico Estrella QA\nTipo: Salida\nCantidad: 3\nMotivo: Ajuste QA",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). 'Papel De Regalo' (ID 16) tiene stock 15 (después de INV-002).",
+      "test_data": "Producto: Papel De Regalo\nTipo: Salida\nCantidad: 3\nMotivo: Ajuste QA",
       "steps": [
         "Ingresar al inventario.",
         "Seleccionar el producto.",
@@ -1415,7 +1235,7 @@
         "Guardar."
       ],
       "expected": "El sistema disminuye el stock de acuerdo con la cantidad registrada.",
-      "validation_notes": "Ejecutado: PASS (stock 25 > 22). Depende de: INV-002.",
+      "validation_notes": "Ejecutado: PASS (stock 15 > 12). Depende de: INV-002.",
       "known_routes": [],
       "dependencies": [
         "INV-002"
@@ -1431,18 +1251,18 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 60
       },
-      "preconditions": "Existe un producto con una cantidad de stock menor a la salida solicitada.",
-      "test_data": "Producto: Galletas Oreo (stock 2)\nTipo: Salida\nCantidad: 50",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el producto 'Agenda Planeador' (ID 3, Librería) con stock 1.",
+      "test_data": "Producto: Agenda Planeador (stock 1)\nTipo: Salida\nCantidad: 50",
       "steps": [
         "Seleccionar el producto.",
         "Intentar registrar una salida mayor al stock disponible."
       ],
       "expected": "El sistema rechaza la operación y no permite que el stock quede en un valor negativo.",
-      "validation_notes": "Ejecutado: PASS. Mensaje: 'Stock insuficiente. Stock actual: 2. Cantidad solicitada: 50.'",
+      "validation_notes": "Ejecutado: PASS. Mensaje: 'Stock insuficiente. Stock actual: 1. Cantidad solicitada: 50.'",
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
@@ -1456,12 +1276,12 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 61
       },
-      "preconditions": "Existe un producto con un stock mínimo configurado.",
-      "test_data": "Producto: Globo Metálico Estrella QA (mínimo 5)\nTipo: Salida\nCantidad: 17 (stock 22 > 5)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). 'Papel De Regalo' (ID 16) tiene stock mínimo 5 y stock actual 12 (después de INV-003).",
+      "test_data": "Producto: Papel De Regalo (mínimo 5)\nTipo: Salida\nCantidad: 7 (stock 12 > 5)",
       "steps": [
         "Realizar un movimiento que deje la cantidad en el mínimo definido o por debajo.",
         "Consultar el inventario."
@@ -1483,12 +1303,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 62
       },
-      "preconditions": "Existe un producto con cantidad superior al stock mínimo configurado.",
-      "test_data": "Producto: Cremas Dove (stock 10, mínimo 5)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el producto 'Lego Golden Pothos' (ID 10, Legos) con stock 32 y mínimo 5.",
+      "test_data": "Producto: Lego Golden Pothos (stock 32, mínimo 5)",
       "steps": [
         "Consultar el inventario del producto."
       ],
@@ -1507,12 +1327,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 63
       },
-      "preconditions": "Existe un producto registrado.",
-      "test_data": "Producto: Globo Metálico Estrella QA (ID 5)\nEntrada: 5 (INV-002)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Se registró la entrada de INV-002 (5 unidades) para 'Papel De Regalo' (ID 16).",
+      "test_data": "Producto: Papel De Regalo (ID 16)\nEntrada: 5 (INV-002)",
       "steps": [
         "Registrar una entrada de inventario.",
         "Consultar los movimientos del producto."
@@ -1534,12 +1354,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 64
       },
-      "preconditions": "Existe un producto con stock suficiente.",
-      "test_data": "Producto: Globo Metálico Estrella QA (ID 5)\nSalida: 3 (INV-003)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Se registró la salida de INV-003 (3 unidades) para 'Papel De Regalo' (ID 16).",
+      "test_data": "Producto: Papel De Regalo (ID 16)\nSalida: 3 (INV-003)",
       "steps": [
         "Registrar una salida de inventario válida.",
         "Consultar los movimientos del producto."
@@ -1561,19 +1381,19 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 65
       },
-      "preconditions": "Existe un producto con stock suficiente y un pedido que puede ser confirmado.",
-      "test_data": "Producto: Cremas Dove (stock inicial 10)\nCantidad en el pedido: 2",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el producto 'Set Pinturas Acrilicas' (ID 4, Librería) con stock 8 y un pedido que se puede crear con 2 unidades.",
+      "test_data": "Producto: Set Pinturas Acrilicas (stock 8)\nCantidad en el pedido: 2 (referencia: PED-2026-0016)",
       "steps": [
         "Agregar 2 unidades al carrito.",
         "Ir al pago y completar el checkout (zona, dirección, método de pago).",
         "Consultar /Inventario."
       ],
       "expected": "El inventario refleja la salida correspondiente al pedido confirmado sin generar stock negativo.",
-      "validation_notes": "Ejecutado: PASS (stock 10 > 8). El stock baja al crear el pedido (estado Pago pendiente), no en una confirmación posterior.",
+      "validation_notes": "Ejecutado: PASS. El stock baja al crear el pedido (estado Pago pendiente), no en una confirmación posterior.",
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
@@ -1587,12 +1407,12 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 66
       },
-      "preconditions": "Existe un producto activo con stock disponible.",
-      "test_data": "Producto: Cremas Dove (stock 10)\nCantidad: 1",
+      "preconditions": "Existe el producto 'Set Pinturas Acrilicas' (ID 4, ₡1,850) con estado Activo y stock 8. El carrito está vacío.",
+      "test_data": "Producto: Set Pinturas Acrilicas (stock 8)\nCantidad: 1",
       "steps": [
         "Abrir el catálogo.",
         "Seleccionar el producto.",
@@ -1613,18 +1433,18 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 67
       },
-      "preconditions": "Existe un producto activo sin unidades disponibles.",
-      "test_data": "Producto con stock 0: Galletas Oreo (tras salida de 2 unidades)",
+      "preconditions": "Existe el producto 'Sticker Dino' (ID 2, Librería, precio ₡1,490, oferta ₡1,180) con estado Activo y stock 0.",
+      "test_data": "Producto con stock 0: Sticker Dino",
       "steps": [
         "Abrir el catálogo.",
         "Observar la tarjeta del producto agotado: insignia 'Agotado' y botón Agregar deshabilitado."
       ],
       "expected": "El sistema no agrega el producto y muestra un mensaje de stock insuficiente.",
-      "validation_notes": "Ejecutado: PASS con observación: el control se deshabilita pero no se muestra un mensaje de 'stock insuficiente'. Restaurar el stock de Galletas Oreo (entrada de 2). Sin captura en el Doc.",
+      "validation_notes": "Ejecutado: PASS con observación: el control se deshabilita pero no se muestra un mensaje de 'stock insuficiente'. No requiere restaurar datos. Sin captura en el Doc.",
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
@@ -1638,12 +1458,12 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 68
       },
-      "preconditions": "El carrito ya contiene un producto con stock suficiente.",
-      "test_data": "Producto: Cremas Dove (ya en el carrito)\nAgregar 1 más > cantidad 2",
+      "preconditions": "El carrito ya contiene 1 unidad de 'Set Pinturas Acrilicas' (ID 4, stock 8).",
+      "test_data": "Producto: Set Pinturas Acrilicas (ya en el carrito)\nAgregar 1 más > cantidad 2",
       "steps": [
         "Agregar nuevamente el mismo producto al carrito."
       ],
@@ -1662,12 +1482,12 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 69
       },
-      "preconditions": "El carrito contiene productos disponibles y el cliente cuenta con la información requerida para continuar.",
-      "test_data": "Cremas Dove x2\nZona: San José Centro\nDirección: San José, Barrio Escalante, 200 m norte del parque\nMétodo de pago: SINPE Móvil\nReferencia SINPE: 12345678",
+      "preconditions": "El carrito contiene 2 unidades de 'Set Pinturas Acrilicas' (ID 4, stock 8). Hay sesión iniciada. Existe la zona 'San José Centro' disponible.",
+      "test_data": "Set Pinturas Acrilicas x2\nZona: San José Centro\nDirección: San José, Barrio Escalante, 200 m norte del parque\nMétodo de pago: SINPE Móvil\nReferencia SINPE: 12345678",
       "steps": [
         "Abrir el carrito.",
         "Iniciar el checkout.",
@@ -1689,11 +1509,11 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 70
       },
-      "preconditions": "El carrito no contiene productos.",
+      "preconditions": "Hay sesión iniciada y el carrito no contiene productos (/Pedido/Carrito muestra 'Tu carrito está vacío.').",
       "test_data": "URL: /Pedido/Checkout con el carrito vacío",
       "steps": [
         "Intentar iniciar o finalizar el checkout."
@@ -1701,7 +1521,8 @@
       "expected": "El sistema bloquea la finalización de la compra e informa que el carrito está vacío.",
       "validation_notes": "Ejecutado: PASS. Redirige al carrito con 'Tu carrito está vacío. Agrega productos antes de continuar.'",
       "known_routes": [
-        "/Pedido/Checkout"
+        "/Pedido/Checkout",
+        "/Pedido/Carrito"
       ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Passed",
@@ -1715,11 +1536,11 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 71
       },
-      "preconditions": "El carrito contiene al menos un producto.",
+      "preconditions": "El carrito contiene al menos 1 unidad de 'Set Pinturas Acrilicas' (ID 4). Hay sesión iniciada.",
       "test_data": "Dirección de entrega: (vacía)\nMétodo de pago: (sin seleccionar)",
       "steps": [
         "Iniciar el checkout.",
@@ -1741,17 +1562,17 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 72
       },
-      "preconditions": "Existen pedidos registrados y el administrador ha iniciado sesión.",
-      "test_data": "URL: /Pedido",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen 18 pedidos registrados (PED-2026-0001 a PED-2026-0018).",
+      "test_data": "URL: /Pedido\nResultado esperado: 18 pedidos con número, cliente, fecha, estado y total",
       "steps": [
         "Ingresar a la gestión de pedidos."
       ],
       "expected": "El sistema muestra los pedidos registrados y su estado actual.",
-      "validation_notes": "Confirmar que /Pedido es la gestión administrativa de pedidos.",
+      "validation_notes": "Aplica. /Pedido es la gestión administrativa de pedidos (muestra 18 pedido(s) encontrado(s)).",
       "known_routes": [
         "/Pedido"
       ],
@@ -1767,18 +1588,20 @@
       "priority": "Baja",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 73
       },
-      "preconditions": "No existen pedidos registrados para mostrar.",
-      "test_data": "BD sin pedidos (ejecutar sobre copia de la BD)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). No existen pedidos en estado 'Pago pendiente' (los 18 pedidos están en Pendiente, Procesando, Enviado, Entregado o Cancelado).",
+      "test_data": "URL: /Pedido\nFiltro: Estado = Pago pendiente (sin coincidencias)",
       "steps": [
         "Ingresar a la gestión de pedidos."
       ],
       "expected": "El sistema muestra un mensaje indicando que no hay pedidos disponibles.",
-      "validation_notes": "No reproducible con los datos actuales: hay pedidos históricos. Alternativa: filtro sin coincidencias (PED-009).",
-      "known_routes": [],
+      "validation_notes": "No es posible vaciar la tabla de pedidos (hay 18 pedidos históricos). Se usa el filtro sin coincidencias como alternativa.",
+      "known_routes": [
+        "/Pedido"
+      ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
       "automation_status": "draft_requires_ui_verification"
@@ -1791,12 +1614,12 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 74
       },
-      "preconditions": "Existen varios pedidos con datos que permiten aplicar los filtros disponibles.",
-      "test_data": "URL: /Pedido\nFiltro: Estado = Pendiente",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen 2 pedidos Cancelados (PED-2026-0008 y PED-2026-0003) entre los 18 pedidos registrados.",
+      "test_data": "URL: /Pedido\nFiltro: Estado = Cancelado\nResultado esperado: PED-2026-0008 y PED-2026-0003",
       "steps": [
         "Ingresar a la gestión de pedidos.",
         "Aplicar un filtro disponible."
@@ -1818,12 +1641,12 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 75
       },
-      "preconditions": "Existe un pedido y el administrador ha iniciado sesión.",
-      "test_data": "Pedido en estado Pendiente (p. ej. PED-2026-0008)\nNuevo estado: Procesando",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el pedido PED-2026-0004 (30/05/2026, ₡21,000) en estado Pendiente.",
+      "test_data": "Pedido PED-2026-0004 en estado Pendiente\nNuevo estado: Procesando",
       "steps": [
         "Abrir el pedido.",
         "Seleccionar un estado permitido por el flujo.",
@@ -1844,12 +1667,12 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 76
       },
-      "preconditions": "Existe un pedido y se intenta aplicar un cambio de estado fuera del flujo permitido.",
-      "test_data": "Pedido en estado Entregado (p. ej. PED-2026-0013)\nNuevo estado inválido: Pendiente",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el pedido PED-2026-0013 (22/07/2026, ₡6,000) en estado Entregado.",
+      "test_data": "Pedido PED-2026-0013 en estado Entregado\nNuevo estado inválido: Pendiente",
       "steps": [
         "Abrir el pedido.",
         "Intentar seleccionar o guardar un estado no permitido."
@@ -1869,12 +1692,12 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 77
       },
-      "preconditions": "Existe un pedido confirmado que puede ser cancelado y sus productos están registrados en inventario.",
-      "test_data": "Pedido PED-2026-0016 (Cremas Dove x2)\nAcción: Cancelar",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el pedido PED-2026-0007 (22/06/2026, Caja Lapices De Color x1, ₡6,000) en estado Procesando. 'Caja Lapices De Color' (ID 1) tiene stock 4 en inventario.",
+      "test_data": "Pedido PED-2026-0007 (Caja Lapices De Color x1)\nAcción: Cancelar",
       "steps": [
         "Abrir el pedido.",
         "Ejecutar la opción de cancelación.",
@@ -1898,19 +1721,19 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 78
       },
-      "preconditions": "El correo no está registrado y el usuario cuenta con los datos requeridos.",
-      "test_data": "URL: /Cuenta/Registro\nNombre: Cliente QA\nCorreo: cliente.qa@happytimes.test\nTeléfono: 8888-0000\nContraseña: ${QA_CLIENT_PASSWORD}",
+      "preconditions": "El correo cliente.qa@happytimes.test no está registrado (usuarios actuales: admin@happytimes.com, ignacii31@gmail.com, ejemplo@correo, kar.llosent000@gmail.com, jeffrysmorales@gmail.com). El formulario /Cuenta/Registro está disponible.",
+      "test_data": "URL: /Cuenta/Registro\nNombre completo: Cliente QA\nCorreo: cliente.qa@happytimes.test (nuevo)\nContraseña: ${QA_CLIENT_PASSWORD}\nConfirmar contraseña: ${QA_CLIENT_PASSWORD}\nTeléfono: 8888-0000\nDirección (opcional): (vacía)",
       "steps": [
         "Abrir el formulario de registro.",
-        "Completar los datos obligatorios con información válida.",
-        "Enviar el formulario."
+        "Completar Nombre completo, Correo, Contraseña, Confirmar contraseña y Teléfono con información válida (Dirección es opcional).",
+        "Presionar Crear cuenta."
       ],
       "expected": "El sistema crea la cuenta del cliente y confirma el registro.",
-      "validation_notes": "Confirmar los campos exactos del formulario en la primera ejecución. Esta cuenta se reutiliza en AUT-003, CAT-011 y PRO-012.",
+      "validation_notes": "Aplica. Campos del formulario: Nombre completo, Correo electrónico, Contraseña, Confirmar contraseña, Teléfono y Dirección (opcional).",
       "known_routes": [
         "/Cuenta/Registro"
       ],
@@ -1926,12 +1749,12 @@
       "priority": "Media",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 79
       },
-      "preconditions": "Ya existe una cuenta registrada con el correo que se va a utilizar.",
-      "test_data": "URL: /Cuenta/Registro\nCorreo: admin@happytimes.com (ya registrado)\nContraseña: ${QA_CLIENT_PASSWORD}",
+      "preconditions": "Ya existe una cuenta registrada con el correo admin@happytimes.com.",
+      "test_data": "URL: /Cuenta/Registro\nCorreo: admin@happytimes.com (ya registrado)\nContraseña y confirmación: ${QA_CLIENT_PASSWORD}",
       "steps": [
         "Abrir el formulario de registro.",
         "Completar los datos utilizando el correo existente.",
@@ -1954,12 +1777,12 @@
       "priority": "Media",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 80
       },
-      "preconditions": "El usuario se encuentra en el formulario de registro.",
-      "test_data": "URL: /Cuenta/Registro\nNombre: (vacío)\nCorreo: (vacío)",
+      "preconditions": "El usuario no tiene sesión iniciada y se encuentra en el formulario /Cuenta/Registro.",
+      "test_data": "URL: /Cuenta/Registro\nNombre completo: (vacío)\nCorreo: (vacío)",
       "steps": [
         "Dejar uno o más campos obligatorios vacíos.",
         "Intentar enviar el formulario."
@@ -1981,18 +1804,18 @@
       "priority": "Media",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 81
       },
-      "preconditions": "El cliente ha iniciado sesión y tiene compras registradas.",
-      "test_data": "URL: /Pedido/MisPedidos\nUsuario con pedidos (admin: 13 pedidos)",
+      "preconditions": "Existe el cliente Karla Llosent (kar.llosent000@gmail.com, rol Cliente) con 1 pedido registrado: PED-2026-0017. La cuenta admin@happytimes.com tiene 14 pedidos.",
+      "test_data": "URL: /Pedido/MisPedidos\nUsuario con pedidos: Karla Llosent (kar.llosent000@gmail.com) → PED-2026-0017 (19/10/2026, Entregado, ₡2,500)\nReferencia con la cuenta admin: 14 pedidos",
       "steps": [
         "Iniciar sesión.",
         "Abrir 'Mis pedidos' (/Pedido/MisPedidos)."
       ],
       "expected": "El sistema muestra los pedidos o compras anteriores asociados al cliente autenticado.",
-      "validation_notes": "Ejecutado: PASS con la cuenta de administrador. Repetir con el Cliente QA tras PED-004.",
+      "validation_notes": "Ejecutado: PASS con la cuenta de administrador. Repetir con un cliente (Karla Llosent: 1 pedido, ignacio: 3 pedidos).",
       "known_routes": [
         "/Pedido/MisPedidos"
       ],
@@ -2008,22 +1831,23 @@
       "priority": "Baja",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 82
       },
-      "preconditions": "El cliente ha iniciado sesión y no tiene compras registradas.",
-      "test_data": "Cliente: cliente2.qa@happytimes.test (sin pedidos)",
+      "preconditions": "Existe el cliente QA_tester (jeffrysmorales@gmail.com, rol Cliente) con sesión iniciada y sin pedidos registrados (no aparece en el listado de /Pedido).",
+      "test_data": "URL: /Pedido/MisPedidos\nCliente: QA_tester (jeffrysmorales@gmail.com), sin pedidos",
       "steps": [
         "Ingresar al perfil.",
         "Abrir el historial de compras."
       ],
       "expected": "El sistema informa que no existen compras registradas para el cliente.",
-      "validation_notes": "Depende de: CLI-001 (crear un segundo cliente).",
-      "known_routes": [],
-      "dependencies": [
-        "CLI-001"
+      "validation_notes": "Aplica. Los pedidos existentes pertenecen a: Administrador Principal (14), ignacio (3) y Karla Llosent (1).",
+      "known_routes": [
+        "/Pedido/MisPedidos",
+        "/Pedido"
       ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -2035,11 +1859,11 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 83
       },
-      "preconditions": "El usuario no ha iniciado sesión.",
+      "preconditions": "No hay sesión iniciada.",
       "test_data": "URL: /Pedido/MisPedidos sin sesión",
       "steps": [
         "Intentar acceder directamente al historial de compras."
@@ -2061,23 +1885,21 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 84
       },
-      "preconditions": "Existe un cliente autenticado y existen compras asociadas a otro cliente.",
-      "test_data": "Cliente B autenticado (cliente2.qa@happytimes.test)\nPedido del Cliente A: /Pedido/Detalle/{id} (confirmar ruta)",
+      "preconditions": "Existe el cliente QA_tester (jeffrysmorales@gmail.com, rol Cliente) con sesión iniciada. El pedido PED-2026-0017 (Detalle/17) pertenece a Karla Llosent.",
+      "test_data": "Cliente B autenticado: QA_tester (jeffrysmorales@gmail.com)\nPedido del Cliente A (Karla Llosent): /Pedido/Detalle/17 (PED-2026-0017)",
       "steps": [
         "Intentar acceder a información de historial que no pertenece al usuario autenticado."
       ],
       "expected": "El sistema impide el acceso a la información de otro cliente.",
-      "validation_notes": "Depende de: CLI-001 y PED-004.",
+      "validation_notes": "Aplica. Confirmar el comportamiento de /Pedido/Detalle/17 con un cliente que no es el dueño.",
       "known_routes": [
-        "/Pedido/Detalle/{id}"
+        "/Pedido/Detalle/17"
       ],
-      "dependencies": [
-        "CLI-001"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -2089,12 +1911,12 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 85
       },
-      "preconditions": "Existe un pedido pendiente de pago y se utilizan datos de prueba.",
-      "test_data": "POST /Sinpe/RecibirWebhook\nNumeroComprobante: 12345678\nMonto: 21000\nTelefonoDestino: 8888-8888\nTokenSeguridad = valor de Sinpe:TokenSeguridad (Web.config; no se registra aquí)",
+      "preconditions": "Existe un pedido en estado 'Pago pendiente' (actualmente no hay ninguno: crear uno con PED-004) con método SINPE y referencia 87654321, total ₡4,700 (Set Pinturas Acrilicas x2 ₡3,700 + envío San José Centro ₡1,000).",
+      "test_data": "POST /Sinpe/RecibirWebhook\nNumeroComprobante: 87654321 (distinto de 12345678 y 1234567, ya usados en PED-2026-0016, 0017 y 0018)\nMonto: 4700\nTelefonoDestino: (número SINPE del comercio; por confirmar con el equipo)\nTokenSeguridad = valor de Sinpe:TokenSeguridad (Web.config; no se registra aquí)",
       "steps": [
         "Abrir el pedido pendiente.",
         "Seleccionar SINPE como método de pago.",
@@ -2102,7 +1924,7 @@
         "Confirmar."
       ],
       "expected": "El sistema registra el pago asociado al pedido.",
-      "validation_notes": "Pasos originales no aplicables: el cliente solo elige SINPE y la referencia en el checkout; el pago lo registra el banco por webhook. Bloqueado hasta contar con el token. Depende de: PED-004.",
+      "validation_notes": "Pasos originales no aplicables: el cliente solo elige SINPE y la referencia en el checkout; el pago lo registra el banco por webhook. Bloqueado hasta contar con el token y el teléfono destino. Depende de: PED-004.",
       "known_routes": [
         "/Sinpe/RecibirWebhook"
       ],
@@ -2120,12 +1942,12 @@
       "priority": "Media",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 86
       },
-      "preconditions": "Existe un pedido pendiente de pago.",
-      "test_data": "POST /Sinpe/RecibirWebhook sin NumeroComprobante, o con Monto distinto a 21000\nTokenSeguridad = valor de Sinpe:TokenSeguridad (Web.config; no se registra aquí)",
+      "preconditions": "Existe un pedido en estado 'Pago pendiente' (crear uno con PED-004).",
+      "test_data": "POST /Sinpe/RecibirWebhook sin NumeroComprobante, o con Monto distinto a 4700\nTokenSeguridad = valor de Sinpe:TokenSeguridad (Web.config; no se registra aquí)",
       "steps": [
         "Seleccionar SINPE.",
         "Dejar incompleta la información requerida para registrar el pago.",
@@ -2148,12 +1970,12 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 87
       },
-      "preconditions": "Existe un pedido que ya tiene un pago aprobado.",
-      "test_data": "Reenviar el webhook de PAG-001 (mismo NumeroComprobante: 12345678)\nTokenSeguridad = valor de Sinpe:TokenSeguridad (Web.config; no se registra aquí)",
+      "preconditions": "Existe un pedido con un pago SINPE aprobado (resultado de PAG-001, comprobante 87654321).",
+      "test_data": "Reenviar el webhook de PAG-001 (mismo NumeroComprobante: 87654321)\nTokenSeguridad = valor de Sinpe:TokenSeguridad (Web.config; no se registra aquí)",
       "steps": [
         "Abrir el pedido pagado.",
         "Intentar registrar un nuevo pago."
@@ -2175,12 +1997,12 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 88
       },
-      "preconditions": "Existe un pedido pendiente de pago y el pago SINPE puede completarse correctamente.",
-      "test_data": "Pedido PED-2026-0016 tras PAG-001",
+      "preconditions": "Existe un pedido en estado 'Pago pendiente' y se dispone del webhook de PAG-001 para completar el pago SINPE.",
+      "test_data": "Pedido creado en PED-004 (comprobante 87654321, total ₡4,700) tras PAG-001",
       "steps": [
         "Registrar un pago SINPE válido.",
         "Consultar nuevamente el pedido."
@@ -2202,11 +2024,11 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 89
       },
-      "preconditions": "Existe un pedido pendiente de pago y se cuenta con datos de tarjeta de prueba válidos.",
+      "preconditions": "Existe un pedido en estado 'Pago pendiente'. 'Tarjeta' aparece como método de pago (hay un pedido histórico pagado con Tarjeta: PED-2026-0010), pero no hay pasarela de tarjeta en la aplicación.",
       "test_data": "N/A – sin pasarela de tarjeta (usar los números de prueba de la pasarela si se implementa)",
       "steps": [
         "Seleccionar tarjeta como método de pago.",
@@ -2228,11 +2050,11 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 90
       },
-      "preconditions": "Existe un pedido pendiente y se utilizan datos de prueba que representen fondos insuficientes.",
+      "preconditions": "Existe un pedido en estado 'Pago pendiente'. No hay pasarela de tarjeta en la aplicación.",
       "test_data": "N/A – sin pasarela de tarjeta",
       "steps": [
         "Seleccionar tarjeta como método de pago.",
@@ -2254,11 +2076,11 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 91
       },
-      "preconditions": "Existe un pedido pendiente y se utilizan datos de prueba de una tarjeta vencida.",
+      "preconditions": "Existe un pedido en estado 'Pago pendiente'. No hay pasarela de tarjeta en la aplicación.",
       "test_data": "N/A – sin pasarela de tarjeta",
       "steps": [
         "Seleccionar tarjeta como método de pago.",
@@ -2280,11 +2102,11 @@
       "priority": "Alta",
       "owner": "Melissa Solís",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 92
       },
-      "preconditions": "Existe un pedido pendiente de pago.",
+      "preconditions": "Existe un pedido en estado 'Pago pendiente'. No hay pasarela de tarjeta en la aplicación.",
       "test_data": "N/A – sin pasarela de tarjeta",
       "steps": [
         "Seleccionar tarjeta como método de pago.",
@@ -2306,18 +2128,18 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 93
       },
-      "preconditions": "Existen zonas de entrega configuradas.",
-      "test_data": "Zona: San José Oeste (envío ₡2,000)\nCarrito: Cremas Dove x1",
+      "preconditions": "Hay sesión iniciada y el carrito contiene 1 unidad de 'Set Pinturas Acrilicas'. Existen 7 zonas disponibles (San José Centro, Norte, Oeste, Este, Heredia, Alajuela y Cartago) y 1 no disponible (San José Sur).",
+      "test_data": "Zona: San José Oeste (Escazú, Santa Ana, Mora; envío ₡2,000)\nCarrito: Set Pinturas Acrilicas x1 (₡1,850)\nTotal esperado: ₡3,850",
       "steps": [
         "Iniciar el proceso de entrega.",
         "Seleccionar una zona disponible."
       ],
       "expected": "El sistema reconoce la zona y calcula el costo de entrega correspondiente.",
-      "validation_notes": "La primera zona (San José Centro) viene preseleccionada.",
+      "validation_notes": "La primera zona (San José Centro) viene preseleccionada. En /ZonasEntrega los costos se muestran con '$' (p. ej. $2,000.00) mientras el resto del sistema usa '₡'.",
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
@@ -2331,21 +2153,19 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 94
       },
-      "preconditions": "La zona que se intenta utilizar no está configurada como disponible.",
-      "test_data": "Zona no disponible: crear 'Zona QA' y marcarla no disponible\nPOST con ZonaEntregaId de esa zona",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). La zona 'San José Sur' (Desamparados, Aserrí, Acosta; ₡1,500) está configurada como 'No disponible'.",
+      "test_data": "Zona no disponible: San José Sur\nPOST con ZonaEntregaId de esa zona",
       "steps": [
         "Intentar seleccionar o registrar una zona no disponible para la entrega."
       ],
       "expected": "El sistema no acepta la zona y muestra el mensaje correspondiente.",
-      "validation_notes": "Prueba técnica. Depende de: ENV-009.",
+      "validation_notes": "Prueba técnica. Se usa la zona existente 'San José Sur' (No disponible); no depende de ENV-009.",
       "known_routes": [],
-      "dependencies": [
-        "ENV-009"
-      ],
+      "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
       "automation_status": "draft_requires_ui_verification"
     },
@@ -2357,11 +2177,11 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 95
       },
-      "preconditions": "El pedido tiene una zona de entrega seleccionada y existen otras zonas disponibles.",
+      "preconditions": "Hay un checkout en curso con la zona 'San José Centro' seleccionada. Existen otras zonas disponibles (p. ej. Alajuela).",
       "test_data": "Zona inicial: San José Centro (₡1,000)\nNueva zona: Alajuela (₡3,000)",
       "steps": [
         "Cambiar la zona seleccionada por otra disponible."
@@ -2381,11 +2201,11 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 96
       },
-      "preconditions": "El proceso de entrega requiere una zona para calcular el envío.",
+      "preconditions": "Hay un checkout en curso. La zona 'San José Centro' viene preseleccionada.",
       "test_data": "N/A – la primera zona viene preseleccionada",
       "steps": [
         "Dejar la zona sin seleccionar.",
@@ -2406,19 +2226,19 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 97
       },
-      "preconditions": "Existe un pedido confirmado y hay una fecha y horario disponibles.",
-      "test_data": "URL: /ProgramacionEntrega\nFecha: 16/10/2026 (viernes)\nHorario: uno con capacidad disponible",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el pedido PED-2026-0007 (Procesando) sin programación de entrega. Reglas vigentes: días habilitados lunes a sábado, mínimo 1 día y máximo 30 días de anticipación. Horarios existentes: Mañana, Tarde y Noche.",
+      "test_data": "URL: /ProgramacionEntrega\nPedido: PED-2026-0007\nFecha: 24/10/2026 (sábado)\nHorario: Mañana (con capacidad disponible)",
       "steps": [
         "Abrir la programación de entrega.",
         "Seleccionar una fecha y hora disponibles.",
         "Guardar."
       ],
       "expected": "El sistema guarda la programación de entrega seleccionada.",
-      "validation_notes": "Reglas: no se entrega los domingos, mínimo 1 día de anticipación (EntregaDiasMinimosAdelante) y máximo 30 días; editables en /ReglasOperativas. Depende de: PED-010.",
+      "validation_notes": "Reglas (/ReglasOperativas): EntregaDiasHabilitados 1,2,3,4,5,6 (no se entrega los domingos), EntregaDiasMinimosAdelante 1 y EntregaDiasMaximosAdelante 30. Pendiente confirmar cómo se crea una programación: el listado /ProgramacionEntrega no muestra opción de crear. Depende de: PED-010.",
       "known_routes": [
         "/ProgramacionEntrega"
       ],
@@ -2436,19 +2256,19 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 98
       },
-      "preconditions": "Existe un pedido que requiere programación de entrega.",
-      "test_data": "Fecha domingo: 11/10/2026\nFecha pasada: 01/10/2026\nFecha > 30 días: 06/11/2026",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe el pedido PED-2026-0007 que requiere programación de entrega. Fecha de referencia de la ejecución: 22/10/2026 (jueves).",
+      "test_data": "Fecha domingo: 25/10/2026\nFecha pasada: 20/10/2026\nFecha > 30 días: 23/11/2026",
       "steps": [
         "Abrir la programación.",
         "Seleccionar una fecha no permitida.",
         "Intentar guardar."
       ],
       "expected": "El sistema no guarda la fecha y solicita seleccionar una opción válida.",
-      "validation_notes": "Cubre las tres reglas de fecha (domingo, pasada y más de 30 días).",
+      "validation_notes": "Cubre las tres reglas de fecha (domingo, pasada y más de 30 días respecto a 22/10/2026).",
       "known_routes": [],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
@@ -2462,12 +2282,12 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 99
       },
-      "preconditions": "Existe un pedido y el horario seleccionado no está disponible.",
-      "test_data": "Horario con capacidad llena (CapacidadMaxima alcanzada) en una fecha válida",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe un horario (Mañana, Tarde o Noche) con capacidad llena en una fecha válida. La capacidad máxima de cada horario no es visible en la UI.",
+      "test_data": "Horario con capacidad llena (CapacidadMaxima alcanzada) en una fecha válida; capacidad por confirmar con el equipo",
       "steps": [
         "Abrir la programación.",
         "Seleccionar el horario no disponible.",
@@ -2490,12 +2310,12 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 100
       },
-      "preconditions": "Existe una entrega programada y hay otra fecha u horario disponible.",
-      "test_data": "Entrega de ENV-005 > nueva fecha: 17/10/2026 (sábado), otro horario disponible",
+      "preconditions": "Existe la programación creada en ENV-005 (PED-2026-0007, 24/10/2026, Mañana) y hay otra fecha u horario disponible.",
+      "test_data": "Entrega de ENV-005 > nueva fecha: 26/10/2026 (lunes)\nHorario: Tarde",
       "steps": [
         "Abrir la entrega programada.",
         "Seleccionar una nueva fecha u horario disponible.",
@@ -2518,12 +2338,12 @@
       "priority": "Alta",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 101
       },
-      "preconditions": "El administrador ha iniciado sesión y cuenta con datos válidos para una nueva zona.",
-      "test_data": "URL: /ZonasEntrega\nNombre: Zona QA Escazú\nDescripción: Zona de prueba QA\nCosto de envío: 2500",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen 8 zonas de entrega. No existe una zona llamada 'Zona QA Puntarenas'.",
+      "test_data": "URL: /ZonasEntrega\nNombre: Zona QA Puntarenas (nueva)\nDescripción: Zona de prueba QA\nCosto de envío: 2500",
       "steps": [
         "Ingresar a la configuración de zonas.",
         "Registrar la nueva zona y su costo.",
@@ -2546,12 +2366,12 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 102
       },
-      "preconditions": "Existe una zona configurada y el administrador ha iniciado sesión.",
-      "test_data": "Zona QA Escazú\nCosto de envío: 2500 > 3000",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe la zona 'Zona QA Puntarenas' creada en ENV-009 (₡2,500).",
+      "test_data": "Zona QA Puntarenas\nCosto de envío: 2500 > 3000",
       "steps": [
         "Ingresar a la configuración de zonas.",
         "Seleccionar la zona.",
@@ -2575,12 +2395,12 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 103
       },
-      "preconditions": "Existe una zona sin pedidos asociados y el administrador ha iniciado sesión.",
-      "test_data": "Zona QA Escazú (sin pedidos)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existe la zona 'Zona QA Puntarenas' (ENV-009) sin pedidos asociados.",
+      "test_data": "Zona QA Puntarenas (sin pedidos)",
       "steps": [
         "Ingresar a la configuración de zonas.",
         "Seleccionar la zona.",
@@ -2588,7 +2408,7 @@
         "Confirmar."
       ],
       "expected": "El sistema elimina la zona y deja de mostrarla como disponible.",
-      "validation_notes": "Depende de: ENV-009. No eliminar zonas con pedidos asociados (FK).",
+      "validation_notes": "Depende de: ENV-009. No eliminar zonas con pedidos asociados (FK): las zonas existentes se usan en pedidos (p. ej. San José Centro).",
       "known_routes": [],
       "dependencies": [
         "ENV-009"
@@ -2604,11 +2424,11 @@
       "priority": "Media",
       "owner": "Jeffry Soto",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 104
       },
-      "preconditions": "El administrador ha iniciado sesión.",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). El formulario 'Nueva Zona' en /ZonasEntrega está disponible.",
       "test_data": "Nombre: (vacío)\nCosto de envío: 2500",
       "steps": [
         "Ingresar a la opción de crear zona.",
@@ -2617,7 +2437,9 @@
       ],
       "expected": "El sistema no crea la zona y muestra la validación correspondiente.",
       "validation_notes": "Aplica.",
-      "known_routes": [],
+      "known_routes": [
+        "/ZonasEntrega"
+      ],
       "dependencies": [],
       "baseline_result_2026_10_05": "Untested",
       "automation_status": "draft_requires_ui_verification"
@@ -2630,12 +2452,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 105
       },
-      "preconditions": "Existen pedidos o ventas registradas y el administrador ha iniciado sesión.",
-      "test_data": "URL: /Reportes/Ventas",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen pedidos registrados. Sin filtro, el reporte muestra 3 pedidos activos.",
+      "test_data": "URL: /Reportes/Ventas\nResultado esperado (sin filtro): 3 pedidos activos, ingresos ₡34,500.00, ticket promedio ₡11,500.00, 5 unidades vendidas",
       "steps": [
         "Ingresar al módulo de reportes.",
         "Seleccionar el reporte de ventas."
@@ -2657,12 +2479,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 106
       },
-      "preconditions": "Existen ventas registradas en diferentes fechas.",
-      "test_data": "Rango: 01/07/2026 – 31/07/2026",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen ventas en julio de 2026 (PED-2026-0009 a PED-2026-0015) y en otras fechas.",
+      "test_data": "Rango: 01/07/2026 – 31/07/2026\nResultado esperado: 7 pedidos activos, ingresos ₡94,500.00, ticket promedio ₡13,500.00, 17 unidades vendidas",
       "steps": [
         "Abrir el reporte de ventas.",
         "Seleccionar un rango de fechas.",
@@ -2683,12 +2505,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 107
       },
-      "preconditions": "Existen ventas con productos registrados.",
-      "test_data": "URL: /Reportes/Ventas > detalle por producto",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen ventas con productos registrados.",
+      "test_data": "URL: /Reportes/Ventas > Productos más vendidos\nSin filtro: Caja Lapices De Color (2 u., ₡10,000.00), Set Pinturas Acrilicas (2 u., ₡20,000.00) y Globos Celestes (1 u., ₡1,500.00)",
       "steps": [
         "Abrir el reporte de ventas.",
         "Consultar el detalle por producto."
@@ -2710,11 +2532,11 @@
       "priority": "Baja",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 108
       },
-      "preconditions": "No existen ventas dentro del período que se va a consultar.",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). No existen pedidos entre el 01/01/2020 y el 31/01/2020 (el primer pedido es del 29/05/2026).",
       "test_data": "Rango sin ventas: 01/01/2020 – 31/01/2020",
       "steps": [
         "Abrir el reporte de ventas.",
@@ -2736,12 +2558,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 109
       },
-      "preconditions": "Existen productos con inventario registrado.",
-      "test_data": "URL: /Reportes/Inventario",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen 16 productos con inventario registrado.",
+      "test_data": "URL: /Reportes/Inventario\nResultado esperado: 16 productos (4 con stock bajo, 1 sin stock y 11 normales)",
       "steps": [
         "Ingresar al módulo de reportes.",
         "Seleccionar el reporte de inventario."
@@ -2763,18 +2585,18 @@
       "priority": "Alta",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 110
       },
-      "preconditions": "Existe al menos un producto que alcanzó o bajó del stock mínimo.",
-      "test_data": "URL: /Reportes/Inventario\nStock bajo: Cremas Faciales (3/5) y Globo Metálico Estrella QA (5/5)",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen productos en el mínimo o por debajo: 4 con 'Stock bajo' y 1 'Sin stock'.",
+      "test_data": "URL: /Reportes/Inventario\nStock bajo: Agenda Planeador (1/5), Caja Lapices De Color (4/5), Caja Regalo (3/5) y Sopa De Letras (5/5)\nSin stock: Sticker Dino (0/3)",
       "steps": [
         "Abrir el reporte de inventario.",
         "Revisar los productos con stock bajo."
       ],
       "expected": "El sistema permite identificar los productos que se encuentran en nivel bajo de inventario.",
-      "validation_notes": "Galletas Oreo queda en 0/3 si no se restauró su stock.",
+      "validation_notes": "Los valores cambian si se ejecutan antes INV-002/003/005 (Papel De Regalo quedaría en 5/5).",
       "known_routes": [
         "/Reportes/Inventario"
       ],
@@ -2790,12 +2612,12 @@
       "priority": "Media",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 111
       },
-      "preconditions": "Existen productos de varias categorías con inventario registrado.",
-      "test_data": "Categoría: Productos de Belleza",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Existen productos de varias categorías con inventario registrado.",
+      "test_data": "Categoría: Librería\nResultado esperado: 5 productos (Agenda Planeador, Caja Lapices De Color, Globos Celestes, Set Pinturas Acrilicas y Sticker Dino)",
       "steps": [
         "Abrir el reporte de inventario.",
         "Seleccionar una categoría.",
@@ -2816,11 +2638,11 @@
       "priority": "Baja",
       "owner": "Ignacio Vargas",
       "source": {
-        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx",
+        "file": "QA02-Casos_de_Prueba_Happy_Times_Balloons_actualizado.xlsx",
         "sheet": "Sheet1",
         "row": 112
       },
-      "preconditions": "Existe información en el reporte y la opción de exportación está disponible.",
+      "preconditions": "Administrador con sesión iniciada (admin@happytimes.com). Los reportes /Reportes/Ventas y /Reportes/Inventario tienen datos y muestran el botón 'Exportar CSV'.",
       "test_data": "URL: /Reportes/Ventas o /Reportes/Inventario > Exportar CSV",
       "steps": [
         "Generar un reporte con datos.",

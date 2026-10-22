@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cases, coverage, validate } from './qa-core.mjs';
 
-test('105 casos extraídos del QA02 sin duplicados ni pasos vacíos',()=>{
- assert.equal(cases.length,105);
+test('99 casos extraídos del QA02 sin duplicados ni pasos vacíos',()=>{
+ assert.equal(cases.length,99);
  assert.deepEqual(validate(),[]);
 });
 test('histórico QA02 no equivale a pruebas automatizadas',()=>{
  const cov=coverage();
  assert.equal(cov.ready,0);
- assert.equal(cov.draft,96);
+ assert.equal(cov.draft,90);
  assert.equal(cov.pending,1);
  assert.equal(cov.not_applicable,8);
 });

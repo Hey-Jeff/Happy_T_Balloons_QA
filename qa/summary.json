@@ -1,18 +1,18 @@
 {
-  "total": 105,
+  "total": 99,
   "legacy_baseline_results": {
     "Passed": 41,
-    "Untested": 53,
+    "Untested": 47,
     "Failed": 3,
     "Blocked": 8
   },
   "automation": {
-    "draft_requires_ui_verification": 96,
+    "draft_requires_ui_verification": 90,
     "excluded_not_applicable": 8,
     "pending_implementation": 1
   },
   "modules": {
-    "AUT": 13,
+    "AUT": 7,
     "CAT": 12,
     "PRO": 12,
     "CATE": 12,
@@ -27,16 +27,10 @@
     "AUT-001",
     "AUT-002",
     "AUT-003",
-    "AUT-004",
     "AUT-005",
-    "AUT-006",
-    "AUT-007",
     "AUT-008",
     "AUT-009",
     "AUT-010",
-    "AUT-011",
-    "AUT-012",
-    "AUT-013",
     "CAT-001",
     "CAT-002",
     "CAT-003",

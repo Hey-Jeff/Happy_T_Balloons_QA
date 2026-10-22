@@ -64,6 +64,6 @@ test('Lote historico 32 se conserva y es subconjunto del lote 38', () => {
     assert.match(wf,/QA_ALLOW_HTTP_AUTH=true npm run test:case/);
     assert.match(wf,/QA_ALLOW_HTTP_AUTH=false npm run test:case/);
   }
-  assert.equal(cases.length,105);
+  assert.equal(cases.length,99);
   assert.equal(coverage().not_applicable,8);
 });

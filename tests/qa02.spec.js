@@ -8,9 +8,10 @@ import { wave3Flows } from './flows/wave3-72h.js';
 import { wave4Flows } from './flows/wave4-72h.js';
 import { safeHttpFlows } from './flows/qa02-safe-extensions.js';
 import { qa02ReadOnlyWave5 } from './flows/qa02-readonly-wave5.js';
+import { qa02DatosUi } from './flows/qa02-datos-ui.js';
 
 // No se sustituyen validaciones verdaderas con nombres historicos del Excel.
-const allFlows = { ...flows, ...sprintFlows, ...wave2Flows, ...wave3Flows, ...wave4Flows, ...catalogFixFlows, ...safeHttpFlows, ...qa02ReadOnlyWave5 };
+const allFlows = { ...flows, ...sprintFlows, ...wave2Flows, ...wave3Flows, ...wave4Flows, ...catalogFixFlows, ...safeHttpFlows, ...qa02ReadOnlyWave5, ...qa02DatosUi };
 
 const idFilter = new Set((process.env.QA_FILTER_IDS || '').split(',').filter(Boolean));
 for (const tc of cases) {

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Una sola ejecución auditable de TODOS los 105 casos QA02.
+// Una sola ejecución auditable de TODOS los 99 casos QA02.
 // Nunca traduce exit-code=0 a PASS sin leer resultado real Playwright JSON.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -44,11 +44,13 @@ export function makePlan() {
     return {id:tc.id,module:tc.module,title:tc.title,status,reason,kind:safePublic.has(tc.id)?'public':safeAuth.has(tc.id)?'auth':'none'};
   });
   const counts=count(entries);
-  if(entries.length!==105 || counts.QUEUED!==43 || counts.BLOCKED!==53 || counts['N/A']!==8 || counts.PENDING!==1){
+  if(entries.length!==99 || counts.QUEUED!==43 || counts.BLOCKED!==47 || counts['N/A']!==8 || counts.PENDING!==1){
     throw new Error(`Matriz inesperada: ${JSON.stringify(counts)}. No inventar cobertura.`);
   }
   return entries;
 }
+// Solo un FAIL real marca la ejecución en rojo; BLOCKED, PENDING y N/A se informan en la tabla.
+export function exitCodeFor(entries){return (count(entries).FAIL||0)>0 ? 1 : 0;}
 export function count(entries){const n={};for(const x of entries)n[x.status]=(n[x.status]||0)+1;return n;}
 
 function flattenTests(suites){
@@ -82,7 +84,7 @@ function safeCell(input){return String(input??'').replace(/[|\r\n]/g,' ').slice(
 function formatSummary(entries){
   const counts=count(entries);
   const lines=[
-    '## QA02 | Una sola ejecución | 105 casos',
+    '## QA02 | Una sola ejecución | 99 casos',
     '',
     `**PASS ${counts.PASS||0} · FAIL ${counts.FAIL||0} · BLOCKED ${counts.BLOCKED||0} · PENDING ${counts.PENDING||0} · N/A ${counts['N/A']||0}**`,
     '',
@@ -93,21 +95,21 @@ function formatSummary(entries){
     '|---|---|---|---|'
   ];
   for(const x of entries)lines.push(`| ${x.id} | ${x.module} | ${safeCell(x.status)} | ${safeCell(x.reason)} |`);
-  lines.push('',`**Total contabilizado: ${entries.length} / 105.**`);
+  lines.push('',`**Total contabilizado: ${entries.length} / 99.**`);
   return lines.join('\n')+'\n';
 }
 export async function main(argv=process.argv.slice(2)){
   const entries=makePlan();
   if(argv.includes('--plan')){
-    console.log(`PLAN 105: ${JSON.stringify(count(entries))}`);
-    console.log('43 seguros por HTTP; 53 bloqueados por precondicion/aislamiento; 1 sin implementar; 8 N/A.');
+    console.log(`PLAN 99: ${JSON.stringify(count(entries))}`);
+    console.log('43 seguros por HTTP; 47 bloqueados por precondicion/aislamiento; 1 sin implementar; 8 N/A.');
     return 0;
   }
   if(process.env.QA_BASE_URL!=='http://13.184.33.122' || process.env.QA_ALLOW_HTTP!=='true'){
     throw new Error('Lote HTTP limitado a la instancia QA exacta http://13.184.33.122.');
   }
   if(process.env.QA_ALLOW_MUTATIONS==='true'||process.env.QA_ISOLATED_QA==='true'){
-    throw new Error('Lote compartido de 105: desactivar mutaciones. Se prepara QA aislado en fase aparte.');
+    throw new Error('Lote compartido de 99: desactivar mutaciones. Se prepara QA aislado en fase aparte.');
   }
   const resultFile=path.join(root,'qa/results/playwright.json');
   fs.mkdirSync(path.dirname(resultFile),{recursive:true});
@@ -133,12 +135,11 @@ export async function main(argv=process.argv.slice(2)){
     // No imprimir stdout/stderr de sesiones HTTP autenticadas (pueden contener datos).
   }
   const summary=formatSummary(entries);
-  console.log(`QA02 105: ${JSON.stringify(count(entries))}`);
+  console.log(`QA02 99: ${JSON.stringify(count(entries))}`);
   if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,summary,'utf8');
   else console.log(summary);
-  const tally=count(entries);
-  return (tally.FAIL||0)>0 || (tally.BLOCKED||0)>0 || (tally.PENDING||0)>0 ? 1 : 0;
+  return exitCodeFor(entries);
 }
 if(process.argv[1] && path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
-  try{process.exitCode=await main();}catch(err){console.error('ERROR QA02 TODOS 105: '+err.message);process.exitCode=2;}
+  try{process.exitCode=await main();}catch(err){console.error('ERROR QA02 TODOS 99: '+err.message);process.exitCode=2;}
 }

@@ -2,16 +2,10 @@
 AUT-001,AUT,Inicio de sesión con credenciales correctas,Alta,Melissa Solís,draft_requires_ui_verification,Passed,8,El sistema autentica al usuario y muestra las opciones correspondientes a su rol.
 AUT-002,AUT,Inicio de sesión con credenciales incorrectas,Alta,Melissa Solís,draft_requires_ui_verification,Untested,9,El sistema rechaza el acceso y muestra un mensaje de error sin revelar información sensible.
 AUT-003,AUT,Bloqueo temporal por intentos fallidos,Alta,Melissa Solís,draft_requires_ui_verification,Untested,10,El sistema bloquea temporalmente el acceso del usuario y registra el evento correspondiente.
-AUT-004,AUT,Recuperación de contraseña con correo registrado,Alta,Melissa Solís,draft_requires_ui_verification,Untested,11,El sistema genera la solicitud de recuperación y envía el enlace al correo registrado.
 AUT-005,AUT,Recuperación de contraseña con correo no registrado,Media,Melissa Solís,draft_requires_ui_verification,Untested,12,El sistema no inicia la recuperación y muestra el mensaje correspondiente.
-AUT-006,AUT,Cambio de contraseña mediante enlace válido,Alta,Melissa Solís,draft_requires_ui_verification,Untested,13,El sistema actualiza la contraseña y muestra un mensaje de confirmación.
-AUT-007,AUT,Uso de enlace de recuperación expirado,Media,Melissa Solís,draft_requires_ui_verification,Untested,14,El sistema rechaza el enlace e indica que debe solicitar una nueva recuperación.
 AUT-008,AUT,Creación de un rol por parte del administrador,Alta,Melissa Solís,draft_requires_ui_verification,Untested,15,El sistema registra el rol y deja disponible la nueva configuración de acceso.
 AUT-009,AUT,Asignación de un rol a un usuario,Alta,Melissa Solís,draft_requires_ui_verification,Untested,16,El sistema guarda la asignación y el usuario queda asociado al rol seleccionado.
 AUT-010,AUT,Eliminación o inactivación de un rol existente,Alta,Melissa Solís,draft_requires_ui_verification,Untested,17,El rol deja de estar disponible para nuevas asignaciones y la acción queda registrada.
-AUT-011,AUT,Autenticación de dos factores con código correcto,Alta,Melissa Solís,draft_requires_ui_verification,Untested,18,El sistema valida el código y permite el acceso.
-AUT-012,AUT,Autenticación de dos factores con código incorrecto,Alta,Melissa Solís,draft_requires_ui_verification,Untested,19,El sistema rechaza el código y mantiene bloqueado el acceso hasta completar correctamente la verificación.
-AUT-013,AUT,Autenticación de dos factores con código expirado,Alta,Melissa Solís,draft_requires_ui_verification,Untested,20,El sistema rechaza el código expirado e indica que se debe utilizar uno vigente.
 CAT-001,CAT,Visualización del catálogo con productos activos,Alta,Karla Llosent,draft_requires_ui_verification,Passed,21,El sistema muestra los productos disponibles con la información definida para el catálogo.
 CAT-002,CAT,Visualización del detalle de un producto,Alta,Karla Llosent,draft_requires_ui_verification,Failed,22,"El sistema muestra el detalle disponible del producto seleccionado, incluyendo su descripción, imágenes y precio."
 CAT-003,CAT,Catálogo sin productos disponibles,Baja,Karla Llosent,draft_requires_ui_verification,Untested,23,El sistema muestra un mensaje indicando que no hay productos disponibles.
