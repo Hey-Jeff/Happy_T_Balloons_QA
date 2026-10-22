@@ -6,6 +6,7 @@ if (fs.existsSync(envFile)) process.loadEnvFile(envFile);
 import { spawnSync } from 'node:child_process';
 import { cases, coverage, root, validate, statuses } from './qa-core.mjs';
 import { publicDraftIds } from './public-safe.mjs';
+import { temporaryHttpAuthAllowed, temporaryHttpAuthCaseIds } from './http-auth-policy.mjs';
 
 const [action = 'help', mode, ...rest] = process.argv.slice(2);
 const args=rest.filter(s=>s.startsWith('--'));
@@ -61,10 +62,26 @@ let parsed;
 try { parsed = new URL(process.env.QA_BASE_URL); } catch { fail('QA_BASE_URL debe ser URL válida.'); }
 if(!['http:','https:'].includes(parsed.protocol)) fail('QA_BASE_URL debe usar HTTP(S).');
 if(parsed.protocol==='http:'){
-  if(process.env.QA_ALLOW_HTTP!=='true') fail('HTTP deshabilitado: configura una URL HTTPS o habilita QA_ALLOW_HTTP para pruebas públicas sin credenciales.');
-  const insecure=allowed.filter(c=>!publicDraftIds.has(c.id));
-  if(insecure.length) fail(`SEGURIDAD: en HTTP solo se permiten los casos públicos ${[...publicDraftIds].join(', ')}. Bloqueados: ${insecure.map(c=>c.id).join(', ')}. Activa HTTPS para casos autenticados.`,3);
-  console.warn('ADVERTENCIA: destino HTTP sin cifrado. No se enviarán credenciales.');
+  if(process.env.QA_ALLOW_HTTP!=='true') fail('HTTP deshabilitado: QA_ALLOW_HTTP=true solo en QA controlado.');
+  const authenticated=allowed.filter(c=>!publicDraftIds.has(c.id));
+  if(process.env.QA_ALLOW_HTTP_AUTH==='true' && (mode!=='case' || selected.length!==1)) {
+    fail('HTTP autenticado: ejecuta únicamente modo=caso, un caso cada vez. No uses modulo, publicos ni borradores con http_auth=true.',3);
+  }
+  if(authenticated.length){
+    const permitted=temporaryHttpAuthAllowed({
+      baseUrl:process.env.QA_BASE_URL,
+      allowHttp:process.env.QA_ALLOW_HTTP,
+      allowHttpAuth:process.env.QA_ALLOW_HTTP_AUTH,
+      mode,
+      caseIds:allowed.map(c=>c.id)
+    });
+    if(!permitted) fail(
+      `BLOQUEADO: HTTP autenticado SOLO para un caso individual en QA (opciones: ${temporaryHttpAuthCaseIds.join(', ')}). Requiere http_auth=true y cuentas DESECHABLES. Escrituras excluidas.`,3
+    );
+    console.warn('RIESGO ACEPTADO PARA QA: HTTP expone usuarios, contraseñas y cookies a observadores de red. Usa SOLO cuentas de prueba sin reutilizar y revócalas al finalizar.');
+  } else {
+    console.warn('ADVERTENCIA: destino HTTP sin cifrado. No se enviarán credenciales.');
+  }
 }
 
 const env={...process.env, QA_RUN_DRAFTS:tryDrafts?'1':'0', QA_FILTER_IDS:allowed.map(t=>t.id).join(',')};
