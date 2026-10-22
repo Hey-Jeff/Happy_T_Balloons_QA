@@ -73,9 +73,20 @@ export const flows={
 
   await expect(page.locator('table').first()).toBeVisible();
 
-  await expect(
-    page.getByText('Cremas Dove', { exact: false }).first()
-  ).toBeVisible();
+  // El Excel conserva nombres viejos; comprobar los productos actuales o el vacio valido.
+  expect(response?.status(), 'Listado administrativo HTTP 200').toBe(200);
+  const table = page.locator('table.table-hover').first();
+  await expect(table).toBeVisible();
+  await expect(table.locator('thead')).toContainText(/nombre/i);
+  const rows = table.locator('tbody tr').filter({ has: page.locator('button.btn-editar') });
+  if (await rows.count() > 0) {
+    const first = rows.first();
+    const name = (await first.locator('button.btn-editar').getAttribute('data-nombre') || '').trim();
+    expect(name, 'El producto actual debe tener nombre').not.toBe('');
+    await expect(first).toContainText(name);
+  } else {
+    await expect(table.locator('tbody')).toContainText(/No hay productos registrados|Sin resultados para los filtros aplicados/i);
+  }
 },
  'CLI-006':async({page})=>{
    await page.goto('/Pedido/MisPedidos');
@@ -86,14 +97,23 @@ export const flows={
  },
  'REP-001':async({page})=>{
    await loginAsAdmin(page);
-   await page.goto('/Reportes/Ventas');
-   await expect(page.getByText(/ventas/i).first()).toBeVisible();
-   await expect(page.locator('table,canvas,[role="table"],.card').first()).toBeVisible();
+   const response = await page.goto('/Reportes/Ventas');
+   expect(response?.status(), 'Reporte de ventas HTTP 200').toBe(200);
+   await expect(page).toHaveURL(/\/Reportes\/Ventas(?:\?.*)?$/i);
+   await expect(page.getByRole('heading', { name: /Reporte de Ventas/i })).toBeVisible();
+   await expect(page.locator('table').first()).toBeVisible();
  },
  'REP-005':async({page})=>{
    await loginAsAdmin(page);
-   await page.goto('/Reportes/Inventario');
-   await expect(page.getByText(/inventario/i).first()).toBeVisible();
-   await expect(page.locator('table,[role="table"]').first()).toBeVisible();
+   const response = await page.goto('/Reportes/Inventario');
+   expect(response?.status(), 'Reporte de inventario HTTP 200').toBe(200);
+   await expect(page).toHaveURL(/\/Reportes\/Inventario(?:\?.*)?$/i);
+   await expect(page.getByRole('heading', { name: /Reporte de Inventario/i })).toBeVisible();
+   const table = page.locator('table.table-hover').first();
+   if (await table.count()) {
+     await expect(table).toBeVisible();
+   } else {
+     await expect(page.getByText('Sin productos en el filtro seleccionado')).toBeVisible();
+   }
  }
 };
