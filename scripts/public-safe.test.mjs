@@ -29,13 +29,13 @@ test('Catorce casos anonimos y carrito de sesion explicitamente seguros', () => 
 test('AUT-001 requiere autorización HTTP explícita', () => {
   const r=run('run','case','AUT-001','--try-drafts');
   assert.equal(r.status,3);
-  assert.match(r.stderr,/SEGURIDAD|Autenticación HTTP bloqueada/i);
+  assert.match(r.stderr,/BLOQUEADO: HTTP autenticado SOLO/i);
 });
 
 test('Los casos administrativos permanecen bloqueados en HTTP sin autorización', () => {
   const r=run('run','case','PRO-005','--try-drafts');
   assert.equal(r.status,3);
-  assert.match(r.stderr,/PRO-005|Autenticación HTTP bloqueada|SEGURIDAD/i);
+  assert.match(r.stderr,/BLOQUEADO: HTTP autenticado SOLO/i);
 });
 
 test('La cobertura histórica no depende de la URL', () => {
