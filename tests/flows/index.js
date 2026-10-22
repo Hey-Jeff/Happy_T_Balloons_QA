@@ -8,7 +8,11 @@ export const flows={
    const {email,password}=adminCredentials();
    await login(page,email,password);
    await expect(page).not.toHaveURL(/\/Cuenta\/Login(?:\?|$)/i);
-   await expect(page.locator('a[href*="/Producto"],a[href*="/Admin"],a[href*="/Rol"],a[href*="/Pedido"]').first()).toBeVisible();
+   // El enlace dentro del dropdown puede estar oculto: comprobar la pagina protegida.
+   const dashboard = await page.goto('/Admin');
+   expect(dashboard?.status(), 'El panel administrativo debe responder HTTP 200').toBe(200);
+   await expect(page).toHaveURL(/\/Admin(?:\/Index)?(?:\?.*)?$/i);
+   await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
  },
  'AUT-002':async({page})=>{
    const {email}=adminCredentials();
