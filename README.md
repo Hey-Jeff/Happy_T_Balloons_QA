@@ -81,6 +81,8 @@ Cuando se ejecutan pruebas reales, Playwright produce `playwright-report/`, `qa/
 
 Incluido `.github/workflows/qa02-manual.yml`: ejecución manual por tester autorizado. Debes configurar `secrets.QA_BASE_URL` **públicamente accesible desde GitHub o mediante runner dentro de tu red** (GitHub-hosted runner NO puede acceder a `localhost` de tu PC), además de secretos de QA. El workflow está pensado para borradores, no representa suite completa.
 
+**Reporte HTML del workflow QA02 TODOS:** al terminar cada ejecución (aunque haya FAIL), el workflow une los resultados de todos los casos en un solo reporte de Playwright y lo publica como artifact `qa02-reporte-playwright-<número>` durante 14 días. Para verlo: abre el run en Actions, descarga el artifact en la sección **Artifacts**, descomprímelo y abre `index.html` (o ejecuta `npx playwright show-report <carpeta>`). Antes de publicarlo, `scripts/scan-report-secrets.mjs` comprueba que no contenga contraseñas ni tokens; si encuentra alguno, el reporte no se sube. El repositorio es público, así que cualquier usuario de GitHub puede descargar el artifact. Solo los casos anónimos guardan capturas, videos y trazas cuando fallan.
+
 La skill `.claude/skills/prueba/SKILL.md` es **opcional** para desarrolladores con Claude Code; todos los comandos anteriores funcionan sin Claude Code.
 
 Consulta `docs/IMPLEMENTACION.md` para completar cobertura de los 58 casos.

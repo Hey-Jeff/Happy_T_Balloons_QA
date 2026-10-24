@@ -35,6 +35,7 @@ jobs:
       QA_ISOLATED_BASE_URL: ${{ secrets.QA_ISOLATED_BASE_URL }}
       QA_ALLOW_HTTP: ${{ inputs.run_mode == 'isolated-qa' && 'false' || 'true' }}
       QA_ALLOW_HTTP_AUTH: 'false'
+      QA_BLOB_DIR: blob-report
       QA_ALLOW_MUTATIONS: ${{ inputs.run_mode == 'isolated-qa' && 'true' || 'false' }}
       QA_ISOLATED_QA: ${{ inputs.run_mode == 'isolated-qa' && 'true' || 'false' }}
       QA_RESETTABLE_DB: ${{ inputs.run_mode == 'isolated-qa' && secrets.QA_RESETTABLE_DB_CONFIRMATION || 'NO' }}
@@ -123,3 +124,21 @@ jobs:
           else
             node scripts/qa02-all-105.mjs
           fi
+      # Cada caso deja un blob en blob-report/; se unen en un solo reporte HTML aunque haya FAIL.
+      - name: Unir reporte HTML de Playwright
+        id: merge
+        if: ${{ always() && hashFiles('blob-report/*.zip') != '' }}
+        run: |
+          rm -rf playwright-report
+          npx playwright merge-reports --reporter html ./blob-report
+      - name: Verificar que el reporte no contiene contraseñas
+        id: scan
+        if: ${{ always() && steps.merge.outcome == 'success' }}
+        run: node scripts/scan-report-secrets.mjs playwright-report blob-report
+      - name: Publicar reporte de Playwright
+        if: ${{ always() && steps.scan.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa02-reporte-playwright-${{ github.run_number }}
+          path: playwright-report/
+          retention-days: 14

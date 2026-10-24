@@ -61,6 +61,17 @@ async function submitFilter(page, form, param) {
 }
 const zone = (page, name) => page.locator('label.zona-card').filter({ hasText: name });
 const alert = (page, text) => page.locator('.alert').filter({ hasText: text }).first();
+// Regla de la UI: 0 = Sin stock; hasta el minimo = Stock bajo; por encima = Normal.
+const stockStatus = (stock, min) => stock === 0 ? 'Sin stock' : stock <= min ? 'Stock bajo' : 'Normal';
+const inventoryRow = (page, name) => page.locator('table.table-hover tbody tr').filter({ hasText: name });
+async function expectConsistentStock(row) {
+  const stock = Number(await row.locator('td').nth(2).innerText());
+  const min = Number(await row.locator('td').nth(3).innerText());
+  expect(Number.isInteger(stock) && stock >= 0, 'Stock actual numerico').toBe(true);
+  expect(Number.isInteger(min) && min >= 0, 'Stock minimo numerico').toBe(true);
+  await expect(row.locator('td').nth(4)).toHaveText(stockStatus(stock, min));
+  return { stock, min };
+}
 function rowsOf(table) {
   return table.locator('tbody tr').evaluateAll(trs => trs.map(tr => [...tr.querySelectorAll('td')].map(td => td.innerText.trim().replace(/\s+/g, ' '))));
 }
@@ -256,33 +267,39 @@ export const qa02DatosUi = {
     expect(rows.map(r => r[0])).toEqual(ACTIVE_CATEGORIES);
     for (const r of rows) expect(r[2]).toBe('Activa');
   },
+  // Stock, pedidos y totales cambian con el uso normal de la app: se valida que la UI sea
+  // consistente consigo misma en lugar de fijar cantidades.
   'INV-001': async ({ page }) => {
     await adminPage(page, '/Inventario', /inventario/i);
-    const row = page.locator('table.table-hover tbody tr').filter({ hasText: '14 Cuentos De La Granja' });
+    const row = inventoryRow(page, '14 Cuentos De La Granja');
     await expect(row).toHaveCount(1);
-    await expect(row.locator('td').nth(2)).toHaveText('75');
-    await expect(row.locator('td').nth(3)).toHaveText('5');
-    await expect(row.locator('td').nth(4)).toHaveText('Normal');
+    await expectConsistentStock(row);
   },
   'INV-006': async ({ page }) => {
     await adminPage(page, '/Inventario', /inventario/i);
-    const row = page.locator('table.table-hover tbody tr').filter({ hasText: 'Lego Golden Pothos' });
+    const row = inventoryRow(page, 'Lego Golden Pothos');
     await expect(row).toHaveCount(1);
-    await expect(row.locator('td').nth(2)).toHaveText('32');
-    await expect(row.locator('td').nth(3)).toHaveText('5');
+    const { stock, min } = await expectConsistentStock(row);
+    expect(stock, 'PRECONDICION: Lego Golden Pothos debe estar por encima del minimo').toBeGreaterThan(min);
     await expect(row.locator('td').nth(4)).toHaveText('Normal');
     await expect(page.locator('table.table-sm tbody tr').filter({ hasText: 'Lego Golden Pothos' }), 'No debe figurar en alertas de stock').toHaveCount(0);
   },
   'PED-007': async ({ page }) => {
     await adminPage(page, '/Pedido', /gesti[oó]n de pedidos/i);
-    await expect(page.getByText('18 pedido(s) encontrado(s)')).toBeVisible();
+    const counter = await page.getByText(/\d+ pedido\(s\) encontrado\(s\)/).innerText();
     const table = page.locator('table').first();
     await expect(table.locator('thead')).toContainText(/Número\s+Cliente\s+Fecha\s+Estado\s+Total/);
     const rows = await rowsOf(table);
-    expect(rows).toHaveLength(18);
-    expect(rows[0][0]).toBe('PED-2026-0018');
-    expect(rows.at(-1)[0]).toBe('PED-2026-0001');
-    for (const r of rows) expect(r[4]).toMatch(/^₡[\d,]+$/);
+    expect(rows.length, 'El contador coincide con las filas').toBe(parseInt(counter, 10));
+    const numbers = rows.map(r => r[0]);
+    expect(numbers, 'Ordenados del mas reciente al mas antiguo').toEqual([...numbers].sort().reverse());
+    expect(numbers).toContain('PED-2026-0018');
+    expect(numbers.at(-1)).toBe('PED-2026-0001');
+    for (const r of rows) {
+      expect(r[0]).toMatch(/^PED-\d{4}-\d{4}$/);
+      expect(r[3]).toMatch(/^(Pago pendiente|Pendiente|Procesando|Enviado|Entregado|Cancelado)$/);
+      expect(r[4]).toMatch(/^₡[\d,]+$/);
+    }
   },
   'PED-009': async ({ page }) => {
     await adminPage(page, '/Pedido', /gesti[oó]n de pedidos/i);
@@ -290,7 +307,8 @@ export const qa02DatosUi = {
     await submitFilter(page, 'form:has(select[name="filtroEstado"])', 'filtroEstado');
     expect(new URL(page.url()).searchParams.get('filtroEstado')).toBe('Cancelado');
     const rows = await rowsOf(page.locator('table').first());
-    expect(rows.map(r => [r[0], r[3]])).toEqual([['PED-2026-0008', 'Cancelado'], ['PED-2026-0003', 'Cancelado']]);
+    for (const r of rows) expect(r[3]).toBe('Cancelado');
+    expect(rows.map(r => r[0])).toEqual(expect.arrayContaining(['PED-2026-0008', 'PED-2026-0003']));
   },
   // REP-001 / REP-003: sin filtro el reporte usa del dia 1 del mes en curso a hoy;
   // los totales dependen de la fecha y se validan contra las filas mostradas.
@@ -342,24 +360,32 @@ export const qa02DatosUi = {
   },
   'REP-005': async ({ page }) => {
     await adminPage(page, '/Reportes/Inventario', /reporte de inventario/i);
-    const text = (await page.locator('main').innerText()).replace(/\s+/g, ' ');
-    expect(text).toContain('17 Total productos 4 Stock bajo 1 Sin stock 12 Stock normal');
     const rows = await rowsOf(page.locator('table').first());
     expect(rows.map(r => r[0])).toEqual(ACTIVE_PRODUCTS);
+    for (const r of rows) expect(r[4], r[0]).toBe(stockStatus(Number(r[2]), Number(r[3])));
+    const n = status => rows.filter(r => r[4] === status).length;
+    const text = (await page.locator('main').innerText()).replace(/\s+/g, ' ');
+    expect(text, 'Los indicadores coinciden con las filas').toContain(
+      `${rows.length} Total productos ${n('Stock bajo')} Stock bajo ${n('Sin stock')} Sin stock ${n('Normal')} Stock normal`);
   },
   'REP-006': async ({ page }) => {
     await adminPage(page, '/Reportes/Inventario', /reporte de inventario/i);
-    const stock = async () => (await rowsOf(page.locator('table').first())).map(r => `${r[0]} ${r[2]}/${r[3]} ${r[4]}`);
+    const all = await rowsOf(page.locator('table').first());
     // El filtro "Sin stock" devuelve todos los productos (defecto observado 22/10/2026):
-    // el producto agotado se identifica en el listado completo.
-    expect((await stock()).filter(s => s.endsWith('Sin stock'))).toEqual(['Sticker Dino 0/3 Sin stock']);
+    // los productos agotados se identifican en el listado completo.
+    for (const r of all.filter(r => r[4] === 'Sin stock')) expect(Number(r[2]), r[0]).toBe(0);
+    const expectedLow = all.filter(r => r[4] === 'Stock bajo').map(r => r[0]);
+    expect(expectedLow.length, 'PRECONDICION: debe haber productos con stock bajo').toBeGreaterThan(0);
     await page.locator('select[name="estadoStock"]').selectOption('bajo');
     await submitFilter(page, 'form[action*="Inventario"]', 'estadoStock');
     expect(new URL(page.url()).searchParams.get('estadoStock')).toBe('bajo');
-    expect(await stock()).toEqual([
-      'Agenda Planeador 1/5 Stock bajo', 'Caja Lapices De Color 4/5 Stock bajo',
-      'Caja Regalo 3/5 Stock bajo', 'Sopa De Letras 5/5 Stock bajo',
-    ]);
+    const low = await rowsOf(page.locator('table').first());
+    expect(low.map(r => r[0])).toEqual(expectedLow);
+    for (const r of low) {
+      expect(r[4]).toBe('Stock bajo');
+      expect(Number(r[2]), r[0]).toBeGreaterThan(0);
+      expect(Number(r[2]), r[0]).toBeLessThanOrEqual(Number(r[3]));
+    }
   },
   'REP-007': async ({ page }) => {
     await adminPage(page, '/Reportes/Inventario', /reporte de inventario/i);
@@ -460,15 +486,16 @@ export const qa02DatosUi = {
     await adminPage(page, '/Inventario', /inventario/i);
     const button = page.locator('button.btn-registrar-mov[data-producto-id="3"]').first();
     await expect(button).toHaveAttribute('data-producto-nombre', 'Agenda Planeador');
-    await expect(button).toHaveAttribute('data-stock-actual', '1');
+    const stock = await button.getAttribute('data-stock-actual');
+    expect(Number(stock), 'PRECONDICION: la salida de 50 debe superar el stock').toBeLessThan(50);
     await button.click();
     await expect(page.locator('#formMovimiento')).toBeVisible();
     await page.locator('#movSalida').check();
     await page.locator('#movCantidad').fill('50');
     await page.locator('#movMotivo').fill('QA02 salida mayor al stock');
     await page.locator('#formMovimiento button[type="submit"]').click();
-    await expect(alert(page, 'Stock insuficiente. Stock actual: 1. Cantidad solicitada: 50.')).toBeVisible();
-    await expect(page.locator('button.btn-registrar-mov[data-producto-id="3"]').first()).toHaveAttribute('data-stock-actual', '1');
+    await expect(alert(page, `Stock insuficiente. Stock actual: ${stock}. Cantidad solicitada: 50.`)).toBeVisible();
+    await expect(page.locator('button.btn-registrar-mov[data-producto-id="3"]').first()).toHaveAttribute('data-stock-actual', stock);
   },
   // INV-007 / INV-008: movimientos existentes de Sopa De Letras (ID 5) registrados el 05/10/2026.
   'INV-007': async ({ page }) => {
@@ -583,17 +610,20 @@ export const qa02DatosUi = {
       await expect(page.locator('form[action*="/Producto/Crear"]')).toHaveCount(0);
     }
   },
-  // CLI-004: con la cuenta de administrador (14 pedidos propios), segun lo acordado.
+  // CLI-004: con la cuenta de administrador, segun lo acordado. Su historial debe coincidir con
+  // los pedidos de "Administrador Principal" en la gestion de pedidos.
   'CLI-004': async ({ page }) => {
     const { email, password } = adminCredentials();
     await login(page, email, password);
+    await go(page, '/Pedido');
+    const own = (await rowsOf(page.locator('table').first())).filter(r => r[1] === 'Administrador Principal').map(r => r[0]);
+    expect(own.length, 'PRECONDICION: la cuenta admin tiene pedidos').toBeGreaterThan(0);
     await go(page, '/Pedido/MisPedidos');
     await expect(page.getByRole('heading', { name: /mis pedidos/i })).toBeVisible();
     const table = page.locator('table').first();
     await expect(table.locator('thead')).toContainText(/Número\s+Fecha\s+Artículos\s+Estado\s+Total/);
     const rows = await rowsOf(table);
-    expect(rows).toHaveLength(14);
-    expect(rows.map(r => r[0])).toContain('PED-2026-0018');
+    expect(rows.map(r => r[0]), 'Solo los pedidos propios').toEqual(own);
     expect(rows.map(r => r[0])).not.toContain('PED-2026-0017'); // pedido de Karla Llosent
     await expect(table.locator('tbody tr').first().getByRole('link', { name: /ver/i })).toBeVisible();
   },

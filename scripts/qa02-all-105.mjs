@@ -97,7 +97,7 @@ function formatSummary(entries){
     `**PASS ${counts.PASS||0} · FAIL ${counts.FAIL||0} · BLOCKED ${counts.BLOCKED||0} · PENDING ${counts.PENDING||0} · N/A ${counts['N/A']||0}**`,
     '',
     'PASS es exploratorio; se conserva el estado formal hasta validación de criterios. Los BLOCKED y N/A nunca son PASS.',
-    'No se publica evidencia de sesiones HTTP, contraseñas ni trazas de navegador.',
+    'Reporte HTML de Playwright: artifact "qa02-reporte-playwright" de este run (14 días), publicado solo si no contiene contraseñas. Los casos con sesión HTTP no generan capturas, videos ni trazas.',
     '',
     '| ID | Módulo | Resultado | Motivo resumido |',
     '|---|---|---|---|'

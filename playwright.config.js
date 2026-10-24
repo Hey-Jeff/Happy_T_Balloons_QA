@@ -12,7 +12,11 @@ export default defineConfig({
   fullyParallel: false,
   retries: 0, // Evita reintentos de login inválido y bloqueos de cuentas QA.
   forbidOnly: Boolean(process.env.CI),
-  reporter: [['list'], ['html', { open: 'never' }], ['json', { outputFile: 'qa/results/playwright.json' }]],
+  reporter: [
+    ['list'], ['html', { open: 'never' }], ['json', { outputFile: 'qa/results/playwright.json' }],
+    // QA02 TODOS ejecuta un caso por proceso: cada uno deja un blob que el workflow une en un solo reporte HTML.
+    ...(process.env.QA_BLOB_DIR ? [['blob', { outputFile: `${process.env.QA_BLOB_DIR}/${process.env.QA_FILTER_IDS || 'run'}.zip` }]] : []),
+  ],
   outputDir: 'test-results',
 use: {
   baseURL: process.env.QA_BASE_URL,
