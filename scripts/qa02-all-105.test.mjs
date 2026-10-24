@@ -1,18 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makePlan, count, exitCodeFor, classifyPlaywrightJSON, AUTH_SAFE, PUBLIC_SAFE} from './qa02-all-105.mjs';
+import {makePlan, count, exitCodeFor, classifyPlaywrightJSON, AUTH_SAFE, PUBLIC_SAFE, BLOCKED_REASONS} from './qa02-all-105.mjs';
 
 const report=status=>({suites:[{specs:[{tests:[{results:[{status}]}]}]}]});
-test('Matriz integral: 99 IDs únicos, 43 ejecutables sin mutaciones, 47 bloqueados, 1 pendiente y 8 N/A',()=>{
+test('Matriz integral: 58 IDs únicos, 56 ejecutables sin mutaciones y 2 bloqueados con motivo',()=>{
   const plan=makePlan();
-  assert.equal(plan.length,99);
-  assert.equal(new Set(plan.map(x=>x.id)).size,99);
-  assert.deepEqual(count(plan),{QUEUED:43,BLOCKED:47,PENDING:1,'N/A':8});
-  assert.equal(PUBLIC_SAFE.length,14);
-  assert.equal(AUTH_SAFE.length,29);
+  assert.equal(plan.length,58);
+  assert.equal(new Set(plan.map(x=>x.id)).size,58);
+  assert.deepEqual(count(plan),{QUEUED:56,BLOCKED:2});
+  assert.equal(PUBLIC_SAFE.length,17);
+  assert.equal(AUTH_SAFE.length,39);
   assert.ok(plan.some(x=>x.id==='CAT-002'&&x.status==='QUEUED'));
   assert.ok(plan.some(x=>x.id==='CAT-008'&&x.status==='QUEUED'));
-  assert.ok(plan.some(x=>x.id==='ENV-011'&&x.status==='PENDING'));
+  for(const id of ['AUT-002','CATE-012']){
+    const e=plan.find(x=>x.id===id);
+    assert.equal(e.status,'BLOCKED',id);
+    assert.equal(e.reason,BLOCKED_REASONS[id],id);
+  }
 });
 test('Nunca transformar SKIPPED/fixture ausente en PASS',()=>{
   assert.equal(classifyPlaywrightJSON(report('skipped'),0).status,'BLOCKED');

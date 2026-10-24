@@ -3,20 +3,13 @@ import { login, loginAsAdmin, adminCredentials, clientCredentials } from './help
 
 // QA02 actualizado (22/10/2026): aserciones con los datos que muestra la UI de
 // http://13.184.33.122. El Excel guia los escenarios, pero los valores se
-// contrastaron con la interfaz. Solo lecturas, formularios invalidos y carrito de sesion.
+// contrastaron con la interfaz. Solo lecturas, carrito de sesion y envios que la
+// aplicacion debe rechazar; cada rechazo comprueba ademas que no se guardo nada.
+// Nunca se ingresan contraseñas incorrectas para ninguna cuenta.
 
-// Defectos documentados en QA02 (Notas de validacion). Mientras sigan abiertos el
-// caso se omite; al corregirse, quitar la entrada para volver a ejecutarlo.
-export const KNOWN_DEFECTS = Object.freeze({
-  'CAT-002': '/Home/Detalle/{id} responde HTTP 500 (Parser Error en Views/Home/Detalle.cshtml, linea 92).',
-  'PRO-006': 'Un producto inexistente devuelve el 404 tecnico de IIS sin mensaje de producto no disponible.',
-});
-function knownDefect(testInfo, id) {
-  if (KNOWN_DEFECTS[id]) testInfo.skip(true, `DEFECTO CONOCIDO QA02 (${id}): ${KNOWN_DEFECTS[id]}`);
-}
-
+// 23/10/2026: hay dos productos activos "Agenda Planeador" (ID 3 y el nuevo ID 17, ₡1,000).
 const ACTIVE_PRODUCTS = [
-  '14 Cuentos De La Granja', '5 Lenguajes Del Amor', 'A Pintar Animales', 'Agenda Planeador',
+  '14 Cuentos De La Granja', '5 Lenguajes Del Amor', 'A Pintar Animales', 'Agenda Planeador', 'Agenda Planeador',
   'Bolsa De Regalo', 'Caja Lapices De Color', 'Caja Regalo', 'Colonia Hombre Versace',
   'Globos Celestes', 'Lego Golden Pothos', 'Lego Granja Minecraft', 'Papel De Regalo',
   'Set Pinturas Acrilicas', 'Sopa De Letras', 'Sticker Dino', 'Tarjetas Feliz Cumpleaños',
@@ -67,6 +60,7 @@ async function submitFilter(page, form, param) {
   ]);
 }
 const zone = (page, name) => page.locator('label.zona-card').filter({ hasText: name });
+const alert = (page, text) => page.locator('.alert').filter({ hasText: text }).first();
 function rowsOf(table) {
   return table.locator('tbody tr').evaluateAll(trs => trs.map(tr => [...tr.querySelectorAll('td')].map(td => td.innerText.trim().replace(/\s+/g, ' '))));
 }
@@ -93,8 +87,8 @@ export const qa02DatosUi = {
       await expect(card.locator('form[action*="AgregarAlCarrito"] button[type="submit"]')).toHaveCount(1);
     }
   },
-  'CAT-002': async ({ page, testInfo }) => {
-    knownDefect(testInfo, 'CAT-002');
+  // CAT-002: FAIL mientras /Home/Detalle/{id} responda HTTP 500 (defecto documentado en QA02).
+  'CAT-002': async ({ page }) => {
     await go(page, '/Home/Detalle/1');
     await expect(page.getByRole('heading', { name: 'Caja Lapices De Color', exact: true })).toBeVisible();
     await expect(page.locator('main')).toContainText('Caja de 10 lapices de colores, marca Norma.');
@@ -156,13 +150,44 @@ export const qa02DatosUi = {
     expect(url.searchParams.get('ReturnUrl')).toBe('/Pedido/MisPedidos');
     await expect(page.getByRole('heading', { name: /iniciar sesi[oó]n/i })).toBeVisible();
   },
-  'PRO-006': async ({ page, testInfo }) => {
-    knownDefect(testInfo, 'PRO-006');
-    const response = await page.goto('/Home/Detalle/9999');
-    expect(response?.status(), 'Un producto inexistente debe devolver HTTP 404').toBe(404);
-    await expect(page.locator('body')).not.toContainText('File or directory not found');
-    await expect(page.locator('body')).toContainText(/no (est[aá]|se encuentra) disponible|no existe|no encontrado/i);
-    await expect(page.locator('body')).not.toContainText('Agregar');
+  // PRO-006: consulta de un producto inexistente desde la busqueda del catalogo.
+  'PRO-006': async ({ page }) => {
+    await filterCatalog(page, { busqueda: 'Producto Inexistente QA' });
+    await expect(productCards(page)).toHaveCount(0);
+    await expect(page.getByText('No hay productos disponibles en este momento.')).toBeVisible();
+  },
+  'CAT-003': async ({ page }) => {
+    await filterCatalog(page, { categoria: 'Juguetes' });
+    expect(new URL(page.url()).searchParams.get('categoriaId')).toBe('4');
+    await expect(productCards(page)).toHaveCount(0);
+    await expect(page.getByText('No hay productos disponibles en este momento.')).toBeVisible();
+  },
+  // AUT-002: bloqueado (ver BLOCKED_REASONS en scripts/qa02-all-105.mjs). Nunca intenta iniciar
+  // sesion: el flujo anterior usaba contraseñas incorrectas y podia bloquear cuentas, incluida la de admin.
+  'AUT-002': async ({ testInfo }) => {
+    testInfo.skip(true, 'BLOQUEADO: la cuenta QA_tester (jeffrysmorales@gmail.com) quedó bloqueada temporalmente por intentos fallidos el 23/10/2026; el caso no se ejecuta.');
+  },
+  // AUT-005: respuesta generica (no revela si el correo existe) y sin enlace de recuperacion.
+  'AUT-005': async ({ page }) => {
+    await go(page, '/Cuenta/OlvideContrasena');
+    await page.locator('input[name="Email"]').fill('noexiste.qa@happytimes.test');
+    await page.getByRole('button', { name: /enviar enlace de recuperaci[oó]n/i }).click();
+    await expect(page).toHaveURL(/\/Cuenta\/ConfirmacionEnvio/i);
+    await expect(page.getByText('Revisa tu correo')).toBeVisible();
+    await expect(page.locator('body')).toContainText('Si noexiste.qa@happytimes.test está registrado, recibirás un enlace de recuperación');
+    await expect(page.locator('a[href*="RestablecerContrasena"]')).toHaveCount(0);
+  },
+  // CLI-002: el correo de admin@happytimes.com ya existe; la cuenta no se crea.
+  'CLI-002': async ({ page }) => {
+    await go(page, '/Cuenta/Registro');
+    await page.locator('input[name="Nombre"]').fill('Cliente QA Duplicado');
+    await page.locator('input[name="Email"]').fill('admin@happytimes.com');
+    await page.locator('input[name="Contrasena"]').fill('ClaveQA#2026x');
+    await page.locator('input[name="ConfirmarContrasena"]').fill('ClaveQA#2026x');
+    await page.locator('input[name="Telefono"]').fill('8888-0000');
+    await page.getByRole('button', { name: /crear cuenta/i }).click();
+    await expect(page).toHaveURL(/\/Cuenta\/Registro/i);
+    await expect(page.getByText('Este correo electrónico ya está registrado.')).toBeVisible();
   },
   'PED-001': async ({ page }) => {
     const row = await addToSessionCart(page, 'Set Pinturas Acrilicas');
@@ -194,7 +219,7 @@ export const qa02DatosUi = {
     const table = page.locator('table.table-hover').first();
     await expect(table.locator('thead')).toContainText(/Nombre\s+Categoría\s+Precio\s+Stock\s+Estado/);
     const rows = await rowsOf(table);
-    expect(rows).toHaveLength(16);
+    expect(rows).toHaveLength(17);
     expect(await table.locator('button.btn-editar').evaluateAll(bs => bs.map(b => b.dataset.nombre))).toEqual(ACTIVE_PRODUCTS);
     for (const r of rows) {
       expect(ACTIVE_CATEGORIES).toContain(r[2]);
@@ -318,7 +343,7 @@ export const qa02DatosUi = {
   'REP-005': async ({ page }) => {
     await adminPage(page, '/Reportes/Inventario', /reporte de inventario/i);
     const text = (await page.locator('main').innerText()).replace(/\s+/g, ' ');
-    expect(text).toContain('16 Total productos 4 Stock bajo 1 Sin stock 11 Stock normal');
+    expect(text).toContain('17 Total productos 4 Stock bajo 1 Sin stock 12 Stock normal');
     const rows = await rowsOf(page.locator('table').first());
     expect(rows.map(r => r[0])).toEqual(ACTIVE_PRODUCTS);
   },
@@ -341,7 +366,7 @@ export const qa02DatosUi = {
     await page.locator('select[name="categoriaId"]').selectOption({ label: 'Librería' });
     await submitFilter(page, 'form[action*="Inventario"]', 'categoriaId');
     const rows = await rowsOf(page.locator('table').first());
-    expect(rows.map(r => r[0])).toEqual(['Agenda Planeador', 'Caja Lapices De Color', 'Globos Celestes', 'Set Pinturas Acrilicas', 'Sticker Dino']);
+    expect(rows.map(r => r[0])).toEqual(['Agenda Planeador', 'Agenda Planeador', 'Caja Lapices De Color', 'Globos Celestes', 'Set Pinturas Acrilicas', 'Sticker Dino']);
     for (const r of rows) expect(r[1]).toBe('Librería');
   },
   'REP-008': async ({ page }) => {
@@ -376,7 +401,129 @@ export const qa02DatosUi = {
     expect(browserInvalid || serverInvalid > 0, 'Debe rechazar una zona sin nombre').toBeTruthy();
   },
 
+  // ---- Envios que la aplicacion rechaza (se verifica que no se guarda nada) ----
+  'CATE-002': async ({ page }) => {
+    await adminPage(page, '/Categoria', /categor[ií]as/i);
+    await page.locator('button[data-bs-target="#modalCrear"]').first().click();
+    await page.locator('#formCrear input[name="Nombre"]').fill('Belleza');
+    await page.locator('#formCrear button[type="submit"]').click();
+    await expect(alert(page, 'Ya existe una categoría con ese nombre.')).toBeVisible();
+    expect((await rowsOf(page.locator('table').first())).map(r => r[0])).toEqual(ACTIVE_CATEGORIES);
+  },
+  'CATE-009': async ({ page }) => {
+    await adminPage(page, '/Categoria', /categor[ií]as/i);
+    await page.locator('button.btn-editar[data-nombre="Juguetes"]').click();
+    const form = page.locator('#formEditar');
+    await expect(form).toBeVisible();
+    await form.locator('input[name="Id"]').evaluate(el => { el.value = '9999'; });
+    await form.locator('input[name="Nombre"]').fill('Categoria QA Inexistente');
+    await form.locator('button[type="submit"]').click();
+    await expect(alert(page, 'Categoría no encontrada.')).toBeVisible();
+    expect((await rowsOf(page.locator('table').first())).map(r => r[0])).toEqual(ACTIVE_CATEGORIES);
+  },
+  'PRO-003': async ({ page }) => {
+    await adminPage(page, '/Producto/Crear');
+    const form = page.locator('form[action*="/Producto/Crear"]');
+    await form.locator('input[name="Nombre"]').fill('Globo QA Precio Negativo');
+    await form.locator('input[name="Precio"]').fill('-500');
+    await form.locator('input[name="Stock"]').fill('10');
+    await form.locator('select[name="CategoriaId"]').selectOption({ label: 'Juguetes' });
+    await form.locator('button[type="submit"]').click();
+    await expect(page).toHaveURL(/\/Producto\/Crear/i);
+    expect(await form.locator('input[name="Precio"]').evaluate(el => el.validity.rangeUnderflow), 'El precio minimo es 0.01').toBe(true);
+    await go(page, '/Producto');
+    expect(await page.locator('button.btn-editar').evaluateAll(bs => bs.map(b => b.dataset.nombre))).toEqual(ACTIVE_PRODUCTS);
+  },
+  'PRO-008': async ({ page }) => {
+    await adminPage(page, '/Producto', /productos/i);
+    await page.locator('button.btn-editar[data-id="16"]').click();
+    const form = page.locator('#formEditar');
+    await expect(form.locator('input[name="Nombre"]')).toHaveValue('Papel De Regalo');
+    await form.locator('input[name="Precio"]').fill('-100');
+    await page.locator('#formEditar button[type="submit"], button[form="formEditar"]').first().click();
+    expect(await form.locator('input[name="Precio"]').evaluate(el => el.validity.rangeUnderflow), 'El precio minimo es 0.01').toBe(true);
+    await go(page, '/Producto');
+    await expect(page.locator('button.btn-editar[data-id="16"]')).toHaveAttribute('data-precio', '350.00');
+  },
+  'PRO-009': async ({ page }) => {
+    await adminPage(page, '/Producto', /productos/i);
+    await page.locator('button.btn-editar[data-id="16"]').click();
+    await expect(page.locator('#modalEditar')).toBeVisible();
+    await page.locator('#formEditar input[name="Id"]').evaluate(el => { el.value = '9999'; });
+    await page.locator('#formEditar button[type="submit"], button[form="formEditar"]').first().click();
+    await expect(alert(page, 'Producto no encontrado.')).toBeVisible();
+    const original = page.locator('button.btn-editar[data-id="16"]');
+    await expect(original).toHaveAttribute('data-nombre', 'Papel De Regalo');
+    await expect(original).toHaveAttribute('data-precio', '350.00');
+  },
+  'INV-004': async ({ page }) => {
+    await adminPage(page, '/Inventario', /inventario/i);
+    const button = page.locator('button.btn-registrar-mov[data-producto-id="3"]').first();
+    await expect(button).toHaveAttribute('data-producto-nombre', 'Agenda Planeador');
+    await expect(button).toHaveAttribute('data-stock-actual', '1');
+    await button.click();
+    await expect(page.locator('#formMovimiento')).toBeVisible();
+    await page.locator('#movSalida').check();
+    await page.locator('#movCantidad').fill('50');
+    await page.locator('#movMotivo').fill('QA02 salida mayor al stock');
+    await page.locator('#formMovimiento button[type="submit"]').click();
+    await expect(alert(page, 'Stock insuficiente. Stock actual: 1. Cantidad solicitada: 50.')).toBeVisible();
+    await expect(page.locator('button.btn-registrar-mov[data-producto-id="3"]').first()).toHaveAttribute('data-stock-actual', '1');
+  },
+  // INV-007 / INV-008: movimientos existentes de Sopa De Letras (ID 5) registrados el 05/10/2026.
+  'INV-007': async ({ page }) => {
+    await adminPage(page, '/MovimientosInventario/Historial?productoId=5', /historial de movimientos/i);
+    await expect(page.locator('table thead')).toContainText(/Fecha\s+Tipo\s+Cantidad\s+Stock anterior\s+Stock nuevo\s+Motivo\s+Usuario/);
+    const rows = await rowsOf(page.locator('table').first());
+    expect(rows).toContainEqual(['05/10/2026 22:37', 'Entrada', '+5', '20', '25', 'Reposición QA', 'admin@happytimes.com']);
+  },
+  'INV-008': async ({ page }) => {
+    await adminPage(page, '/MovimientosInventario/Historial?productoId=5', /historial de movimientos/i);
+    const rows = await rowsOf(page.locator('table').first());
+    expect(rows).toContainEqual(['05/10/2026 22:38', 'Salida', '-3', '25', '22', 'Ajuste QA', 'admin@happytimes.com']);
+  },
+  'PED-008': async ({ page }) => {
+    await adminPage(page, '/Pedido', /gesti[oó]n de pedidos/i);
+    await page.locator('select[name="filtroEstado"]').selectOption('PagoPendiente');
+    await submitFilter(page, 'form:has(select[name="filtroEstado"])', 'filtroEstado');
+    const rows = await rowsOf(page.locator('table').first());
+    expect(rows).toEqual([['No se encontraron pedidos con los filtros aplicados']]);
+  },
+  'PED-011': async ({ page }) => {
+    await adminPage(page, '/Pedido', /gesti[oó]n de pedidos/i);
+    const row = () => page.locator('table tbody tr').filter({ hasText: 'PED-2026-0013' });
+    await expect(row().locator('td').nth(3)).toHaveText('Entregado');
+    await page.locator('button[data-pedido-id="13"]').click();
+    await expect(page.locator('#modalEstado')).toBeVisible();
+    await page.locator('#modalEstado select').selectOption({ label: 'Pendiente' });
+    await page.locator('#modalEstado button[type="submit"]').click();
+    await expect(alert(page, "No se puede cambiar el estado de 'Entregado' a 'Pendiente'.")).toBeVisible();
+    await expect(row().locator('td').nth(3)).toHaveText('Entregado');
+  },
+  // CLI-007: QA_tester no debe ver el pedido PED-2026-0017 de Karla Llosent.
+  'CLI-007': async ({ page }) => {
+    const { email, password } = clientCredentials();
+    await login(page, email, password);
+    await expect(page, 'El cliente QA debe iniciar sesion').not.toHaveURL(/\/Cuenta\/Login/i);
+    const response = await page.goto('/Pedido/Detalle/17');
+    await expect(page.locator('body')).not.toContainText('PED-2026-0017');
+    await expect(page.locator('body')).not.toContainText('Karla Llosent');
+    expect(response?.status(), 'Sin error de servidor').toBeLessThan(500);
+  },
+
   // ---- Entregas (checkout de sesion, sin confirmar) ----
+  'PED-006': async ({ page }) => {
+    await adminPage(page, '/Pedido', /gesti[oó]n de pedidos/i);
+    const before = await page.getByText(/\d+ pedido\(s\) encontrado\(s\)/).innerText();
+    await page.context().clearCookies();
+    await checkoutWith(page, 'Set Pinturas Acrilicas');
+    await expect(page.locator('textarea[name="DireccionEntrega"]')).toHaveValue('');
+    await page.locator('#formCheckout button[type="submit"]').first().click();
+    await expect(page.getByText('La dirección de entrega es obligatoria.')).toBeVisible();
+    await expect(page.getByText('Selecciona un método de pago.')).toBeVisible();
+    await go(page, '/Pedido');
+    await expect(page.getByText(/\d+ pedido\(s\) encontrado\(s\)/), 'No se debe crear ningun pedido').toHaveText(before);
+  },
   'ENV-001': async ({ page }) => {
     await checkoutWith(page, 'Set Pinturas Acrilicas');
     const oeste = zone(page, 'San José Oeste');

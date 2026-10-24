@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Una sola ejecución auditable de TODOS los 99 casos QA02.
+// Una sola ejecución auditable de TODOS los 58 casos QA02.
 // Nunca traduce exit-code=0 a PASS sin leer resultado real Playwright JSON.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,21 +16,28 @@ export const AUTH_SAFE = Object.freeze([
   'CATE-004','INV-001','PED-007','PED-009',
   'REP-001','REP-002','REP-003','REP-004','REP-005','REP-006','REP-007','REP-008',
   'PRO-002','CATE-003','ENV-012','ENV-001','ENV-003','ENV-006',
-  'CAT-009','CATE-006','ENV-002','CLI-004','CLI-005'
+  'ENV-002','CLI-004','CLI-005',
+  'CATE-002','CATE-009','PRO-003','PRO-008','PRO-009','INV-004',
+  'INV-007','INV-008','PED-006','PED-008','PED-011','CLI-007'
 ]);
 export const PUBLIC_SAFE = Object.freeze([
-  'CAT-001','CAT-002','CAT-004','CAT-005','CAT-006','CAT-008',
-  'CAT-011','CAT-012','CLI-003','CLI-006','PRO-006',
-  'PED-001','PED-002','PED-003'
+  'CAT-001','CAT-002','CAT-003','CAT-004','CAT-005','CAT-006','CAT-008',
+  'CAT-011','CAT-012','CLI-002','CLI-003','CLI-006','PRO-006',
+  'PED-001','PED-002','PED-003','AUT-005'
 ]);
+// Casos que se mantienen BLOCKED a propósito; el motivo se publica en el resumen de Actions.
+export const BLOCKED_REASONS = Object.freeze({
+  'AUT-002': 'Bloqueado: la cuenta QA_tester (jeffrysmorales@gmail.com) quedó bloqueada temporalmente por intentos fallidos el 23/10/2026; el caso consume intentos de esa cuenta y no se ejecuta.',
+  'CATE-012': 'Bloqueado: defecto conocido (se inactiva una categoría con productos sin advertencia); el caso modifica datos compartidos.',
+});
 
 export function makePlan() {
   const approvedPublic = new Set(publicDraftIds);
   const approvedAuth = new Set(temporaryHttpAuthCaseIds);
-  if (approvedPublic.size !== 14 || approvedAuth.size !== 29 ||
+  if (approvedPublic.size !== 17 || approvedAuth.size !== 39 ||
       PUBLIC_SAFE.some(id => !approvedPublic.has(id)) ||
       AUTH_SAFE.some(id => !approvedAuth.has(id))) {
-    throw new Error('Politica HTTP no coincide con los 43 IDs revisados: cancelar lote, no abrir permisos automaticamente.');
+    throw new Error('Politica HTTP no coincide con los 56 IDs revisados: cancelar lote, no abrir permisos automaticamente.');
   }
   const safePublic = new Set(PUBLIC_SAFE);
   const safeAuth = new Set(AUTH_SAFE);
@@ -40,11 +47,12 @@ export function makePlan() {
     else if(tc.automation_status === statuses.pending){status='PENDING';reason='Sin implementación Playwright';}
     else if(safePublic.has(tc.id) || safeAuth.has(tc.id)){
       status='QUEUED';reason=safePublic.has(tc.id)?'Lectura pública / sesión temporal':'Lectura HTTP con cuenta QA';
-    }else{status='BLOCKED';reason='Requiere precondiciones, datos controlados o aislamiento para posibles escrituras';}
+    }else{status='BLOCKED';reason=BLOCKED_REASONS[tc.id]||'Requiere precondiciones, datos controlados o aislamiento para posibles escrituras';}
     return {id:tc.id,module:tc.module,title:tc.title,status,reason,kind:safePublic.has(tc.id)?'public':safeAuth.has(tc.id)?'auth':'none'};
   });
   const counts=count(entries);
-  if(entries.length!==99 || counts.QUEUED!==43 || counts.BLOCKED!==47 || counts['N/A']!==8 || counts.PENDING!==1){
+  if(entries.length!==58 || counts.QUEUED!==56 || counts.BLOCKED!==2 || counts['N/A'] || counts.PENDING ||
+     Object.keys(BLOCKED_REASONS).some(id=>entries.find(e=>e.id===id)?.status!=='BLOCKED')){
     throw new Error(`Matriz inesperada: ${JSON.stringify(counts)}. No inventar cobertura.`);
   }
   return entries;
@@ -84,7 +92,7 @@ function safeCell(input){return String(input??'').replace(/[|\r\n]/g,' ').slice(
 function formatSummary(entries){
   const counts=count(entries);
   const lines=[
-    '## QA02 | Una sola ejecución | 99 casos',
+    '## QA02 | Una sola ejecución | 58 casos',
     '',
     `**PASS ${counts.PASS||0} · FAIL ${counts.FAIL||0} · BLOCKED ${counts.BLOCKED||0} · PENDING ${counts.PENDING||0} · N/A ${counts['N/A']||0}**`,
     '',
@@ -95,21 +103,21 @@ function formatSummary(entries){
     '|---|---|---|---|'
   ];
   for(const x of entries)lines.push(`| ${x.id} | ${x.module} | ${safeCell(x.status)} | ${safeCell(x.reason)} |`);
-  lines.push('',`**Total contabilizado: ${entries.length} / 99.**`);
+  lines.push('',`**Total contabilizado: ${entries.length} / 58.**`);
   return lines.join('\n')+'\n';
 }
 export async function main(argv=process.argv.slice(2)){
   const entries=makePlan();
   if(argv.includes('--plan')){
-    console.log(`PLAN 99: ${JSON.stringify(count(entries))}`);
-    console.log('43 seguros por HTTP; 47 bloqueados por precondicion/aislamiento; 1 sin implementar; 8 N/A.');
+    console.log(`PLAN 58: ${JSON.stringify(count(entries))}`);
+    console.log('56 seguros por HTTP; 2 bloqueados con motivo (AUT-002, CATE-012).');
     return 0;
   }
   if(process.env.QA_BASE_URL!=='http://13.184.33.122' || process.env.QA_ALLOW_HTTP!=='true'){
     throw new Error('Lote HTTP limitado a la instancia QA exacta http://13.184.33.122.');
   }
   if(process.env.QA_ALLOW_MUTATIONS==='true'||process.env.QA_ISOLATED_QA==='true'){
-    throw new Error('Lote compartido de 99: desactivar mutaciones. Se prepara QA aislado en fase aparte.');
+    throw new Error('Lote compartido de 58: desactivar mutaciones. Se prepara QA aislado en fase aparte.');
   }
   const resultFile=path.join(root,'qa/results/playwright.json');
   fs.mkdirSync(path.dirname(resultFile),{recursive:true});
@@ -135,11 +143,11 @@ export async function main(argv=process.argv.slice(2)){
     // No imprimir stdout/stderr de sesiones HTTP autenticadas (pueden contener datos).
   }
   const summary=formatSummary(entries);
-  console.log(`QA02 99: ${JSON.stringify(count(entries))}`);
+  console.log(`QA02 58: ${JSON.stringify(count(entries))}`);
   if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,summary,'utf8');
   else console.log(summary);
   return exitCodeFor(entries);
 }
 if(process.argv[1] && path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
-  try{process.exitCode=await main();}catch(err){console.error('ERROR QA02 TODOS 99: '+err.message);process.exitCode=2;}
+  try{process.exitCode=await main();}catch(err){console.error('ERROR QA02 TODOS 58: '+err.message);process.exitCode=2;}
 }

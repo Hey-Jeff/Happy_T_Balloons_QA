@@ -26,11 +26,22 @@ export const temporaryHttpAuthCaseIds = Object.freeze([
   'ENV-001',
   'ENV-003',
   'ENV-006',
-  'CAT-009',
-  'CATE-006',
   'ENV-002',
   'CLI-004',
   'CLI-005',
+  // Envíos que la aplicación debe rechazar (sin guardar datos) y lecturas con datos existentes.
+  'CATE-002',
+  'CATE-009',
+  'PRO-003',
+  'PRO-008',
+  'PRO-009',
+  'INV-004',
+  'INV-007',
+  'INV-008',
+  'PED-006',
+  'PED-008',
+  'PED-011',
+  'CLI-007',
 ]);
 
 export function temporaryHttpAuthAllowed({baseUrl, allowHttp, allowHttpAuth, mode, caseIds}) {

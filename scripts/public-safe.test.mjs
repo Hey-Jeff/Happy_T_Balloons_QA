@@ -16,10 +16,11 @@ const run = (...args) => spawnSync(process.execPath,
     }
   });
 
-test('Catorce casos anonimos y carrito de sesion explicitamente seguros', () => {
+test('Diecisiete casos anonimos y carrito de sesion explicitamente seguros', () => {
   assert.deepEqual([...publicDraftIds], [
-    'CAT-001','CAT-002','CAT-004','CAT-005','CAT-006',
-    'CAT-008','CAT-011','CAT-012','CLI-003','CLI-006','PRO-006','PED-001','PED-002','PED-003'
+    'CAT-001','CAT-002','CAT-003','CAT-004','CAT-005','CAT-006',
+    'CAT-008','CAT-011','CAT-012','CLI-002','CLI-003','CLI-006','PRO-006','PED-001','PED-002','PED-003',
+    'AUT-005'
   ]);
   for (const id of publicDraftIds) {
     assert.equal(cases.find(c => c.id === id)?.automation_status,
@@ -42,5 +43,5 @@ test('Los casos administrativos permanecen bloqueados en HTTP sin autorización'
 test('La cobertura histórica no depende de la URL', () => {
   const r=run('coverage');
   assert.equal(r.status,0);
-  assert.match(r.stdout,/total\s+99/);
+  assert.match(r.stdout,/total\s+58/);
 });

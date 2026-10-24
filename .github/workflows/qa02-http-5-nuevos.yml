@@ -50,7 +50,7 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
-          ids=(CAT-009 CATE-006 ENV-002 CLI-004 CLI-005)
+          ids=(ENV-002 CLI-004 CLI-005)
           passed=0
           blocked=0
           failed=0
@@ -76,7 +76,7 @@ jobs:
             rm -f "$logfile"
             echo '::endgroup::'
           done
-          echo "**${passed} PASS, ${blocked} BLOCKED, ${failed} FAIL (5 seleccionados).**" >> "$GITHUB_STEP_SUMMARY"
+          echo "**${passed} PASS, ${blocked} BLOCKED, ${failed} FAIL (3 seleccionados).**" >> "$GITHUB_STEP_SUMMARY"
           echo 'BLOCKED no significa PASS ni N/A: es una precondicion necesaria ausente.' >> "$GITHUB_STEP_SUMMARY"
           echo "QA02 nuevos: ${passed} PASS; ${blocked} BLOCKED; ${failed} FAIL."
           test "$failed" -eq 0

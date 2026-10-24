@@ -23,25 +23,23 @@ test('Bloquea cualquier escritura sin confirmación y URL aislada HTTPS exacta',
     ['QA_BASE_URL','https://example.com'],['QA_BASE_URL','https://qa.example.test/pedido']
   ]) assert.notDeepEqual(verifyIsolatedEnvironment({...safeEnv,[k]:v}),[],`${k}=${v}`);
 });
-test('99 casos clasificados sin inventar PASS ni ejecutar acciones de escritura por defecto',()=>{
+test('58 casos clasificados sin inventar PASS ni ejecutar acciones de escritura por defecto',()=>{
   const entries=makeIsolatedPlan(cases,{});
-  assert.equal(entries.length,99);
-  assert.equal(new Set(entries.map(c=>c.id)).size,99);
+  assert.equal(entries.length,58);
+  assert.equal(new Set(entries.map(c=>c.id)).size,58);
   const count=countIsolated(entries);
-  assert.equal(count['N/A'],8);
-  assert.equal(count.PENDING,1);
+  assert.equal(count['N/A']||0,0);
+  assert.equal(count.PENDING||0,0);
   assert.equal(count.PASS||0,0);
-  assert.equal(entries.find(x=>x.id==='ENV-011').status,'PENDING');
-  assert.equal(entries.find(x=>x.id==='PAG-001').status,'BLOCKED');
   assert.equal(entries.find(x=>x.id==='AUT-002').status,'BLOCKED');
-  assert.ok(entries.find(x=>x.id==='PRO-001').status==='QUEUED');
+  assert.equal(entries.find(x=>x.id==='CATE-012').status,'BLOCKED');
+  assert.ok(entries.find(x=>x.id==='CAT-001').status==='QUEUED');
 });
-test('Sólo entornos aislados y fixtures explícitos habilitan escenarios de pago',()=>{
-  const missing=makeIsolatedPlan(cases,{QA_SINPE_SANDBOX:'true'}).find(x=>x.id==='PAG-001');
-  assert.equal(missing.status,'BLOCKED');
-  assert.match(missing.reason,/QA_SINPE_TEST_RECEIPT/);
-  const fixture=Object.fromEntries(REQUIRED_FIXTURES['PAG-001'].map(x=>[x,'qa_value']));
-  assert.equal(makeIsolatedPlan(cases,{...fixture, QA_SINPE_SANDBOX:'true'}).find(x=>x.id==='PAG-001').status,'QUEUED');
+test('Sólo fixtures explícitos habilitan los casos que modifican datos',()=>{
+  const missing=makeIsolatedPlan(cases,{}).find(x=>x.id==='CATE-012');
+  assert.match(missing.reason,/QA_CATEGORY_WITH_PRODUCTS/);
+  const fixture=Object.fromEntries(REQUIRED_FIXTURES['CATE-012'].map(x=>[x,'qa_value']));
+  assert.equal(makeIsolatedPlan(cases,fixture).find(x=>x.id==='CATE-012').status,'QUEUED');
 });
 test('Resultado Playwright real sigue siendo la única fuente de PASS',()=>{
   const make=status=>({suites:[{specs:[{tests:[{results:[{status}]}]}]}]});

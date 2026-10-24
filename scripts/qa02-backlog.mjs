@@ -11,7 +11,7 @@ PRO-002 CATE-003 ENV-012 ENV-001 ENV-003 ENV-006
 const applicable = cases.filter(c => c.automation_status !== statuses.na);
 const backlog = applicable.filter(c => !selected.has(c.id));
 const excluded = cases.filter(c => c.automation_status === statuses.na);
-if (cases.length !== 99 || selected.size !== 38 || backlog.length !== 53 || excluded.length !== 8) {
+if (cases.length !== 58 || selected.size !== 38 || backlog.length !== 20 || excluded.length !== 0) {
   throw new Error(`Se altero la matriz sin actualizar el reporte: ${cases.length} total, ${selected.size} lote, ${backlog.length} pendientes, ${excluded.length} N/A`);
 }
 console.log('');
@@ -26,5 +26,4 @@ for (const module of [...new Set(cases.map(c => c.module))]) {
   if (list.length) console.log(`| ${module} | ${list.join(', ')} |`);
 }
 console.log('');
-console.log('`ENV-011` sigue sin implementar. Los 8 N/A requieren ratificacion del alcance.');
 console.log('Los casos de escritura necesitan BD de QA restaurable y validacion previa de sus datos; HTTP no equivale a permiso automatico de escritura.');

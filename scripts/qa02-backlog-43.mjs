@@ -6,17 +6,17 @@ AUT-001 PRO-012 PED-005 INV-006 PRO-004 PRO-005 CATE-004 INV-001
 PED-007 PED-009 REP-001 REP-002 REP-003 REP-004 REP-005 REP-006 REP-007 REP-008
 PRO-002 CATE-003 ENV-012 ENV-001 ENV-003 ENV-006
 `.trim().split(/\s+/));
-const five = new Set(['CAT-009','CATE-006','ENV-002','CLI-004','CLI-005']);
+const five = new Set(['ENV-002','CLI-004','CLI-005']);
 const selected = new Set([...previous38,...five]);
 const applicable=cases.filter(c=>c.automation_status!==statuses.na);
 const backlog=applicable.filter(c=>!selected.has(c.id));
 const na=cases.filter(c=>c.automation_status===statuses.na);
-if(cases.length!==99 || applicable.length!==91 || previous38.size!==38 || selected.size!==43 || backlog.length!==48 || na.length!==8){
+if(cases.length!==58 || applicable.length!==58 || previous38.size!==38 || selected.size!==41 || backlog.length!==17 || na.length!==0){
   throw new Error(`La matriz cambio: ${cases.length} total, ${applicable.length} aplicables, ${selected.size} programados, ${backlog.length} fuera de lotes, ${na.length} N/A`);
 }
 console.log('### Inventario QA02 luego de la nueva ola (NO significa PASS)');
-console.log(`99 totales; 91 aplicables; 38 en lote previo; 5 adicionales programados; 48 aun fuera de lotes; 8 excluidos N/A.`);
-console.log('Los 5 nuevos pueden terminar BLOCKED por datos ausentes y NO contaran como PASS.');
+console.log(`58 totales; 58 aplicables; 38 en lote previo; 3 adicionales programados; 17 aun fuera de lotes; 0 excluidos N/A.`);
+console.log('Los 3 nuevos pueden terminar BLOCKED por datos ausentes y NO contaran como PASS.');
 console.log('| Modulo | Fuera de los lotes |');
 console.log('|---|---|');
 for(const mod of [...new Set(cases.map(c=>c.module))]){

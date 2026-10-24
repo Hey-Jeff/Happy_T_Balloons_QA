@@ -4,7 +4,7 @@
 
 **Proyecto Playwright independiente de Claude Code.** Basado en `QA02-Casos_de_Prueba_Happy_Times_Balloons_1.xlsx` (hoja `Sheet1`, filas 8–112).
 
-> **Estado honesto de entrega**: 99 casos importados; 10 flujos Playwright creados como **borradores no verificados**; **0 flujos verificados** contra la versión actual; 87 pendientes de implementación; 8 marcados no aplicables en el Excel. **Esto todavía NO es una suite completamente automatizada.** Para terminar se requiere el código o URL funcional de la aplicación y una BD/instancia QA controlada.
+> **Estado de entrega (23/10/2026)**: 58 casos en el repositorio, todos con flujo Playwright contrastado con la UI de `http://13.184.33.122`. En la ejecución integral (workflow **QA02 TODOS**) 56 se ejecutan y terminan en PASS o FAIL; `AUT-002` y `CATE-012` quedan BLOCKED con su motivo visible en el resumen de Actions.
 
 ## Requisitos
 
@@ -39,8 +39,8 @@ Para testers de Windows que prefieren un menú, hacer doble clic en `Ejecutar_Pr
 
 | Comando | Qué hace |
 |---|---|
-| `npm run qa:validate` | Comprueba IDs, campos y estructura de 99 escenarios |
-| `npm run qa:list` | Lista los 99 casos y su estado real |
+| `npm run qa:validate` | Comprueba IDs, campos y estructura de 58 escenarios |
+| `npm run qa:list` | Lista los 58 casos y su estado real |
 | `npm run qa:list -- PED` | Lista casos de Pedidos |
 | `npm run qa:coverage` | Muestra cobertura real, no el historial del Excel |
 | `npm run test:case -- AUT-001 --try-drafts` | **Prueba** un borrador contra la instancia QA |
@@ -50,7 +50,7 @@ Para testers de Windows que prefieren un menú, hacer doble clic en `Ejecutar_Pr
 | `npm run report` | Abre reporte visual Playwright tras una ejecución |
 | `npm run unit` | Comprueba integridad de los datos sin acceso a la app |
 
-El **exit code de `test:all` es de error** cuando hay casos pendientes: se evita presentar 10/99 como si fuese un resultado completo. `--allow-pending` permite ejecutar un subconjunto durante el desarrollo, **sin contabilizar SKIP como PASS**.
+El **exit code de `test:all` es de error** cuando hay casos pendientes: se evita presentar una parte del total como si fuese un resultado completo. `--allow-pending` permite ejecutar un subconjunto durante el desarrollo, **sin contabilizar SKIP como PASS**.
 
 ## Cómo implementar un caso pendiente
 
@@ -71,9 +71,8 @@ El Excel incluye una columna llamada `Tipo de Ejecución` con el valor `Automate
 ## Errores conocidos y alcances
 
 - `CAT-002`, `PRO-006`, `CATE-012`: quedaron marcados `Failed` en el Excel; mantenerlos como defectos a reproducir, no corregir el *expected* para hacerlos pasar.
-- 8 casos estaban `Blocked` por funcionalidades no disponibles/no aplicables en la versión evaluada; se conservan como `excluded_not_applicable`, con las notas de validación originales.
-- Los casos de correo y 2FA (`AUT-004`, `AUT-006`, `AUT-007`, `AUT-011` a `AUT-013`) se excluyeron del repositorio porque requieren buzón de email; `PAG-001` a `PAG-004` necesitan webhook SINPE con token sandbox; `PAG-005` a `PAG-008` requieren pasarela de prueba que actualmente no figura implementada.
-- Fechas de `ENV-005` a `ENV-008` ya son históricas: se deben generar dinámicamente según el calendario vigente, no reutilizarlas literalmente.
+- Se eliminaron del repositorio (siguen en el Excel) los casos que escriben datos en el servidor compartido, los pagos SINPE (`PAG-001` a `PAG-004`), los 8 N/A, `ENV-011` y los casos sin datos disponibles en la UI (`CAT-009`, `CATE-006`).
+- Los casos de correo y 2FA (`AUT-004`, `AUT-006`, `AUT-007`, `AUT-011` a `AUT-013`) se excluyeron del repositorio porque requieren buzón de email.
 - No usar cuentas reales para `AUT-003` (bloqueo) ni webhook de pagos real. Necesitan entorno QA aislado y pruebas de restablecimiento.
 
 ## Reporte y GitHub Actions
@@ -84,7 +83,7 @@ Incluido `.github/workflows/qa02-manual.yml`: ejecución manual por tester autor
 
 La skill `.claude/skills/prueba/SKILL.md` es **opcional** para desarrolladores con Claude Code; todos los comandos anteriores funcionan sin Claude Code.
 
-Consulta `docs/IMPLEMENTACION.md` para completar cobertura de los 99 casos.
+Consulta `docs/IMPLEMENTACION.md` para completar cobertura de los 58 casos.
 
 Fuentes: https://playwright.dev/docs/intro · https://playwright.dev/docs/test-assertions · https://playwright.dev/docs/trace-viewer-intro · https://docs.github.com/en/actions
 

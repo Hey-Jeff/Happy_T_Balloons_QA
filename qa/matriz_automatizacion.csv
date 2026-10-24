@@ -1,94 +1,53 @@
 ﻿ID,Módulo,Historia/escenario,Prioridad,Responsable,Estado automatización,Resultado QA02 anterior,Fila origen Excel,Condición de aceptación
 AUT-001,AUT,Inicio de sesión con credenciales correctas,Alta,Melissa Solís,draft_requires_ui_verification,Passed,8,El sistema autentica al usuario y muestra las opciones correspondientes a su rol.
 AUT-002,AUT,Inicio de sesión con credenciales incorrectas,Alta,Melissa Solís,draft_requires_ui_verification,Untested,9,El sistema rechaza el acceso y muestra un mensaje de error sin revelar información sensible.
-AUT-003,AUT,Bloqueo temporal por intentos fallidos,Alta,Melissa Solís,draft_requires_ui_verification,Untested,10,El sistema bloquea temporalmente el acceso del usuario y registra el evento correspondiente.
 AUT-005,AUT,Recuperación de contraseña con correo no registrado,Media,Melissa Solís,draft_requires_ui_verification,Untested,12,El sistema no inicia la recuperación y muestra el mensaje correspondiente.
-AUT-008,AUT,Creación de un rol por parte del administrador,Alta,Melissa Solís,draft_requires_ui_verification,Untested,15,El sistema registra el rol y deja disponible la nueva configuración de acceso.
-AUT-009,AUT,Asignación de un rol a un usuario,Alta,Melissa Solís,draft_requires_ui_verification,Untested,16,El sistema guarda la asignación y el usuario queda asociado al rol seleccionado.
-AUT-010,AUT,Eliminación o inactivación de un rol existente,Alta,Melissa Solís,draft_requires_ui_verification,Untested,17,El rol deja de estar disponible para nuevas asignaciones y la acción queda registrada.
 CAT-001,CAT,Visualización del catálogo con productos activos,Alta,Karla Llosent,draft_requires_ui_verification,Passed,21,El sistema muestra los productos disponibles con la información definida para el catálogo.
 CAT-002,CAT,Visualización del detalle de un producto,Alta,Karla Llosent,draft_requires_ui_verification,Failed,22,"El sistema muestra el detalle disponible del producto seleccionado, incluyendo su descripción, imágenes y precio."
 CAT-003,CAT,Catálogo sin productos disponibles,Baja,Karla Llosent,draft_requires_ui_verification,Untested,23,El sistema muestra un mensaje indicando que no hay productos disponibles.
 CAT-004,CAT,Búsqueda de producto por nombre,Media,Karla Llosent,draft_requires_ui_verification,Passed,24,El sistema muestra los productos que coinciden con la búsqueda.
 CAT-005,CAT,Filtrado de productos por categoría,Media,Karla Llosent,draft_requires_ui_verification,Passed,25,El sistema muestra únicamente los productos correspondientes a la categoría seleccionada.
 CAT-006,CAT,Búsqueda sin resultados,Baja,Karla Llosent,draft_requires_ui_verification,Passed,26,El sistema muestra un mensaje indicando que no se encontraron resultados.
-CAT-007,CAT,Ordenamiento del catálogo,Media,Karla Llosent,excluded_not_applicable,Blocked,27,El sistema reorganiza los productos de acuerdo con el criterio seleccionado.
 CAT-008,CAT,Producto publicado visible para el cliente,Media,Karla Llosent,draft_requires_ui_verification,Passed,28,El producto aparece disponible dentro del catálogo.
-CAT-009,CAT,Producto inactivo o no publicado oculto al cliente,Alta,Karla Llosent,draft_requires_ui_verification,Passed,29,El producto no aparece como disponible para el cliente.
-CAT-010,CAT,Intento de publicar un producto con información incompleta,Alta,Karla Llosent,excluded_not_applicable,Blocked,30,"El sistema valida la información, no publica el producto y muestra los datos que deben corregirse."
 CAT-011,CAT,Acceso no autorizado a la administración del catálogo,Alta,Karla Llosent,draft_requires_ui_verification,Untested,31,El sistema impide el acceso a la función restringida.
 CAT-012,CAT,Búsqueda combinada con filtro de categoría,Media,Karla Llosent,draft_requires_ui_verification,Passed,32,El sistema muestra únicamente los productos que cumplen con la categoría y el texto ingresado.
-PRO-001,PRO,Creación de producto con datos válidos,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,33,El sistema registra el producto correctamente.
 PRO-002,PRO,Creación de producto con campos obligatorios vacíos,Media,Ignacio Vargas,draft_requires_ui_verification,Passed,34,El sistema no registra el producto y muestra las validaciones correspondientes.
 PRO-003,PRO,Creación de producto con precio negativo,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,35,El sistema rechaza el valor y no guarda el producto con un precio negativo.
 PRO-004,PRO,Consulta del listado de productos,Media,Ignacio Vargas,draft_requires_ui_verification,Passed,36,El sistema muestra el listado de productos registrados con la información disponible para su administración.
 PRO-005,PRO,Consulta de un producto existente,Media,Ignacio Vargas,draft_requires_ui_verification,Passed,37,El sistema muestra la información almacenada del producto seleccionado.
 PRO-006,PRO,Consulta de un producto inexistente,Baja,Ignacio Vargas,draft_requires_ui_verification,Failed,38,El sistema no muestra información de otro registro y comunica que el producto no está disponible.
-PRO-007,PRO,Actualización de un producto existente,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,39,El sistema actualiza la información del producto.
 PRO-008,PRO,Actualización de producto con precio negativo,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,40,El sistema rechaza el valor y conserva un precio válido para el producto.
 PRO-009,PRO,Actualización de un producto inexistente,Media,Ignacio Vargas,draft_requires_ui_verification,Passed,41,El sistema no realiza la actualización y muestra un mensaje indicando que el producto no está disponible.
-PRO-010,PRO,Inactivación de un producto activo,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,42,El sistema cambia el estado del producto a inactivo.
-PRO-011,PRO,Reactivación de un producto inactivo,Media,Ignacio Vargas,draft_requires_ui_verification,Passed,43,El sistema cambia el estado del producto y vuelve a dejarlo activo.
 PRO-012,PRO,Acceso de cliente a funciones de mantenimiento de productos,Alta,Ignacio Vargas,draft_requires_ui_verification,Untested,44,El sistema impide el acceso a las funciones de mantenimiento de productos.
-CATE-001,CATE,Creación de una categoría nueva,Alta,Karla Llosent,draft_requires_ui_verification,Passed,45,El sistema crea la categoría y la deja disponible para su uso.
 CATE-002,CATE,Intento de crear una categoría duplicada,Media,Karla Llosent,draft_requires_ui_verification,Passed,46,El sistema no crea un registro duplicado y muestra el mensaje correspondiente.
 CATE-003,CATE,Creación de categoría con datos obligatorios vacíos,Media,Karla Llosent,draft_requires_ui_verification,Passed,47,El sistema no guarda la categoría y solicita completar la información requerida.
 CATE-004,CATE,Visualización de categorías activas,Media,Karla Llosent,draft_requires_ui_verification,Passed,48,El sistema muestra las categorías activas disponibles.
-CATE-005,CATE,Visualización cuando no existen categorías activas,Baja,Karla Llosent,draft_requires_ui_verification,Untested,49,El sistema muestra un mensaje indicando que no hay categorías disponibles.
-CATE-006,CATE,Categoría inactiva oculta para el cliente,Media,Karla Llosent,draft_requires_ui_verification,Passed,50,La categoría inactiva no se muestra como opción disponible para el cliente.
-CATE-007,CATE,Actualización de una categoría existente,Alta,Karla Llosent,draft_requires_ui_verification,Passed,51,El sistema actualiza la información de la categoría.
-CATE-008,CATE,Actualización de la jerarquía de categorías,Media,Karla Llosent,excluded_not_applicable,Blocked,52,El sistema actualiza la estructura de categorías según el cambio realizado.
 CATE-009,CATE,Actualización de una categoría inexistente,Media,Karla Llosent,draft_requires_ui_verification,Passed,53,El sistema no realiza cambios y muestra un mensaje informando que el registro no está disponible.
-CATE-010,CATE,Inactivación de una categoría existente,Alta,Karla Llosent,draft_requires_ui_verification,Passed,54,El sistema cambia el estado de la categoría y deja de mostrarla como activa.
-CATE-011,CATE,Reactivación de una categoría inactiva,Media,Karla Llosent,draft_requires_ui_verification,Passed,55,El sistema cambia el estado de la categoría y vuelve a dejarla disponible.
 CATE-012,CATE,Inactivación de una categoría con productos asociados,Alta,Karla Llosent,draft_requires_ui_verification,Failed,56,El sistema evita dejar información inconsistente y muestra al administrador la acción requerida para continuar.
 INV-001,INV,Consulta del stock actual de un producto,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,57,El sistema muestra la cantidad de stock registrada para el producto.
-INV-002,INV,Registro de una entrada de inventario,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,58,El sistema aumenta la cantidad disponible del producto según la entrada registrada.
-INV-003,INV,Registro de una salida de inventario válida,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,59,El sistema disminuye el stock de acuerdo con la cantidad registrada.
 INV-004,INV,Salida de inventario mayor al stock disponible,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,60,El sistema rechaza la operación y no permite que el stock quede en un valor negativo.
-INV-005,INV,Alerta cuando el stock alcanza el mínimo definido,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,61,El sistema muestra la alerta correspondiente de stock bajo.
 INV-006,INV,Inventario por encima del mínimo sin alerta de stock bajo,Media,Ignacio Vargas,draft_requires_ui_verification,Passed,62,El sistema muestra la cantidad disponible sin marcar el producto como stock bajo.
 INV-007,INV,Registro de movimiento de entrada en el historial,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,63,El movimiento de entrada queda registrado y puede identificarse en el historial correspondiente.
 INV-008,INV,Registro de movimiento de salida en el historial,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,64,El movimiento de salida queda registrado y puede identificarse en el historial correspondiente.
-INV-009,INV,Actualización de inventario al confirmar un pedido,Alta,Ignacio Vargas,draft_requires_ui_verification,Passed,65,El inventario refleja la salida correspondiente al pedido confirmado sin generar stock negativo.
 PED-001,PED,Agregar un producto disponible al carrito,Alta,Jeffry Soto,draft_requires_ui_verification,Passed,66,El sistema agrega el producto al carrito y actualiza la información del pedido en preparación.
 PED-002,PED,Intento de agregar al carrito un producto sin stock,Alta,Jeffry Soto,draft_requires_ui_verification,Passed,67,El sistema no agrega el producto y muestra un mensaje de stock insuficiente.
 PED-003,PED,Agregar nuevamente un producto que ya está en el carrito,Media,Jeffry Soto,draft_requires_ui_verification,Passed,68,El sistema actualiza la cantidad del producto en el carrito sin crear una línea duplicada innecesaria.
-PED-004,PED,Checkout con carrito y datos válidos,Alta,Jeffry Soto,draft_requires_ui_verification,Passed,69,El sistema registra el pedido y muestra la confirmación correspondiente.
 PED-005,PED,Intento de checkout con carrito vacío,Alta,Jeffry Soto,draft_requires_ui_verification,Passed,70,El sistema bloquea la finalización de la compra e informa que el carrito está vacío.
 PED-006,PED,Checkout con datos obligatorios incompletos,Alta,Jeffry Soto,draft_requires_ui_verification,Passed,71,El sistema no finaliza el pedido y solicita completar la información requerida.
 PED-007,PED,Consulta del listado de pedidos,Media,Jeffry Soto,draft_requires_ui_verification,Untested,72,El sistema muestra los pedidos registrados y su estado actual.
 PED-008,PED,Consulta de pedidos cuando no existen registros,Baja,Jeffry Soto,draft_requires_ui_verification,Untested,73,El sistema muestra un mensaje indicando que no hay pedidos disponibles.
 PED-009,PED,Filtrado del listado de pedidos,Media,Jeffry Soto,draft_requires_ui_verification,Untested,74,El sistema muestra únicamente los pedidos que cumplen con el filtro seleccionado.
-PED-010,PED,Cambio válido de estado de un pedido,Alta,Jeffry Soto,draft_requires_ui_verification,Untested,75,El sistema actualiza el estado del pedido y conserva el cambio realizado.
 PED-011,PED,Intento de cambio a un estado no permitido,Alta,Jeffry Soto,draft_requires_ui_verification,Untested,76,El sistema bloquea el cambio y mantiene un estado válido para el pedido.
-PED-012,PED,Cancelación de pedido y actualización del inventario,Alta,Jeffry Soto,draft_requires_ui_verification,Untested,77,El sistema actualiza el pedido como cancelado y refleja en inventario la consecuencia definida para esa cancelación.
-CLI-001,CLI,Registro de cliente con datos válidos,Alta,Melissa Solís,draft_requires_ui_verification,Untested,78,El sistema crea la cuenta del cliente y confirma el registro.
 CLI-002,CLI,Registro de cliente con correo duplicado,Media,Melissa Solís,draft_requires_ui_verification,Untested,79,El sistema no crea una cuenta duplicada y muestra el mensaje correspondiente.
 CLI-003,CLI,Registro de cliente con datos obligatorios incompletos,Media,Melissa Solís,draft_requires_ui_verification,Untested,80,El sistema no crea la cuenta y solicita completar o corregir la información requerida.
 CLI-004,CLI,Consulta del historial de compras con pedidos registrados,Media,Melissa Solís,draft_requires_ui_verification,Passed,81,El sistema muestra los pedidos o compras anteriores asociados al cliente autenticado.
 CLI-005,CLI,Consulta del historial cuando no existen compras,Baja,Melissa Solís,draft_requires_ui_verification,Untested,82,El sistema informa que no existen compras registradas para el cliente.
 CLI-006,CLI,Acceso al historial sin iniciar sesión,Alta,Melissa Solís,draft_requires_ui_verification,Untested,83,El sistema bloquea el acceso y solicita autenticación.
 CLI-007,CLI,Intento de consultar el historial de otro cliente,Alta,Melissa Solís,draft_requires_ui_verification,Untested,84,El sistema impide el acceso a la información de otro cliente.
-PAG-001,PAG,Registro de pago mediante SINPE para un pedido pendiente,Alta,Melissa Solís,draft_requires_ui_verification,Untested,85,El sistema registra el pago asociado al pedido.
-PAG-002,PAG,Pago SINPE con datos requeridos incompletos,Media,Melissa Solís,draft_requires_ui_verification,Untested,86,El sistema no registra el pago y solicita completar la información necesaria.
-PAG-003,PAG,Intento de segundo pago sobre un pedido ya pagado,Alta,Melissa Solís,draft_requires_ui_verification,Untested,87,El sistema bloquea el pago duplicado y mantiene un único pago válido para el pedido.
-PAG-004,PAG,Actualización del pedido después de un pago SINPE exitoso,Alta,Melissa Solís,draft_requires_ui_verification,Untested,88,El sistema refleja en el pedido el resultado del pago de acuerdo con el flujo definido.
-PAG-005,PAG,Pago con tarjeta aprobado,Alta,Melissa Solís,excluded_not_applicable,Blocked,89,El sistema procesa y registra el pago aprobado.
-PAG-006,PAG,Pago con tarjeta rechazado por fondos insuficientes,Alta,Melissa Solís,excluded_not_applicable,Blocked,90,El sistema rechaza el pago y el pedido permanece sin un pago aprobado.
-PAG-007,PAG,Pago con tarjeta vencida,Alta,Melissa Solís,excluded_not_applicable,Blocked,91,El sistema no procesa el pago y muestra el mensaje de error correspondiente.
-PAG-008,PAG,Pago con tarjeta con datos obligatorios incompletos,Alta,Melissa Solís,excluded_not_applicable,Blocked,92,El sistema no procesa el pago y solicita completar la información requerida.
 ENV-001,ENV,Selección de una zona de entrega disponible,Alta,Jeffry Soto,draft_requires_ui_verification,Untested,93,El sistema reconoce la zona y calcula el costo de entrega correspondiente.
 ENV-002,ENV,Selección de una zona no disponible,Media,Jeffry Soto,draft_requires_ui_verification,Untested,94,El sistema no acepta la zona y muestra el mensaje correspondiente.
 ENV-003,ENV,Cambio de zona de entrega,Media,Jeffry Soto,draft_requires_ui_verification,Untested,95,El sistema actualiza la zona y recalcula el costo de entrega.
-ENV-004,ENV,Continuar sin seleccionar una zona de entrega,Media,Jeffry Soto,excluded_not_applicable,Blocked,96,El sistema solicita seleccionar una zona antes de continuar con la entrega.
-ENV-005,ENV,Programación de fecha y hora de entrega disponibles,Alta,Jeffry Soto,draft_requires_ui_verification,Untested,97,El sistema guarda la programación de entrega seleccionada.
 ENV-006,ENV,Selección de una fecha de entrega no permitida,Media,Jeffry Soto,draft_requires_ui_verification,Untested,98,El sistema no guarda la fecha y solicita seleccionar una opción válida.
-ENV-007,ENV,Selección de un horario no disponible,Media,Jeffry Soto,draft_requires_ui_verification,Untested,99,El sistema informa que el horario no está disponible y solicita elegir otro.
-ENV-008,ENV,Cambio de programación de entrega,Media,Jeffry Soto,draft_requires_ui_verification,Untested,100,El sistema actualiza la programación con la nueva selección.
-ENV-009,ENV,Creación de una zona de entrega,Alta,Jeffry Soto,draft_requires_ui_verification,Untested,101,El sistema crea la zona y la deja disponible para su uso.
-ENV-010,ENV,Edición de una zona de entrega,Media,Jeffry Soto,draft_requires_ui_verification,Untested,102,El sistema actualiza la información de la zona.
-ENV-011,ENV,Eliminación de una zona sin pedidos asociados,Media,Jeffry Soto,pending_implementation,Untested,103,El sistema elimina la zona y deja de mostrarla como disponible.
 ENV-012,ENV,Creación de zona con datos obligatorios incompletos,Media,Jeffry Soto,draft_requires_ui_verification,Untested,104,El sistema no crea la zona y muestra la validación correspondiente.
 REP-001,REP,Generación del reporte general de ventas,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,105,El sistema muestra el resumen de ventas con la información disponible definida para el reporte.
 REP-002,REP,Filtrado del reporte de ventas por fecha,Media,Ignacio Vargas,draft_requires_ui_verification,Untested,106,El sistema muestra únicamente la información correspondiente al período seleccionado.

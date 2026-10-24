@@ -9,7 +9,7 @@ const flow = readFileSync(new URL('../tests/flows/index.js', import.meta.url), '
 const workflow = readFileSync(new URL('../.github/workflows/qa02-http-32.yml', import.meta.url), 'utf8');
 const workflow38 = readFileSync(new URL('../.github/workflows/qa02-http-38.yml', import.meta.url), 'utf8');
 const nuevos38 = ['PRO-002','CATE-003','ENV-012','ENV-001','ENV-003','ENV-006'];
-const nuevos5 = ['CAT-009','CATE-006','ENV-002','CLI-004','CLI-005'];
+const nuevos5 = ['ENV-002','CLI-004','CLI-005'];
 
 function block(start, end) {
   const a = flow.indexOf(start), b = flow.indexOf(end, a+start.length);
@@ -49,11 +49,11 @@ test('Lote historico 32 se conserva y es subconjunto del lote 38', () => {
   const auth32=authIds(workflow);
   const public38=idsBetween(workflow38, 'public_ids=(', '\n          )');
   const auth38=authIds(workflow38);
-  const anteriores=temporaryHttpAuthCaseIds.filter(id=>!nuevos38.includes(id) && !nuevos5.includes(id));
-  assert.deepEqual(new Set(publicIds), new Set(publicDraftIds));
-  assert.deepEqual(new Set(auth32), new Set(anteriores));
-  assert.deepEqual(new Set(public38), new Set(publicDraftIds));
-  assert.deepEqual(new Set(auth38), new Set(temporaryHttpAuthCaseIds.filter(id=>!nuevos5.includes(id))));
+  // Los lotes 32/38 conservan su lista histórica: deben seguir dentro de las políticas vigentes.
+  for (const id of [...publicIds, ...public38]) assert.ok(publicDraftIds.has(id), id);
+  for (const id of [...auth32, ...auth38]) assert.ok(temporaryHttpAuthCaseIds.includes(id), id);
+  for (const id of nuevos38) assert.ok(auth38.includes(id) && !auth32.includes(id), id);
+  for (const id of nuevos5) assert.ok(!auth38.includes(id), id);
   assert.equal(new Set(auth38).size,24);
   assert.equal(new Set([...public38, ...auth38]).size,38);
   assert.equal(publicIds.length,14);
@@ -64,6 +64,6 @@ test('Lote historico 32 se conserva y es subconjunto del lote 38', () => {
     assert.match(wf,/QA_ALLOW_HTTP_AUTH=true npm run test:case/);
     assert.match(wf,/QA_ALLOW_HTTP_AUTH=false npm run test:case/);
   }
-  assert.equal(cases.length,99);
-  assert.equal(coverage().not_applicable,8);
+  assert.equal(cases.length,58);
+  assert.equal(coverage().not_applicable,0);
 });

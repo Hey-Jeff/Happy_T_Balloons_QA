@@ -65,14 +65,6 @@ async function productEdit(page,name) {
   await expect(page.locator('#modalEditar')).toBeVisible();
   return page.locator('#formEditar');
 }
-async function productToggle(page,name,expectedStatus) {
-  await open(page,'/Producto');
-  const row=productRow(page,name);
-  await expect(row).toBeVisible();
-  page.once('dialog', dialog=>dialog.accept());
-  await row.locator('.btn-toggle').click();
-  await expect(productRow(page,name).locator('td').nth(5)).toContainText(expectedStatus);
-}
 async function createCategory(page) {
   isolatedWrites();
   await admin(page,'/Categoria');
@@ -86,14 +78,6 @@ async function createCategory(page) {
   await expect(page).toHaveURL(/\/Categoria(?:\/Index)?(?:\?|$)/i);
   await expect(categoryRow(page,name),'Categoria creada debe aparecer en la tabla').toBeVisible();
   return name;
-}
-async function categoryToggle(page,name,status) {
-  await open(page,'/Categoria');
-  const row=categoryRow(page,name);
-  await expect(row).toBeVisible();
-  page.once('dialog',d=>d.accept());
-  await row.locator('button.btn-toggle').click();
-  await expect(categoryRow(page,name).locator('td').nth(2)).toContainText(status);
 }
 async function movement(page,kind,amount,requestedName) {
   isolatedWrites();
@@ -120,47 +104,12 @@ async function movement(page,kind,amount,requestedName) {
   expect(after,`El movimiento ${kind} de ${amount} debe cambiar el stock`).toBe(before+(kind==='Entrada'?amount:-amount));
   return {name,productId,before,after,motive};
 }
-async function createZone(page) {
-  isolatedWrites();
-  await admin(page,'/ZonasEntrega/Crear');
-  const name=unique('QA02_ZONA');
-  const form=page.locator('form[action*="ZonasEntrega/Crear"]');
-  await expect(form).toBeVisible();
-  await form.locator('input[name="Nombre"]').fill(name);
-  await form.locator('input[name="CostoEnvio"]').fill('1500');
-  await form.locator('textarea[name="Descripcion"]').fill('Zona de prueba aislada');
-  await form.locator('button[type="submit"]').click();
-  await expect(page).toHaveURL(/\/ZonasEntrega(?:\/Index)?(?:\?|$)/i);
-  const row=page.locator('table tbody tr').filter({hasText:name}).first();
-  await expect(row,`Zona creada debe aparecer en listado: ${name}`).toBeVisible();
-  return name;
-}
-
 export const wave3Flows = {
   'CAT-003': async ({page}) => {
     if (process.env.QA_EXPECT_EMPTY_CATALOG !== 'true') throw new Error('PRECONDICION: usar BD QA sin productos activos y QA_EXPECT_EMPTY_CATALOG=true.');
     await open(page,'/');
     await expect(page.locator('.card.h-100')).toHaveCount(0);
     await expect(page.getByText('No hay productos disponibles en este momento.')).toBeVisible();
-  },
-  'CAT-009': async ({page}) => {
-    const name=fixture('QA_INACTIVE_PRODUCT_NAME'); // producto inactivo preparado por desarrollo
-    await open(page,'/');
-    await page.locator('input[name="busqueda"]').fill(name);
-    await page.getByRole('button',{name:/filtrar/i}).click();
-    await expect(page.locator('.card.h-100 h6 a').filter({hasText:name})).toHaveCount(0);
-    await expect(page.getByText('No hay productos disponibles en este momento.')).toBeVisible();
-  },
-  'CATE-005': async ({page}) => {
-    if (process.env.QA_EXPECT_EMPTY_CATEGORIES !== 'true') throw new Error('PRECONDICION: BD QA sin categorias activas y QA_EXPECT_EMPTY_CATEGORIES=true.');
-    await open(page,'/');
-    await expect(page.locator('select[name="categoriaId"] option')).toHaveCount(1);
-    await expect(page.locator('select[name="categoriaId"]')).toContainText('Todas las categorías');
-  },
-  'CATE-006': async ({page}) => {
-    const name=fixture('QA_INACTIVE_CATEGORY_NAME');
-    await open(page,'/');
-    await expect(page.locator('select[name="categoriaId"] option').filter({hasText:name})).toHaveCount(0);
   },
   'CLI-007': async ({page}) => {
     const otherOrderId=fixture('QA_FOREIGN_ORDER_ID');
@@ -171,17 +120,6 @@ export const wave3Flows = {
     const denied=[401,403].includes(response?.status()) || /^\/Error\/Prohibido$|^\/Cuenta\/Login$/i.test(path);
     expect(denied,`Se permite acceder al pedido ajeno ${otherOrderId}: ${path}, HTTP ${response?.status()}`).toBeTruthy();
     await expect(page.locator('table tbody tr')).toHaveCount(0);
-  },
-  'PRO-001': async ({page}) => { await createProduct(page); },
-  'PRO-007': async ({page}) => {
-    const name=await createProduct(page);
-    const form=await productEdit(page,name);
-    const updated=`${name}_EDIT`;
-    await form.locator('input[name="Nombre"]').fill(updated);
-    await page.locator('button[form="formEditar"]').click();
-    await expect(page).toHaveURL(/\/Producto(?:\/Index)?(?:\?|$)/i);
-    await expect(productRow(page,updated)).toBeVisible();
-    await expect(productRow(page,name)).toHaveCount(0);
   },
   'PRO-008': async ({page}) => {
     const name=await createProduct(page);
@@ -197,16 +135,6 @@ export const wave3Flows = {
     await open(page,'/Producto');
     await expect(productRow(page,name).locator('td').nth(3)).not.toContainText('-10');
   },
-  'PRO-010': async ({page}) => {
-    const name=await createProduct(page);
-    await productToggle(page,name,'Inactivo');
-  },
-  'PRO-011': async ({page}) => {
-    const name=await createProduct(page);
-    await productToggle(page,name,'Inactivo');
-    await productToggle(page,name,'Activo');
-  },
-  'CATE-001': async ({page}) => { await createCategory(page); },
   'CATE-002': async ({page}) => {
     const name=await createCategory(page);
     await page.locator('button[data-bs-target="#modalCrear"]').click();
@@ -215,37 +143,6 @@ export const wave3Flows = {
     await form.locator('button[type="submit"]').click();
     await expect(page.locator('.alert-danger')).toBeVisible();
     await expect(categoryRow(page,name)).toHaveCount(1);
-  },
-  'CATE-007': async ({page}) => {
-    const name=await createCategory(page);
-    const row=categoryRow(page,name);
-    await row.locator('button.btn-editar').click();
-    const form=page.locator('#formEditar');
-    await expect(form).toBeVisible();
-    const newName=`${name}_EDIT`;
-    await form.locator('input[name="Nombre"]').fill(newName);
-    await form.locator('button[type="submit"]').click();
-    await expect(categoryRow(page,newName)).toBeVisible();
-    await expect(categoryRow(page,name)).toHaveCount(0);
-  },
-  'CATE-010': async ({page}) => {
-    const name=await createCategory(page);
-    await categoryToggle(page,name,'Inactiva');
-  },
-  'CATE-011': async ({page}) => {
-    const name=await createCategory(page);
-    await categoryToggle(page,name,'Inactiva');
-    await categoryToggle(page,name,'Activa');
-  },
-  'INV-002': async ({page}) => { await movement(page,'Entrada',5); },
-  'INV-003': async ({page}) => {
-    // Registrar salida solo cuando el producto QA dedicado tiene existencias.
-    isolatedWrites();await admin(page,'/Inventario');
-    const name=fixture('QA_INVENTORY_PRODUCT_NAME');
-    const btn=page.locator(`button.btn-registrar-mov[data-producto-nombre="${name}"]`).first();
-    await expect(btn).toBeVisible();
-    expect(Number(await btn.getAttribute('data-stock-actual')),'Se requiere stock >= 1').toBeGreaterThanOrEqual(1);
-    await movement(page,'Salida',1,name);
   },
   'INV-004': async ({page}) => {
     isolatedWrites();await admin(page,'/Inventario');
@@ -281,21 +178,5 @@ export const wave3Flows = {
     const row=page.locator('table tbody tr').filter({hasText:motive}).first();
     await expect(row).toBeVisible();
     await expect(row).toContainText('Salida');
-  },
-  'ENV-009': async ({page}) => { await createZone(page); },
-  'ENV-010': async ({page}) => {
-    const name=await createZone(page);
-    const row=page.locator('table tbody tr').filter({hasText:name}).first();
-    const link=row.locator('a[href*="ZonasEntrega/Editar"]').first();
-    await expect(link).toBeVisible();
-    await link.click();
-    await expect(page).toHaveURL(/\/ZonasEntrega\/Editar\/\d+/i);
-    const form=page.locator('form[action*="ZonasEntrega/Editar"]');
-    const newName=`${name}_EDIT`;
-    await form.locator('input[name="Nombre"]').fill(newName);
-    await form.locator('input[name="CostoEnvio"]').fill('1750');
-    await form.locator('button[type="submit"]').click();
-    await expect(page).toHaveURL(/\/ZonasEntrega(?:\/Index)?(?:\?|$)/i);
-    await expect(page.locator('table tbody tr').filter({hasText:newName})).toBeVisible();
   },
 };

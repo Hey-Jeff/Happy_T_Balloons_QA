@@ -5,13 +5,16 @@ import { cases, implemented, statuses } from './qa-core.mjs';
 import { publicDraftIds } from './public-safe.mjs';
 const source=fs.readFileSync(new URL('../tests/flows/wave3-72h.js',import.meta.url),'utf8');
 const ids=[...source.matchAll(/'([A-Z]{3,4}-\d{3})':\s*async/g)].map(m=>m[1]);
+// Casos que qa02-datos-ui.js redefine con datos existentes de la UI.
+const datosUi=fs.readFileSync(new URL('../tests/flows/qa02-datos-ui.js',import.meta.url),'utf8');
+const overridden=id=>datosUi.includes(`'${id}': async`);
 test('Ola 3: flujo, matriz y manifiesto tienen los mismos casos',()=>{
-  assert.equal(ids.length,22);
+  assert.equal(ids.length,7);
   assert.equal(new Set(ids).size,ids.length);
   for(const id of ids){
     assert.ok(implemented.has(id),`No registrado: ${id}`);
     assert.equal(cases.find(c=>c.id===id)?.automation_status,statuses.draft);
-    assert.ok(!publicDraftIds.has(id),`Requiere precondiciones: ${id} no debe ser automatico publico`);
+    if(!overridden(id)) assert.ok(!publicDraftIds.has(id),`Requiere precondiciones: ${id} no debe ser automatico publico`);
   }
 });
 test('Ola 3: operaciones persistentes bloqueadas sin dos banderas',()=>{

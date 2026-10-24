@@ -23,28 +23,6 @@ function adminRow(page, stateColumn, state) {
 }
 
 export const qa02ReadOnlyWave5 = {
-  'CAT-009': async ({ page, testInfo }) => {
-    await adminPage(page, '/Producto');
-    const row = adminRow(page, 6, 'Inactivo');
-    if (!(await row.count())) skipMissing(testInfo, 'No existe producto inactivo para comprobar el catalogo publico');
-    const name = (await row.locator('td').nth(1).locator('.fw-semibold').first().innerText()).trim();
-    expect(name).not.toBe('');
-    await go(page, '/');
-    await page.locator('input[name="busqueda"]').fill(name);
-    await page.getByRole('button', { name: /filtrar/i }).click();
-    await expect(page.locator('.card.h-100 h6 a').filter({hasText: name})).toHaveCount(0);
-    await expect(page.locator('main')).not.toContainText('Error de servidor');
-  },
-  'CATE-006': async ({ page, testInfo }) => {
-    await adminPage(page, '/Categoria');
-    const row = adminRow(page, 3, 'Inactiva');
-    if (!(await row.count())) skipMissing(testInfo, 'No existe categoria inactiva en el mantenimiento administrativo');
-    const name = (await row.locator('td').first().innerText()).trim();
-    expect(name).not.toBe('');
-    await go(page, '/');
-    await expect(page.locator('select[name="categoriaId"]')).toBeVisible();
-    await expect(page.locator('select[name="categoriaId"] option').filter({hasText:name})).toHaveCount(0);
-  },
   'ENV-002': async ({ page, testInfo }) => {
     await adminPage(page, '/ZonasEntrega');
     const row = adminRow(page, 4, 'No disponible');

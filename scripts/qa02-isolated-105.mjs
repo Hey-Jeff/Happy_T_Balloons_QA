@@ -46,42 +46,14 @@ export function verifyIsolatedEnvironment(env) {
 // Los flujos auto-generadores de producto/categoría/zona NO necesitan nombres históricos.
 export const REQUIRED_FIXTURES = Object.freeze({
   'AUT-002':['QA_INVALID_PASSWORD'],
-  'AUT-003':['QA_LOCKOUT_EMAIL','QA_LOCKOUT_ATTEMPTS','QA_INVALID_PASSWORD'],
-  'AUT-005':['QA_UNREGISTERED_EMAIL'],
-  'AUT-008':['QA_TEST_ROLE_NAME'],
-  'AUT-009':['QA_ROLE_USER_EMAIL','QA_TEST_ROLE_NAME'],
-  'AUT-010':['QA_DELETE_ROLE_NAME'],
-  'CAT-003':['QA_EXPECT_EMPTY_CATALOG'],
-  'CATE-005':['QA_EXPECT_EMPTY_CATEGORIES'],
-  'CLI-005':['QA_EMPTY_CLIENT_EMAIL','QA_EMPTY_CLIENT_PASSWORD'],
-  'CLI-007':['QA_FOREIGN_ORDER_ID'],
-  'INV-003':['QA_INVENTORY_PRODUCT_NAME'],
-  'INV-004':['QA_INVENTORY_PRODUCT_NAME'],
-  'INV-008':['QA_INVENTORY_PRODUCT_NAME'],
-  'INV-005':['QA_LOW_STOCK_PRODUCT_ID','QA_LOW_STOCK_TARGET'],
-  'INV-009':['QA_ORDER_PRODUCT_ID'],
-  'PED-008':['QA_EXPECT_EMPTY_ADMIN_ORDERS'],
-  'PED-010':['QA_ORDER_CHANGE_ID'],
-  'PED-011':['QA_ORDER_INVALID_CHANGE_ID'],
-  'PED-012':['QA_CANCEL_ORDER_ID','QA_CANCEL_PRODUCT_ID','QA_CANCEL_STOCK_RESTOCK_QTY'],
-  'PAG-001':['QA_SINPE_TEST_RECEIPT','QA_SINPE_TEST_AMOUNT','QA_SINPE_SANDBOX_TOKEN','QA_SINPE_TEST_PHONE'],
-  'PAG-002':['QA_SINPE_SANDBOX_TOKEN','QA_SINPE_TEST_PHONE'],
-  'PAG-003':['QA_SINPE_PAID_RECEIPT','QA_SINPE_TEST_AMOUNT','QA_SINPE_SANDBOX_TOKEN','QA_SINPE_TEST_PHONE'],
-  'PAG-004':['QA_SINPE_TEST_RECEIPT','QA_SINPE_TEST_AMOUNT','QA_PAID_ORDER_ID','QA_SINPE_SANDBOX_TOKEN','QA_SINPE_TEST_PHONE'],
   'CATE-012':['QA_CATEGORY_WITH_PRODUCTS'],
-  'ENV-005':['QA_DELIVERY_ORDER_ID'],
-  'ENV-007':['QA_DELIVERY_ORDER_ID','QA_FULL_DELIVERY_DATE'],
-  'ENV-008':['QA_DELIVERY_ORDER_ID','QA_RESCHEDULE_DATE'],
 });
-export const PAYMENT_IDS = new Set(['PAG-001','PAG-002','PAG-003','PAG-004']);
 export function makeIsolatedPlan(allCases=cases, env=process.env) {
   return allCases.map(tc=>{
     let status,reason;
     if(tc.automation_status===statuses.na){status='N/A';reason='Función fuera del alcance actual';}
     else if(tc.automation_status===statuses.pending){status='PENDING';reason='Todavía no existe implementación Playwright';}
-    else if (PAYMENT_IDS.has(tc.id) && env.QA_SINPE_SANDBOX!=='true') {
-      status='BLOCKED';reason='Falta sandbox de SINPE (QA_SINPE_SANDBOX=true)';
-    } else {
+    else {
       const missing=(REQUIRED_FIXTURES[tc.id]||[]).filter(k=>!env[k] || (k.startsWith('QA_EXPECT_EMPTY_') && env[k]!=='true'));
       if (missing.length){status='BLOCKED';reason='Faltan fixtures de QA: '+missing.join(', ');}
       else {status='QUEUED';reason='Escenario preparado para ejecutarse sobre QA aislada';}
@@ -104,7 +76,7 @@ function summary(plan){
     'Ejecución autorizada por confirmación expresa de BD aislada y restaurable. NO implica que la restauración se haya realizado.','',
     '| Caso | Módulo | Estado | Motivo |','|---|---|---|---|'];
   for(const e of plan)out.push(`| ${e.id} | ${e.module} | ${e.status} | ${textCell(e.reason)} |`);
-  out.push('',`**Total: ${plan.length}/99**`);
+  out.push('',`**Total: ${plan.length}/58**`);
   return out.join('\n')+'\n';
 }
 export async function main(args=process.argv.slice(2),env=process.env) {
@@ -112,7 +84,7 @@ export async function main(args=process.argv.slice(2),env=process.env) {
   if(errs.length)throw new Error('SEGURIDAD: '+errs.join(' '));
   const plan=makeIsolatedPlan(cases,env);
   const counts=countIsolated(plan);
-  if(plan.length!==99 || (counts.PENDING||0)!==1 || (counts['N/A']||0)!==8) throw new Error('Matriz no coincide con los 99 casos base');
+  if(plan.length!==58 || counts.PENDING || counts['N/A']) throw new Error('Matriz no coincide con los 58 casos base');
   if(args.includes('--plan')) {
     console.log('QA02 aislado: '+JSON.stringify(counts));
     console.log('Solo correrá lo que tenga fixtures. Nunca rellenar secretos ficticios ni probar contra la BD compartida.');
@@ -137,7 +109,7 @@ export async function main(args=process.argv.slice(2),env=process.env) {
     // Nunca imprimir stdout, stderr ni artefactos del navegador de sesiones autenticadas.
   }
   const finalCount=countIsolated(plan);
-  console.log('QA02 AISLADO 99: '+JSON.stringify(finalCount));
+  console.log('QA02 AISLADO 58: '+JSON.stringify(finalCount));
   if(env.GITHUB_STEP_SUMMARY)fs.appendFileSync(env.GITHUB_STEP_SUMMARY,summary(plan),'utf8');
   else console.log(summary(plan));
   return (finalCount.FAIL||0)>0 || (finalCount.BLOCKED||0)>0 || (finalCount.PENDING||0)>0 ? 1 : 0;

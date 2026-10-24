@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { cases, statuses } from './qa-core.mjs';
 import { temporaryHttpAuthCaseIds } from './http-auth-policy.mjs';
-const ids=['CAT-009','CATE-006','ENV-002','CLI-004','CLI-005'];
+const ids=['ENV-002','CLI-004','CLI-005'];
 const flow=readFileSync(new URL('../tests/flows/qa02-readonly-wave5.js', import.meta.url),'utf8');
 const workflow=readFileSync(new URL('../.github/workflows/qa02-http-5-nuevos.yml',import.meta.url),'utf8');
 const spec=readFileSync(new URL('../tests/qa02.spec.js',import.meta.url),'utf8');
-test('Cinco casos clasificados como drafts, autenticados y distintos',()=>{
-  assert.equal(new Set(ids).size,5);
+test('Tres casos clasificados como drafts, autenticados y distintos',()=>{
+  assert.equal(new Set(ids).size,3);
   for(const id of ids){
     assert.equal(cases.find(c=>c.id===id)?.automation_status,statuses.draft,id);
     assert.ok(temporaryHttpAuthCaseIds.includes(id),id);

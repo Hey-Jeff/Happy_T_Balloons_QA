@@ -29,14 +29,24 @@ const approved = [
   'ENV-001',
   'ENV-003',
   'ENV-006',
-  'CAT-009',
-  'CATE-006',
   'ENV-002',
   'CLI-004',
   'CLI-005',
+  'CATE-002',
+  'CATE-009',
+  'PRO-003',
+  'PRO-008',
+  'PRO-009',
+  'INV-004',
+  'INV-007',
+  'INV-008',
+  'PED-006',
+  'PED-008',
+  'PED-011',
+  'CLI-007',
 ];
 
-test('solo los veintinueve escenarios HTTP de lectura/control estan habilitados', () => {
+test('solo los treinta y nueve escenarios HTTP de lectura/rechazo estan habilitados', () => {
   assert.deepEqual(temporaryHttpAuthCaseIds, approved);
   assert.equal(new Set(approved).size, approved.length);
   for (const id of approved) assert.equal(temporaryHttpAuthAllowed({...config,caseIds:[id]}),true,id);
@@ -54,7 +64,7 @@ test('no habilitar sin permisos explicitos de HTTP y autenticacion',()=>{
 test('no permitir lotes dentro del CLI, ni casos que escriben',()=>{
   for(const mode of ['all','module','public','borradores','lecturas'])
     assert.equal(temporaryHttpAuthAllowed({...config,mode}),false,mode);
-  for(const caseIds of [['AUT-001','PRO-012'],[],['AUT-008'],['PRO-003'],['PAG-001'],['PED-004'],['AUT-002'],['CLI-001'],['INV-009'],['ENV-011']]) {
+  for(const caseIds of [['AUT-001','PRO-012'],[],['AUT-002'],['CATE-012'],['AUT-005'],['CAT-003']]) {
     assert.equal(temporaryHttpAuthAllowed({...config,caseIds}),false,caseIds.join(','));
   }
 });
