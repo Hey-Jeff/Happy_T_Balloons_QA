@@ -1,3 +1,5 @@
+> **Nota (06/11/2026):** los pasos de configuración siguen vigentes, pero las cifras de casos de este documento (105 casos, 10 borradores, 87 pendientes) son históricas. Alcance actual: 58 casos con flujo, 56 ejecutables en HTTP compartido y 2 BLOCKED; ver [docs/QA02_AUDITORIA_Y_CORRECCIONES.md](docs/QA02_AUDITORIA_Y_CORRECCIONES.md).
+
 > **Actualización:** Si Happy Times Balloons ya está publicado en QA, sigue primero [`CONFIGURAR_QA_PUBLICADO.md`](CONFIGURAR_QA_PUBLICADO.md).
 
 # Guía de GitHub Actions para QA02 — Happy Times Balloons

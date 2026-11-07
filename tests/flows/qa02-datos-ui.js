@@ -168,6 +168,27 @@ async function salesSummary(page) {
   };
 }
 const salesTable = (page, heading) => page.locator('.card').filter({ has: page.getByText(heading) }).last().locator('table').first();
+// Inicio del periodo historico con pedidos entregados (julio 2026 ya tiene 7, ver REP-002).
+const SALES_WINDOW_START = '2026-01-01';
+const emptySalesPeriod = page => page.getByText('Sin pedidos entregados en el período seleccionado').isVisible();
+async function applySalesWindow(page, end) {
+  await page.locator('input[name="fechaInicio"]').fill(SALES_WINDOW_START);
+  await page.locator('input[name="fechaFin"]').fill(end);
+  await Promise.all([
+    page.waitForURL(url => url.searchParams.get('fechaInicio') === SALES_WINDOW_START),
+    page.locator('form[action*="Ventas"]').locator('button[type="submit"]').click(),
+  ]);
+}
+// Indicadores = filas de "Pedidos del período": cantidad, ingresos y ticket promedio.
+async function expectSalesSummaryConsistent(page) {
+  const s = await salesSummary(page);
+  const orders = await rowsOf(salesTable(page, 'Pedidos del período'));
+  expect(s.pedidos, 'Pedidos activos = filas del período').toBe(orders.length);
+  const total = orders.reduce((sum, r) => sum + colones(r[4]), 0);
+  expect(s.ingresos, 'Ingresos totales = suma de las filas').toBe(total);
+  if (s.pedidos) expect(s.ticket, 'Ticket promedio = ingresos / pedidos').toBe(Math.round(total / s.pedidos * 100) / 100);
+  return s;
+}
 
 export const qa02DatosUi = {
   // ---- Catalogo publico (sin sesion) ----
@@ -428,20 +449,27 @@ export const qa02DatosUi = {
     for (const r of rows) expect(r[3], r[0]).toBe('Cancelado');
     expect(rows.map(r => r[0])).toEqual(expected);
   },
-  // REP-001 / REP-003: sin filtro el reporte usa del dia 1 del mes en curso a hoy;
-  // los totales dependen de la fecha y se validan contra las filas mostradas.
-  'REP-001': async ({ page }) => {
+  // REP-001 / REP-003: sin filtro el reporte usa del dia 1 del mes en curso a hoy.
+  // Run #14 (06/11/2026): a inicio de mes no hay pedidos entregados y el reporte muestra su estado
+  // vacio, por lo que los flujos dependian del calendario. Ahora: (1) se valida el periodo por defecto
+  // y, si esta vacio, que el estado vacio sea coherente; (2) el resumen y el detalle se validan
+  // siempre sobre un periodo historico con ventas (SALES_WINDOW_START .. hoy segun el servidor).
+  'REP-001': async ({ page, testInfo }) => {
     await adminPage(page, '/Reportes/Ventas', /reporte de ventas/i);
     const start = await page.locator('input[name="fechaInicio"]').inputValue();
     const end = await page.locator('input[name="fechaFin"]').inputValue();
     expect(start).toMatch(/^\d{4}-\d{2}-01$/);
     expect(end.slice(0, 7)).toBe(start.slice(0, 7));
-    const s = await salesSummary(page);
-    const orders = await rowsOf(salesTable(page, 'Pedidos del período'));
-    expect(s.pedidos).toBe(orders.length);
-    const total = orders.reduce((sum, r) => sum + colones(r[4]), 0);
-    expect(s.ingresos).toBe(total);
-    if (s.pedidos) expect(s.ticket).toBe(Math.round(total / s.pedidos * 100) / 100);
+    if (await emptySalesPeriod(page)) {
+      await expect(page.locator('main table'), 'Estado vacío sin tablas de pedidos').toHaveCount(0);
+      testInfo.annotations.push({ type: 'Datos', description: `Periodo por defecto ${start}..${end} sin pedidos entregados (estado vacio verificado)` });
+    } else {
+      await expectSalesSummaryConsistent(page);
+    }
+    await applySalesWindow(page, end);
+    expect(await emptySalesPeriod(page), `PRECONDICION: hay ventas entre ${SALES_WINDOW_START} y ${end}`).toBe(false);
+    const s = await expectSalesSummaryConsistent(page);
+    expect(s.pedidos, 'El periodo historico incluye pedidos').toBeGreaterThan(0);
   },
   'REP-002': async ({ page }) => {
     await adminPage(page, '/Reportes/Ventas', /reporte de ventas/i);
@@ -456,6 +484,7 @@ export const qa02DatosUi = {
   },
   'REP-003': async ({ page }) => {
     await adminPage(page, '/Reportes/Ventas', /reporte de ventas/i);
+    await applySalesWindow(page, await page.locator('input[name="fechaFin"]').inputValue());
     const table = salesTable(page, /productos m[aá]s vendidos/i);
     await expect(table.locator('thead')).toContainText(/Producto\s+Categoría\s+Unidades vendidas\s+Ingresos/);
     const rows = await rowsOf(table);
@@ -630,9 +659,21 @@ export const qa02DatosUi = {
     await expect(page.locator('#movSalida')).toBeChecked();
     await page.locator('#movCantidad').fill('50');
     await page.locator('#movMotivo').fill('QA02 salida mayor al stock');
-    await page.locator('#formMovimiento button[type="submit"]').click();
-    await expect(alert(page, `Stock insuficiente. Stock actual: ${stock}. Cantidad solicitada: 50.`)).toBeVisible();
-    await expect(page.locator('button.btn-registrar-mov[data-producto-id="3"]').first()).toHaveAttribute('data-stock-actual', stock);
+    // Run #14 (06/11/2026): el modal rediseñado rechaza la salida en el cliente deshabilitando
+    // "Registrar" (antes se enviaba y el servidor respondía "Stock insuficiente"). Nunca se envía:
+    // así la prueba no puede escribir aunque exista un defecto.
+    const submit = page.locator('#formMovimiento button[type="submit"]');
+    const modalText = async () => (await page.locator('#formMovimiento').innerText()).replace(/\s+/g, ' ').slice(0, 300);
+    await expect(submit, `Salida de 50 con stock ${stock} debe bloquearse. Modal: ${await modalText()}`).toBeDisabled();
+    // Control: con los mismos datos, una ENTRADA sí es válida; prueba que el bloqueo lo causa la regla
+    // de stock y no un formulario incompleto. No se hace clic.
+    await page.locator('label[for="movEntrada"]').click();
+    await expect(page.locator('#movEntrada')).toBeChecked();
+    await expect(submit, `Control: entrada de 50 habilitada. Modal: ${await modalText()}`).toBeEnabled();
+    await page.locator('label[for="movSalida"]').click();
+    await expect(submit, 'Al volver a Salida se bloquea de nuevo').toBeDisabled();
+    await go(page, '/Inventario');
+    await expect(page.locator('button.btn-registrar-mov[data-producto-id="3"]').first(), 'El stock no cambió').toHaveAttribute('data-stock-actual', stock);
   },
   // INV-007 / INV-008: movimientos existentes de Sopa De Letras (ID 5) registrados el 05/10/2026.
   // El historial se rediseñó antes del run #11 (columnas "Cambio" y "Stock anterior → nuevo"); los

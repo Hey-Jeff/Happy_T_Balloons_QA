@@ -1,3 +1,5 @@
+> **Documento histórico.** Describe la matriz de 105 casos o un lote anterior. El alcance vigente es de 58 casos: ver [docs/QA02_AUDITORIA_Y_CORRECCIONES.md](QA02_AUDITORIA_Y_CORRECCIONES.md).
+
 # Estado inicial de los casos QA02
 
 Todos los IDs y los pasos originales están en `qa/cases.json`. El Excel fuente tiene 105 pruebas documentadas y un historial fechado 05/10/2026.

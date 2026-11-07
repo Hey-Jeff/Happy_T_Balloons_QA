@@ -1,3 +1,5 @@
+> **Documento histórico.** Describe la matriz de 105 casos o un lote anterior. El alcance vigente es de 58 casos: ver [docs/QA02_AUDITORIA_Y_CORRECCIONES.md](QA02_AUDITORIA_Y_CORRECCIONES.md).
+
 # QA02 Sprint 72 horas - Ola 2 (16 flujos)
 
 ## Alcance
