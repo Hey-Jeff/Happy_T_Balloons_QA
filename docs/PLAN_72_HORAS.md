@@ -1,3 +1,5 @@
+> **Documento histórico.** Describe la matriz de 105 casos o un lote anterior. El alcance vigente es de 58 casos: ver [docs/QA02_AUDITORIA_Y_CORRECCIONES.md](QA02_AUDITORIA_Y_CORRECCIONES.md).
+
 # QA02 — Plan de ejecución de 72 horas (trabajo individual asistido)
 
 ## Estado tras paquete D1

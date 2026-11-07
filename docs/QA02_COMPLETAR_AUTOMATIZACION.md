@@ -1,3 +1,5 @@
+> **Documento histórico.** Describe la matriz de 105 casos o un lote anterior. El alcance vigente es de 58 casos: ver [docs/QA02_AUDITORIA_Y_CORRECCIONES.md](QA02_AUDITORIA_Y_CORRECCIONES.md).
+
 # QA02 — Un workflow, dos perfiles, 105 casos
 
 > Alcance: **solo** `Hey-Jeff/Happy_T_Balloons_QA`. Este repositorio contiene las pruebas. Esta actualización **no cambia** la aplicación, su base de datos ni los pagos.
