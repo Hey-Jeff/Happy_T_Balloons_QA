@@ -27,13 +27,32 @@ if (!address) {
       error('Usa HTTPS para el QA público. Solo en un entorno controlado establece QA_ALLOW_HTTP=true.');
     } else {
       console.log(`Comprobando acceso HTTPS/HTTP a host QA: ${host} (sin credenciales).`);
+      // Run #12 (30/10/2026 08:56 UTC) se canceló por un "fetch failed" puntual del servidor QA.
+      // Reintento LIMITADO solo para infraestructura (error de red o HTTP 5xx), nunca para 4xx.
+      const attempts = Math.max(1, Number(process.env.QA_PRECHECK_ATTEMPTS || 3));
+      const waitMs = Number(process.env.QA_PRECHECK_WAIT_MS ?? 10000);
+      const probe = async () => {
+        let r = await fetch(parsed.origin, { method: 'HEAD', redirect: 'manual', signal: AbortSignal.timeout(15000) });
+        // Algunos servidores no admiten HEAD o lo filtran; GET es suficiente para comprobar disponibilidad.
+        if (r.status >= 400) {
+          await r.body?.cancel();
+          r = await fetch(parsed.origin, { method: 'GET', redirect: 'manual', signal: AbortSignal.timeout(15000) });
+        }
+        return r;
+      };
       let response;
       try {
-        response = await fetch(parsed.origin, { method: 'HEAD', redirect: 'manual', signal: AbortSignal.timeout(15000) });
-        // Algunos servidores no admiten HEAD o lo filtran; GET es suficiente para comprobar disponibilidad.
-        if (response.status >= 400) {
-          await response.body?.cancel();
-          response = await fetch(parsed.origin, { method: 'GET', redirect: 'manual', signal: AbortSignal.timeout(15000) });
+        for (let attempt = 1; ; attempt++) {
+          try {
+            response = await probe();
+            if (response.status < 500 || attempt >= attempts) break;
+            console.warn(`Intento ${attempt}/${attempts}: HTTP ${response.status}; reintentando en ${waitMs / 1000}s.`);
+            await response.body?.cancel();
+          } catch (e) {
+            if (attempt >= attempts) throw e;
+            console.warn(`Intento ${attempt}/${attempts}: ${e.message}; reintentando en ${waitMs / 1000}s.`);
+          }
+          await new Promise(r => setTimeout(r, waitMs));
         }
         console.log(`Estado HTTP de QA: ${response.status}`);
         if (response.status >= 200 && response.status < 400) {

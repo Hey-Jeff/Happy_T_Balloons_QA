@@ -12,17 +12,19 @@ export const flows={
    const dashboard = await page.goto('/Admin');
    expect(dashboard?.status(), 'El panel administrativo debe responder HTTP 200').toBe(200);
    await expect(page).toHaveURL(/\/Admin(?:\/Index)?(?:\?.*)?$/i);
-   await expect(page.getByRole('heading', { name: /Dashboard/i })).toBeVisible();
+   // Entre el 27 y el 30/10/2026 el panel cambió su encabezado "Dashboard" por "Estadísticas" con el
+   // subtítulo "Panel de administración" (snapshot del run #13). Se acepta cualquiera de los dos títulos,
+   // pero se exige el panel y los menús propios del rol administrador ("opciones correspondientes a su rol").
+   await expect(page.getByRole('heading', { name: /Dashboard|Estad[ií]sticas/i }).first()).toBeVisible();
+   await expect(page.getByText('Panel de administración', { exact: true })).toBeVisible();
+   const nav = page.getByRole('navigation').first();
+   for (const menu of [/Operaciones/i, /Inventario/i, /An[aá]lisis/i, /Configuraci[oó]n/i]) {
+     await expect(nav.getByRole('button', { name: menu }).first(), `Menú de administrador ${menu}`).toBeVisible();
+   }
  },
- 'AUT-002':async({page})=>{
-   const {email}=adminCredentials();
-   const wrong=process.env.QA_INVALID_PASSWORD;
-   if(!wrong) throw new Error('Configura QA_INVALID_PASSWORD: evita el bloqueo por reintentos.');
-   // EXACTAMENTE UN intento: no repetir esta prueba automáticamente con retries.
-   await login(page,email,wrong);
-   await expect(page).toHaveURL(/\/Cuenta\/Login/i);
-   await expect(page.getByText(/credenciales|incorrect|inv[aá]lid|contrase[nñ]a|intento/i).first()).toBeVisible();
- },
+ // AUT-002 se eliminó de este archivo (06/11/2026): el flujo antiguo intentaba una contraseña incorrecta
+ // contra la cuenta ADMIN (QA_ADMIN_EMAIL) y solo no se ejecutaba porque qa02-datos-ui.js lo sobrescribía.
+ // El caso vive en qa02-datos-ui.js (BLOCKED); ver docs/QA02_AUDITORIA_Y_CORRECCIONES.md §7.
  'CAT-001':async({page})=>{
    await page.goto('/');
    for (const name of ['Sad Boyz Tour','Cremas Dove','Cremas Faciales','Galletas Oreo']){

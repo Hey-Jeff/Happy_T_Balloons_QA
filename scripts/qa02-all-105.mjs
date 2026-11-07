@@ -27,8 +27,9 @@ export const PUBLIC_SAFE = Object.freeze([
 ]);
 // Casos que se mantienen BLOCKED a propósito; el motivo se publica en el resumen de Actions.
 export const BLOCKED_REASONS = Object.freeze({
-  'AUT-002': 'Bloqueado: la cuenta QA_tester (jeffrysmorales@gmail.com) quedó bloqueada temporalmente por intentos fallidos el 23/10/2026; el caso consume intentos de esa cuenta y no se ejecuta.',
-  'CATE-012': 'Bloqueado: defecto conocido (se inactiva una categoría con productos sin advertencia); el caso modifica datos compartidos.',
+  // No publicar correos personales en el resumen (repositorio público): se nombra la variable.
+  'AUT-002': 'Bloqueado: consume intentos de login fallidos; la cuenta cliente QA (QA_CLIENT_EMAIL) quedó bloqueada el 23/10/2026. Requiere una cuenta desechable exclusiva (QA_LOCKOUT_EMAIL) en QA aislado.',
+  'CATE-012': 'Bloqueado: inactiva una categoría con productos (escritura en BD compartida); defecto conocido sin advertencia. Requiere QA aislado y QA_CATEGORY_WITH_PRODUCTS.',
 });
 
 export function makePlan() {
@@ -69,6 +70,17 @@ function flattenTests(suites){
   }
   return out;
 }
+// Primera línea del primer error (sin colores ANSI ni valores "Received"), para que el resumen de
+// Actions indique la causa sin descargar el artifact. Antes todos los FAIL decían lo mismo.
+export function firstErrorLine(results){
+  for(const r of results||[]){
+    const message=(r.errors||[]).map(e=>e?.message).find(Boolean) || r.error?.message;
+    if(!message)continue;
+    const line=String(message).replace(/\x1b\[[0-9;]*m/g,'').split('\n').map(s=>s.trim()).find(Boolean)||'';
+    return line.slice(0,140);
+  }
+  return '';
+}
 // QA02 CLI puede terminar 0 cuando Playwright hace skip; esto lo detecta.
 export function classifyPlaywrightJSON(json, exitCode){
   if(!json || !Array.isArray(json.suites)) return {status:'FAIL',reason:'Falta JSON de resultados de Playwright'};
@@ -78,7 +90,8 @@ export function classifyPlaywrightJSON(json, exitCode){
   const results=test.results||[];
   const statusesFound=results.map(x=>x.status);
   if(results.some(x=>x.status==='failed'||x.status==='timedOut'||x.status==='interrupted') || exitCode!==0){
-    return {status:'FAIL',reason:'Aserción fallida o error de ejecución'};
+    const detail=firstErrorLine(results);
+    return {status:'FAIL',reason:detail?`Aserción fallida o error de ejecución: ${detail}`:'Aserción fallida o error de ejecución'};
   }
   if(statusesFound.includes('skipped') || results.length===0 || test.status==='skipped'){
     return {status:'BLOCKED',reason:'Playwright omitió el caso por falta de precondición o protección QA'};
@@ -131,7 +144,10 @@ export async function main(argv=process.argv.slice(2)){
     fs.rmSync(resultFile,{force:true});
     const child=spawnSync(process.execPath,['scripts/qa.mjs','run','case',entry.id,'--try-drafts'],{
       cwd:root,encoding:'utf8',maxBuffer:15*1024*1024,timeout:50_000,
-      env:{...process.env,QA_ALLOW_HTTP:'true',QA_ALLOW_HTTP_AUTH:authEnv,QA_ALLOW_MUTATIONS:'false',QA_ISOLATED_QA:'false',QA_RESETTABLE_DB:'NO'}
+      env:{...process.env,QA_ALLOW_HTTP:'true',QA_ALLOW_HTTP_AUTH:authEnv,QA_ALLOW_MUTATIONS:'false',QA_ISOLATED_QA:'false',QA_RESETTABLE_DB:'NO',
+        // Con sesión, Playwright adjuntaba "error-context.md" (snapshot ARIA de la página: clientes,
+        // pedidos, bitácora) al reporte público aunque screenshot/video/trace estén apagados.
+        ...(isAuth?{PLAYWRIGHT_NO_COPY_PROMPT:'1'}:{})}
     });
     let json=null;
     try{json=JSON.parse(fs.readFileSync(resultFile,'utf8'));}catch{}

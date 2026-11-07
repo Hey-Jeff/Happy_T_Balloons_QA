@@ -4,13 +4,22 @@ import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 const script = fileURLToPath(new URL('./check-env.mjs', import.meta.url));
-const run = (url) => spawnSync(process.execPath, [script], {
+const run = (url, extra = {}) => spawnSync(process.execPath, [script], {
  encoding: 'utf8',
 env: {
   ...process.env,
   QA_BASE_URL: url,
-  QA_ALLOW_HTTP: 'false'
+  QA_ALLOW_HTTP: 'false',
+  ...extra
 }
+});
+
+test('Fallo de red transitorio: reintenta un número limitado de veces y luego informa el error', () => {
+  // 127.0.0.2:9 no escucha (y no es el "localhost" bloqueado): error de red inmediato, sin salir a internet.
+  const r = run('http://127.0.0.2:9', { QA_ALLOW_HTTP: 'true', QA_PRECHECK_ATTEMPTS: '3', QA_PRECHECK_WAIT_MS: '0' });
+  assert.notEqual(r.status, 0);
+  assert.equal((r.stderr.match(/Intento \d\/3/g) || []).length, 2, r.stderr);
+  assert.match(r.stderr, /No hay conectividad al sitio QA/);
 });
 
 test('QA_BASE_URL no configurada produce error útil', () => {

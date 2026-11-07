@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 const workflow=readFileSync(new URL('../.github/workflows/qa02-todos-105.yml',import.meta.url),'utf8');
-test('Un solo workflow 105 ofrece compartido por defecto y aislado explícito',()=>{
-  assert.match(workflow,/name: QA02 TODOS - 105 casos en una ejecución/);
+test('Un solo workflow (58 casos) ofrece compartido por defecto y aislado explícito',()=>{
+  assert.match(workflow,/name: QA02 TODOS - 58 casos en una ejecución/);
   assert.match(workflow,/default: shared-http/);
   assert.match(workflow,/\s+- isolated-qa/);
   assert.match(workflow,/QA_ISOLATED_CONFIRMATION: \$\{\{ inputs\.confirm_isolated \}\}/);

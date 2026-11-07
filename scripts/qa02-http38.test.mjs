@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { cases, statuses } from './qa-core.mjs';
 import { temporaryHttpAuthCaseIds, temporaryHttpAuthAllowed } from './http-auth-policy.mjs';
 const wf = readFileSync(new URL('../.github/workflows/qa02-http-38.yml', import.meta.url), 'utf8');
-const spec = readFileSync(new URL('../tests/qa02.spec.js', import.meta.url), 'utf8');
+const spec = readFileSync(new URL('../tests/flows/registry.js', import.meta.url), 'utf8');
 const extensions = readFileSync(new URL('../tests/flows/qa02-safe-extensions.js', import.meta.url), 'utf8');
 const added = ['PRO-002','CATE-003','ENV-012','ENV-001','ENV-003','ENV-006'];
 
@@ -23,7 +23,7 @@ test('Flujo ENV-006 valida respuesta JSON de fecha prohibida y no modifica datos
   assert.match(extensions,/response\.status\(\)/);
   assert.match(extensions,/response\.json\(\)/);
   assert.doesNotMatch(extensions,/\.post\(|\.put\(|\.delete\(|\.fill\(/);
-  assert.match(spec,/\.\.\.safeHttpFlows/);
+  assert.match(spec,/\['qa02-safe-extensions\.js', safeHttpFlows\]/);
 });
 test('Workflow preserva acceso individual y no habilita operaciones persistentes', () => {
   assert.match(wf,/QA_ALLOW_MUTATIONS: 'false'/);

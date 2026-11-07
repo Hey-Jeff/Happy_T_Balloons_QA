@@ -45,15 +45,15 @@
         "sheet": "Sheet1",
         "row": 9
       },
-      "preconditions": "Existe el usuario QA_tester (jeffrysmorales@gmail.com, rol Cliente) activo, con 0 intentos fallidos. No hay sesión iniciada. (La pantalla indica: la cuenta se bloquea tras 3 intentos fallidos.)",
-      "test_data": "URL: /Cuenta/Login\nCorreo: jeffrysmorales@gmail.com (QA_tester)\nContraseña: ${QA_INVALID_PASSWORD} (1 solo intento)",
+      "preconditions": "Existe el usuario QA_tester (${QA_CLIENT_EMAIL}, rol Cliente) activo, con 0 intentos fallidos. No hay sesión iniciada. (La pantalla indica: la cuenta se bloquea tras 3 intentos fallidos.)",
+      "test_data": "URL: /Cuenta/Login\nCorreo: ${QA_CLIENT_EMAIL} (QA_tester)\nContraseña: ${QA_INVALID_PASSWORD} (1 solo intento)",
       "steps": [
         "Abrir la pantalla de inicio de sesión.",
         "Ingresar una combinación incorrecta de correo o contraseña.",
         "Presionar Iniciar sesión."
       ],
       "expected": "El sistema rechaza el acceso y muestra un mensaje de error sin revelar información sensible.",
-      "validation_notes": "Aplica. Usar un solo intento para no acercar la cuenta al bloqueo (3 intentos). Verificar que el mensaje no permita saber si el correo existe: el servicio devuelve 'intentos restantes' solo para correos registrados (posible enumeración de usuarios). BLOQUEADO 23/10/2026: la cuenta QA_tester (jeffrysmorales@gmail.com) quedó bloqueada temporalmente (\"Cuenta bloqueada temporalmente por múltiples intentos fallidos.\"). El caso no se ejecuta para no consumir intentos de la cuenta; nunca se usa la cuenta admin.",
+      "validation_notes": "Aplica. Usar un solo intento para no acercar la cuenta al bloqueo (3 intentos). Verificar que el mensaje no permita saber si el correo existe: el servicio devuelve 'intentos restantes' solo para correos registrados (posible enumeración de usuarios). BLOQUEADO 23/10/2026: la cuenta QA_tester (${QA_CLIENT_EMAIL}) quedó bloqueada temporalmente (\"Cuenta bloqueada temporalmente por múltiples intentos fallidos.\"). El caso no se ejecuta para no consumir intentos de la cuenta; nunca se usa la cuenta admin.",
       "known_routes": [
         "/Cuenta/Login"
       ],
@@ -73,7 +73,7 @@
         "sheet": "Sheet1",
         "row": 12
       },
-      "preconditions": "No existe ningún usuario con el correo noexiste.qa@happytimes.test (usuarios actuales: admin@happytimes.com, ignacii31@gmail.com, ejemplo@correo, kar.llosent000@gmail.com, jeffrysmorales@gmail.com).",
+      "preconditions": "No existe ningún usuario con el correo noexiste.qa@happytimes.test (usuarios actuales: admin@happytimes.com, ignacii31@gmail.com, ejemplo@correo, kar.llosent000@gmail.com, ${QA_CLIENT_EMAIL}).",
       "test_data": "URL: /Cuenta/OlvideContrasena\nCorreo: noexiste.qa@happytimes.test (no registrado)",
       "steps": [
         "Seleccionar la opción de recuperar contraseña.",
@@ -276,8 +276,8 @@
         "sheet": "Sheet1",
         "row": 31
       },
-      "preconditions": "Existe el usuario QA_tester (jeffrysmorales@gmail.com, rol Cliente) con sesión iniciada. Existen las pantallas de administración /Producto, /Producto/Crear y /Categoria.",
-      "test_data": "Usuario Cliente: QA_tester (jeffrysmorales@gmail.com)\nURLs: /Producto, /Producto/Crear, /Categoria",
+      "preconditions": "Existe el usuario QA_tester (${QA_CLIENT_EMAIL}, rol Cliente) con sesión iniciada. Existen las pantallas de administración /Producto, /Producto/Crear y /Categoria.",
+      "test_data": "Usuario Cliente: QA_tester (${QA_CLIENT_EMAIL})\nURLs: /Producto, /Producto/Crear, /Categoria",
       "steps": [
         "Intentar acceder a una opción de administración del catálogo."
       ],
@@ -519,8 +519,8 @@
         "sheet": "Sheet1",
         "row": 44
       },
-      "preconditions": "Existe el usuario QA_tester (jeffrysmorales@gmail.com, rol Cliente) con sesión iniciada.",
-      "test_data": "Usuario Cliente: QA_tester (jeffrysmorales@gmail.com)\nURLs: /Producto, /Producto/Crear",
+      "preconditions": "Existe el usuario QA_tester (${QA_CLIENT_EMAIL}, rol Cliente) con sesión iniciada.",
+      "test_data": "Usuario Cliente: QA_tester (${QA_CLIENT_EMAIL})\nURLs: /Producto, /Producto/Crear",
       "steps": [
         "Intentar ingresar a una opción para crear, editar o cambiar el estado de productos."
       ],
@@ -1120,8 +1120,8 @@
         "sheet": "Sheet1",
         "row": 82
       },
-      "preconditions": "Existe el cliente QA_tester (jeffrysmorales@gmail.com, rol Cliente) con sesión iniciada y sin pedidos registrados (no aparece en el listado de /Pedido).",
-      "test_data": "URL: /Pedido/MisPedidos\nCliente: QA_tester (jeffrysmorales@gmail.com), sin pedidos",
+      "preconditions": "Existe el cliente QA_tester (${QA_CLIENT_EMAIL}, rol Cliente) con sesión iniciada y sin pedidos registrados (no aparece en el listado de /Pedido).",
+      "test_data": "URL: /Pedido/MisPedidos\nCliente: QA_tester (${QA_CLIENT_EMAIL}), sin pedidos",
       "steps": [
         "Ingresar al perfil.",
         "Abrir el historial de compras."
@@ -1174,8 +1174,8 @@
         "sheet": "Sheet1",
         "row": 84
       },
-      "preconditions": "Existe el cliente QA_tester (jeffrysmorales@gmail.com, rol Cliente) con sesión iniciada. El pedido PED-2026-0017 (Detalle/17) pertenece a Karla Llosent.",
-      "test_data": "Cliente B autenticado: QA_tester (jeffrysmorales@gmail.com)\nPedido del Cliente A (Karla Llosent): /Pedido/Detalle/17 (PED-2026-0017)",
+      "preconditions": "Existe el cliente QA_tester (${QA_CLIENT_EMAIL}, rol Cliente) con sesión iniciada. El pedido PED-2026-0017 (Detalle/17) pertenece a Karla Llosent.",
+      "test_data": "Cliente B autenticado: QA_tester (${QA_CLIENT_EMAIL})\nPedido del Cliente A (Karla Llosent): /Pedido/Detalle/17 (PED-2026-0017)",
       "steps": [
         "Intentar acceder a información de historial que no pertenece al usuario autenticado."
       ],

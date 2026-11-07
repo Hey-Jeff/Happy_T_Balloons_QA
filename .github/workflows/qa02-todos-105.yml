@@ -1,4 +1,6 @@
-name: QA02 TODOS - 105 casos en una ejecución
+name: QA02 TODOS - 58 casos en una ejecución
+# Archivo conservado como qa02-todos-105.yml para no romper el historial de Actions ni los enlaces.
+# Alcance actual: 58 casos (la matriz original del Excel tenía 105; ver docs/QA02_AUDITORIA_Y_CORRECCIONES.md §8).
 
 on:
   workflow_dispatch:
@@ -26,7 +28,7 @@ concurrency:
 
 jobs:
   qa02-todos-105:
-    name: QA02 / 105 casos / informe integral
+    name: QA02 / 58 casos / informe integral
     runs-on: ubuntu-latest
     timeout-minutes: 100
     env:
@@ -116,7 +118,7 @@ jobs:
           node scripts/check-env.mjs
       - name: Preparar Chromium
         run: npx playwright install --with-deps chromium
-      - name: Evaluar y publicar tabla de los 105 casos
+      - name: Evaluar y publicar tabla de los 58 casos
         shell: bash
         run: |
           if [[ '${{ inputs.run_mode }}' == 'isolated-qa' ]]; then

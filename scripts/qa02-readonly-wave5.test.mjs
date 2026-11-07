@@ -6,7 +6,7 @@ import { temporaryHttpAuthCaseIds } from './http-auth-policy.mjs';
 const ids=['ENV-002','CLI-004','CLI-005'];
 const flow=readFileSync(new URL('../tests/flows/qa02-readonly-wave5.js', import.meta.url),'utf8');
 const workflow=readFileSync(new URL('../.github/workflows/qa02-http-5-nuevos.yml',import.meta.url),'utf8');
-const spec=readFileSync(new URL('../tests/qa02.spec.js',import.meta.url),'utf8');
+const spec=readFileSync(new URL('../tests/flows/registry.js',import.meta.url),'utf8');
 test('Tres casos clasificados como drafts, autenticados y distintos',()=>{
   assert.equal(new Set(ids).size,3);
   for(const id of ids){
@@ -15,7 +15,7 @@ test('Tres casos clasificados como drafts, autenticados y distintos',()=>{
     assert.match(flow,new RegExp(`'${id}':`));
     assert.ok(workflow.includes(id),id);
   }
-  assert.match(spec,/\.\.\.qa02ReadOnlyWave5/);
+  assert.match(spec,/\['qa02-readonly-wave5\.js', qa02ReadOnlyWave5\]/);
 });
 test('No convertir faltantes en PASS, no ocultar fallos y no publicar artefactos',()=>{
   assert.match(flow,/testInfo\.skip\(true,/);

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makePlan, count, exitCodeFor, classifyPlaywrightJSON, AUTH_SAFE, PUBLIC_SAFE, BLOCKED_REASONS} from './qa02-all-105.mjs';
+import {readFileSync} from 'node:fs';
+import {makePlan, count, exitCodeFor, classifyPlaywrightJSON, firstErrorLine, AUTH_SAFE, PUBLIC_SAFE, BLOCKED_REASONS} from './qa02-all-105.mjs';
 
 const report=status=>({suites:[{specs:[{tests:[{results:[{status}]}]}]}]});
 test('Matriz integral: 58 IDs únicos, 56 ejecutables sin mutaciones y 2 bloqueados con motivo',()=>{
@@ -34,4 +35,18 @@ test('Solo FAIL marca la ejecución en rojo; BLOCKED, PENDING y N/A no',()=>{
   const e=statuses=>statuses.map((status,i)=>({id:`X-${i}`,status}));
   assert.equal(exitCodeFor(e(['PASS','BLOCKED','PENDING','N/A'])),0);
   assert.equal(exitCodeFor(e(['PASS','FAIL','BLOCKED'])),1);
+});
+test('El FAIL publica la primera línea del error (sin ANSI) para diagnosticar desde el resumen',()=>{
+  const failed={suites:[{specs:[{tests:[{results:[{status:'failed',errors:[{message:'\u001b[31mError: Catálogo público: faltan elementos\u001b[39m\n\nExpected: []\nReceived: ["x"]'}]}]}]}]}]};
+  const r=classifyPlaywrightJSON(failed,1);
+  assert.equal(r.status,'FAIL');
+  assert.equal(r.reason,'Aserción fallida o error de ejecución: Error: Catálogo público: faltan elementos');
+  assert.doesNotMatch(r.reason,/Received/);
+  assert.equal(firstErrorLine([{status:'failed'}]),'');
+  assert.equal(firstErrorLine([{errors:[{message:'x'.repeat(500)}]}]).length,140);
+});
+test('Los casos con sesión no adjuntan snapshots de página y los motivos BLOCKED no publican correos',()=>{
+  const src=readFileSync(new URL('./qa02-all-105.mjs',import.meta.url),'utf8');
+  assert.match(src,/isAuth\?\{PLAYWRIGHT_NO_COPY_PROMPT:'1'\}:\{\}/);
+  for(const reason of Object.values(BLOCKED_REASONS))assert.doesNotMatch(reason,/@/);
 });
